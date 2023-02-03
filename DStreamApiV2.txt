@@ -1,0 +1,77 @@
+enum CoderType { PACKED = 0, MORTON, HILBERT, PACKED, PHASE, TRIANGLE, HUE };
+
+struct SpacingTable
+{
+	std::vector<uint16_t> Enlarge[3];
+	std::vector<uint16_t> Shrink[3];
+};
+
+class / header Processing
+{
+	static void Quantize(uint16_t* values, uint32_t nElements, uint8_t quantization);
+	static void Quantize(uint16_t& value, uint8_t quantization);
+	
+	static void RemoveOutliersMedian(uint16_t* source, uint32_t rowWidth, uint32_t threshold);
+	static void RemoveOutliersSelective(uint16_t* source, uint32_t rowWidth, uint32_t threshold);
+};
+
+template <typename CoderImplementation>
+class Coder
+{
+	public:
+		// Tables
+		Coder(uint8_t quantization, bool enlarge, uint8_t algoBits, bool useTables);
+		
+		void Encode(const uint16_t* source, Color* dest, uint32_t nElements);
+		// Interpolate values from the table if necessary
+		void Decode(const Color* source, uint16_t* dest, uint32_t nElements);
+		
+		void GenerateTables();
+		void SetSpacingTables(SpacingTable tables);
+		void SetEncodingTable(const std::vector<Color>& table);
+		void SetDecodingTable(const std::vector<uint16_t>& table, uint32_t tableSideX, uint32_t tableSideY, uint32_t tableSideZ);
+
+		void Enlarge(Color* source, uint32_t nElements);
+		void Shrink(Color* source, uint32_t nElements);
+		
+	private:
+		CoderImplementation m_Implementation;
+		
+		bool m_UseTables;
+		SpacingTable m_SpacingTable;
+		std::unordered_map<uint16_t, Color> m_EncodingTable;
+		std::unordered_map<Color, uint16_t> m_DecodingTable;
+};
+
+class AlgorithmImplementation
+{
+	public:
+		AlgorithmImplementation(uint8_t quantization, bool enlarge, uint8_t algoBits);
+		
+	protected:
+		uint8_t m_Quantization;
+		uint8_t m_AlgoBits;
+		uint8_t m_SegmentBits;
+		bool m_Enlarge;
+};
+
+class HilbertImplementation : AlgorithmImplementation
+{
+	public:
+		HilbertCoder(uint8_t quantization, bool enlarge, uint8_t algoBits);
+		
+		Color EncodeValue(uint16_t value);
+		uint16_t DecodeValue(Color value);
+
+	private:
+		void SubdivideValue(Color& value, Color& nextValue, uint8_t fract);
+		uint16_t UnsubdivideValue(Color& value, Color& nextValue);
+};
+
+// Benchmark
+
+DepthmapReader
+ImageWriter
+Timer
+
+// Encode / Decode con tabella, implementazione dentro encode / decode
