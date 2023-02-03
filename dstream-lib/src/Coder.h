@@ -1,8 +1,17 @@
 #pragma once
 
+#include <cstdint>
+#include <unordered_map>
+
+#include "AlgorithmImplementation.h"
+#include "Table.h"
+
 namespace DStream
 {
-	template<typename CoderImplementation>
+	struct Vec3;
+	struct Color;
+
+	template<class CoderImplementation, class = typename std::enable_if<std::is_base_of<AlgorithmImplementation, CoderImplementation>::value>::type>
 	class Coder
 	{
 	public:
