@@ -4,20 +4,20 @@
 #include <unordered_map>
 #include <type_traits>
 
-#include "AlgorithmImplementation.h"
-#include "Table.h"
-#include "Vec3.h"
+#include "Coder.h"
+#include "DataStructs/Table.h"
+#include "DataStructs/Vec3.h"
 
 namespace DStream
 {
-	template <	typename CoderImplementation/*,
-				typename std::enable_if<std::is_base_of_v<AlgorithmImplementation, CoderImplementation>, bool>::type = true*/>
-	class Coder
+	template <	typename CoderImplementation
+				/*,typename std::enable_if<std::is_base_of_v<Coder, CoderImplementation>, bool>::type = true*/>
+	class StreamCoder
 	{
-		static_assert(std::is_base_of_v<AlgorithmImplementation, CoderImplementation>, "Template parameter of class Coder must derive from AlgorithmImplementation.");
+		static_assert(std::is_base_of_v<Coder, CoderImplementation>, "Template parameter of class Coder must derive from AlgorithmImplementation.");
 	public:
-		Coder();
-		Coder(uint8_t quantization, bool enlarge, uint8_t algoBits, bool useTables);
+		StreamCoder();
+		StreamCoder(uint8_t quantization, bool enlarge, uint8_t algoBits, bool useTables);
 
 		void Encode(const uint16_t* source, Color* dest, uint32_t nElements);
 		// Interpolate values from the table if necessary

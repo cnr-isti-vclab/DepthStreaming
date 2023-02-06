@@ -3,11 +3,11 @@
 
 namespace DStream
 {
-	class AlgorithmImplementation
+	class Coder
 	{
 	public:
-		AlgorithmImplementation() = default;
-		AlgorithmImplementation(uint8_t quantization, bool enlarge, uint8_t algoBits);
+		Coder() = default;
+		Coder(uint8_t quantization, bool enlarge, uint8_t algoBits);
 
 	protected:
 		uint8_t m_Quantization;

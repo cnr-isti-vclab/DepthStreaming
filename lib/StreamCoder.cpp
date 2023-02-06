@@ -1,15 +1,24 @@
-#include "Coder.h"
+#include "StreamCoder.h"
 #include "Implementations/Hilbert.h"
 
 namespace DStream
 {
-	static Coder<Hilbert> hilbertCoder;
+	static StreamCoder<Hilbert> hilbertCoder;
 
 	template <typename CoderImplementation
-			  /*,typename std::enable_if<std::is_base_of_v<AlgorithmImplementation, CoderImplementation>, bool>::type = true */ >
-	Coder<CoderImplementation>::Coder(uint8_t quantization, bool enlarge, uint8_t algoBits, bool useTables)
+			  /*, typename std::enable_if<std::is_base_of_v<Coder, CoderImplementation>, bool>::type = true */ >
+	StreamCoder<CoderImplementation>::StreamCoder(uint8_t quantization, bool enlarge, uint8_t algoBits, bool useTables)
 	{
+		/*m_Implementation = CoderImplementation(quantization, enlarge, algoBits);
+		if (useTables)
+			GenerateTables();*/
 		// constructor implementation
+	}
+
+	template <typename CoderImplementation>
+	StreamCoder<CoderImplementation>::StreamCoder()
+	{
+
 	}
 
 	/*

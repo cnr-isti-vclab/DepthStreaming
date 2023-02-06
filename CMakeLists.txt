@@ -20,31 +20,35 @@ ExternalProject_Add(libjpeg-turbo
 
 # LIB SOURCE
 set (DSTREAM_LIB_SRC
-	dstream-lib/src/Coder.cpp
-	dstream-lib/src/Processing.cpp
-	dstream-lib/src/AlgorithmImplementation.cpp
-	dstream-lib/src/Implementations/Packed.cpp
-	dstream-lib/src/Implementations/Hilbert.cpp
+	lib/StreamCoder.cpp
+	lib/Processing/Quantize.cpp
+	lib/Processing/NoiseRemoval.cpp
+	lib/Coder.cpp
+	lib/Implementations/Packed.cpp
+	lib/Implementations/Hilbert.cpp
+
 	
-	dstream-lib/src/Coder.h
-	dstream-lib/src/Vec3.h
-	dstream-lib/src/Table.h
-	dstream-lib/src/Processing.h
-	dstream-lib/src/AlgorithmImplementation.h
-	dstream-lib/src/Implementations/Packed.h
-	dstream-lib/src/Implementations/Hilbert.h
+	lib/StreamCoder.h
+	lib/DataStructs/Vec3.h
+	lib/DataStructs/Table.h
+	lib/Processing/Quantize.h
+	lib/Processing/NoiseRemoval.h
+	lib/Coder.h
+	lib/Implementations/Packed.h
+	lib/Implementations/Hilbert.h
 )
 
 set (DSTREAM_LIB_HEADERS
-	dstream-lib/src/Coder.h
-	dstream-lib/src/Processing.h
+	lib/StreamCoder.h
+	lib/Processing/Quantize.h
+	lib/Processing/NoiseRemoval.h
 	
-	dstream-lib/src/AlgorithmImplementation.h
-	dstream-lib/src/Implementations/Packed.h
-	dstream-lib/src/Implementations/Hilbert.h
+	lib/Coder.h
+	lib/Implementations/Packed.h
+	lib/Implementations/Hilbert.h
 
-	dstream-lib/src/Table.h
-	dstream-lib/src/Vec3.h
+	lib/DataStructs/Table.h
+	lib/DataStructs/Vec3.h
 )
 
 # Add library
@@ -61,20 +65,20 @@ target_include_directories (dstream-static
 # Add benchmark
 if (BUILD_DSTREAM_BENCHMARK)
 	set (DSTREAM_BENCHMARK_SRC
-		dstream-benchmark/src/DepthmapReader.cpp
-		dstream-benchmark/src/ImageWriter.cpp
-		dstream-benchmark/src/Main.cpp
-		dstream-benchmark/src/Timer.cpp
+		benchmark/DepthmapReader.cpp
+		benchmark/ImageWriter.cpp
+		benchmark/Main.cpp
+		benchmark/Timer.cpp
 		
-		dstream-benchmark/src/DepthmapReader.h
-		dstream-benchmark/src/ImageWriter.h
-		dstream-benchmark/src/Timer.h
+		benchmark/DepthmapReader.h
+		benchmark/ImageWriter.h
+		benchmark/Timer.h
 	)
 
 	set (DSTREAM_BENCHMARK_HEADERS
-		dstream-benchmark/src/DepthmapReader.h
-		dstream-benchmark/src/ImageWriter.h
-		dstream-benchmark/src/Timer.h
+		benchmark/DepthmapReader.h
+		benchmark/ImageWriter.h
+		benchmark/Timer.h
 	)
 	
 	add_executable(dstream-benchmark ${DSTREAM_BENCHMARK_SRC})
@@ -89,7 +93,7 @@ endif()
 # Add CMD executable
 if (BUILD_DSTREAM_CMD)
 	set (DSTREAM_CMD_SRC
-		dstream-cmd/src/Main.cpp
+		cmd/Main.cpp
 	)
 	
 	add_executable(dstream-cmd ${DSTREAM_CMD_SRC})
