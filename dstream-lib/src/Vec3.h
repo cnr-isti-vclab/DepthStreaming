@@ -1,5 +1,7 @@
 #pragma once
+
 #include <stdint.h>
+#include <cstdint>
 
 namespace DStream
 {
@@ -31,7 +33,7 @@ namespace DStream
         }
     };
 
-    typedef _vec3<uint8_t>   Color;
-    typedef _vec3<float>     Vec3;
-    typedef _vec3<int>       IntVec3;
+    typedef struct _vec3<uint8_t>   Color;
+    typedef struct _vec3<float>     Vec3;
+    typedef struct _vec3<int>       IntVec3;
 }

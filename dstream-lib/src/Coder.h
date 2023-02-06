@@ -2,19 +2,21 @@
 
 #include <cstdint>
 #include <unordered_map>
+#include <type_traits>
 
 #include "AlgorithmImplementation.h"
 #include "Table.h"
+#include "Vec3.h"
 
 namespace DStream
 {
-	struct Vec3;
-	struct Color;
-
-	template<class CoderImplementation, class = typename std::enable_if<std::is_base_of<AlgorithmImplementation, CoderImplementation>::value>::type>
+	template <	typename CoderImplementation/*,
+				typename std::enable_if<std::is_base_of_v<AlgorithmImplementation, CoderImplementation>, bool>::type = true*/>
 	class Coder
 	{
+		static_assert(std::is_base_of_v<AlgorithmImplementation, CoderImplementation>, "Template parameter of class Coder must derive from AlgorithmImplementation.");
 	public:
+		Coder();
 		Coder(uint8_t quantization, bool enlarge, uint8_t algoBits, bool useTables);
 
 		void Encode(const uint16_t* source, Color* dest, uint32_t nElements);
@@ -37,4 +39,5 @@ namespace DStream
 		std::unordered_map<uint16_t, Color> m_EncodingTable;
 		std::unordered_map<Color, uint16_t> m_DecodingTable;
 	};
+
 }

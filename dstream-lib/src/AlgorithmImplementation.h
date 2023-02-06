@@ -6,6 +6,7 @@ namespace DStream
 	class AlgorithmImplementation
 	{
 	public:
+		AlgorithmImplementation() = default;
 		AlgorithmImplementation(uint8_t quantization, bool enlarge, uint8_t algoBits);
 
 	protected:
