@@ -12,7 +12,7 @@ set (EXTERNAL_DEPS	${CMAKE_BINARY_DIR}/../ext/)
 # Build libjpeg
 ExternalProject_Add(libjpeg-turbo
 	PREFIX libjpeg-turbo
-	BINARY_DIR ${EXTERNAL_DEPS}
+	BINARY_DIR ${EXTERNAL_DEPS}/libjpeg-turbo
 	URL https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.1.90.tar.gz
 	URL_HASH SHA256=426d097a29bd67ab7ef8584673ba2e0da5fe65dcddd0c8daa123bdcb7a5e871f
 	BUILD_COMMAND cmake ./.
@@ -26,6 +26,7 @@ set (DSTREAM_LIB_SRC
 	lib/Coder.cpp
 	lib/Implementations/Packed.cpp
 	lib/Implementations/Hilbert.cpp
+	lib/Implementations/Morton.cpp
 
 	
 	lib/StreamCoder.h
@@ -36,6 +37,7 @@ set (DSTREAM_LIB_SRC
 	lib/Coder.h
 	lib/Implementations/Packed.h
 	lib/Implementations/Hilbert.h
+	lib/Implementations/Morton.h
 )
 
 set (DSTREAM_LIB_HEADERS
@@ -46,20 +48,25 @@ set (DSTREAM_LIB_HEADERS
 	lib/Coder.h
 	lib/Implementations/Packed.h
 	lib/Implementations/Hilbert.h
+	lib/Implementations/Morton.h
 
 	lib/DataStructs/Table.h
 	lib/DataStructs/Vec3.h
 )
 
 # Add library
-link_directories(${EXTERNAL_DEPS})
+link_directories(${EXTERNAL_DEPS}/libjpeg-turbo)
 add_library(dstream-static STATIC ${DSTREAM_LIB_SRC})
 target_link_libraries(dstream-static
 	PUBLIC turbojpeg-static
 )
 target_include_directories (dstream-static
-	PUBLIC dstream-lib/src/
+	PUBLIC lib
+#	PUBLIC lib/Implementations
+#	PUBLIC lib/Processing
+#	PUBLIC lib/DataStructs
 	PUBLIC ${CMAKE_BINARY_DIR}/libjpeg-turbo/src/libjpeg-turbo/
+	PUBLIC ${EXTERNAL_DEPS}/libjpeg-turbo
 )
 
 # Add benchmark
@@ -69,24 +76,30 @@ if (BUILD_DSTREAM_BENCHMARK)
 		benchmark/ImageWriter.cpp
 		benchmark/Main.cpp
 		benchmark/Timer.cpp
+		benchmark/JpegEncoder.cpp
+		benchmark/JpegDecoder.cpp
 		
 		benchmark/DepthmapReader.h
 		benchmark/ImageWriter.h
 		benchmark/Timer.h
+		benchmark/JpegEncoder.h
+		benchmark/JpegDecoder.h
 	)
 
 	set (DSTREAM_BENCHMARK_HEADERS
 		benchmark/DepthmapReader.h
 		benchmark/ImageWriter.h
 		benchmark/Timer.h
+		benchmark/JpegEncoder.h
+		benchmark/JpegDecoder.h
 	)
 	
 	add_executable(dstream-benchmark ${DSTREAM_BENCHMARK_SRC})
+	target_include_directories (dstream-benchmark
+		PRIVATE benchmark
+	)
 	target_link_libraries(dstream-benchmark
 		PUBLIC dstream-static
-	)
-	target_include_directories (dstream-benchmark
-		PUBLIC ${DSTREAM_LIB_HEADERS}
 	)
 endif()
 
@@ -97,6 +110,9 @@ if (BUILD_DSTREAM_CMD)
 	)
 	
 	add_executable(dstream-cmd ${DSTREAM_CMD_SRC})
+	target_include_directories (dstream-cmd
+		PRIVATE cmd
+	)
 	target_link_libraries(dstream-cmd
 		PUBLIC dstream-static
 	)

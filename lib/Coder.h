@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <DataStructs/Vec3.h>
 
 namespace DStream
 {
@@ -12,7 +13,6 @@ namespace DStream
 	protected:
 		uint8_t m_Quantization;
 		uint8_t m_AlgoBits;
-		uint8_t m_SegmentBits;
 		bool m_Enlarge;
 	};
 }
