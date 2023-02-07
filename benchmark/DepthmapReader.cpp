@@ -68,6 +68,7 @@ namespace DStream
             m_Data[i] = ((tmp[i] - min) / (float)(max - min)) * 65535.0f;
 
         dmData.Valid = true;
+        fclose(fp);
         delete[] tmp;
     }
 }

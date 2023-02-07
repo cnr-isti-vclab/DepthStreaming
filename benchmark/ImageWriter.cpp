@@ -42,6 +42,7 @@ namespace DStream
             colorData[i].z = quantizedVal;
         }
         stbi_write_png(path.c_str(), width, height, 3, (void*)colorData, 0);
+        delete[] colorData;
     }
     /*
 

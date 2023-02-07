@@ -2,7 +2,7 @@
 
 namespace DStream
 {
-	Triangle::Triangle(uint8_t quantization, bool enlarge, uint8_t algoBits) : Coder(quantization, enlarge, algoBits) {}
+	Triangle::Triangle(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits) {}
 
 	Color Triangle::EncodeValue(uint16_t val)
 	{
@@ -11,7 +11,7 @@ namespace DStream
         Color ret;
 
         float Ld, Ha, Hb;
-        Ld = (val + 0.5) / w;
+        Ld = val >> 8;
 
         float mod = fmod(Ld / (p / 2.0f), 2.0f);
         if (mod <= 1)
@@ -25,7 +25,7 @@ namespace DStream
         else
             Hb = 2 - mod2;
 
-        Ld *= 255; Ha *= 255; Hb *= 255;
+        Ha *= 255; Hb *= 255;
         ret[0] = Ld; ret[1] = Ha; ret[2] = Hb;
 
         return ret;

@@ -2,7 +2,7 @@
 
 namespace DStream
 {
-	Hue::Hue(uint8_t quantization, bool enlarge, uint8_t algoBits) : Coder(quantization, enlarge, algoBits) {}
+	Hue::Hue(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits) {}
 
 	Color Hue::EncodeValue(uint16_t val)
 	{

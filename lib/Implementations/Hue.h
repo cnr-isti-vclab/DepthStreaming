@@ -8,7 +8,7 @@ namespace DStream
 	{
 	public:
 		Hue() = default;
-		Hue(uint8_t quantization, bool enlarge, uint8_t algoBits);
+		Hue(uint8_t quantization, uint8_t algoBits);
 
 		Color EncodeValue(uint16_t value);
 		uint16_t DecodeValue(Color value);

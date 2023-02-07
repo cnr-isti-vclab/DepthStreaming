@@ -4,7 +4,7 @@
 
 namespace DStream
 {
-	Morton::Morton(uint8_t quantization, bool enlarge, uint8_t algoBits) : Coder(quantization, enlarge, algoBits) {}
+	Morton::Morton(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits) {}
 
 	Color Morton::EncodeValue(uint16_t val)
 	{

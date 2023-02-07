@@ -29,24 +29,28 @@ namespace DStream
 		void SetEncodingTable(const std::vector<Color>& table);
 		void SetDecodingTable(const std::vector<uint16_t>& table, uint32_t tableSideX, uint32_t tableSideY, uint32_t tableSideZ);
 
-		inline void Enlarge(Color* source, uint32_t nElements)
+		inline void Enlarge(const Color* source, Color* dest, uint32_t nElements)
 		{
 			for (uint32_t i=0; i<nElements; i++)
 				for (int k = 0; k < 3; k++)
-					source[i][k] = m_SpacingTable.Enlarge[k][source[i][k]];
+					dest[i][k] = m_SpacingTable.Enlarge[k][source[i][k]];
 		}
 
-		inline void Shrink(Color* source, uint32_t nElements)
+		inline void Shrink(const Color* source, Color* dest, uint32_t nElements)
 		{
 			for (uint32_t i = 0; i < nElements; i++)
 				for (int k = 0; k < 3; k++)
-					source[i][k] = m_SpacingTable.Shrink[k][source[i][k]];
+					dest[i][k] = m_SpacingTable.Shrink[k][source[i][k]];
 		}
+
+	private:
+		std::vector<uint16_t> GetErrorVector(uint16_t* decodingTable, uint32_t tableSide, uint8_t axis);
 
 	private:
 		CoderImplementation m_Implementation;
 
 		bool m_UseTables;
+		bool m_Enlarge;
 		SpacingTable m_SpacingTable;
 		std::unordered_map<uint16_t, Color> m_EncodingTable;
 		std::unordered_map<Color, uint16_t> m_DecodingTable;

@@ -12,7 +12,20 @@ namespace DStream
         T y;
         T z;
 
+        _vec3(uint8_t X, uint8_t Y, uint8_t Z) : x(X), y(Y), z(Z) {}
+        _vec3() = default;
+
         inline T& operator [](int idx)
+        {
+            switch (idx)
+            {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            }
+        }
+
+        inline const T operator [](int idx) const
         {
             switch (idx)
             {

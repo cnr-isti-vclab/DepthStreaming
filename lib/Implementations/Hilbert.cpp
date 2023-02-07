@@ -13,9 +13,9 @@ namespace DStream
         return (T(0) < val) - (val < T(0));
     }
 
-	Hilbert::Hilbert(uint8_t quantization, bool enlarge, uint8_t algoBits) : Coder(quantization, enlarge, algoBits)
+	Hilbert::Hilbert(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits)
 	{
-		m_Morton = Morton(quantization, enlarge, algoBits);
+		m_Morton = Morton(quantization, algoBits);
 
 		assert(algoBits * 3 < quantization, "Bits reserved for the algorithm (%ud) are too many for the selected quantization level (%ud", algoBits, quantization);
 

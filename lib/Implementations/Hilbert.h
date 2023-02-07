@@ -9,10 +9,12 @@ namespace DStream
 	{
 	public:
 		Hilbert() = default;
-		Hilbert(uint8_t quantization, bool enlarge, uint8_t algoBits);
+		Hilbert(uint8_t quantization, uint8_t algoBits);
 
 		Color EncodeValue(uint16_t value);
 		uint16_t DecodeValue(Color value);
+
+		inline uint8_t GetUsedBits() { return m_AlgoBits + m_SegmentBits; }
 
 	private:
 		void SubdivideValue(Color& value, Color& nextValue, uint8_t fract);
