@@ -3,10 +3,14 @@
 
 namespace DStream
 {
+	template class StreamCoder<Hilbert>;
+	template class StreamCoder<Morton>;
+
 	template <typename CoderImplementation
 			  /*, typename std::enable_if<std::is_base_of_v<Coder, CoderImplementation>, bool>::type = true */ >
 	StreamCoder<CoderImplementation>::StreamCoder(uint8_t quantization, bool enlarge, uint8_t algoBits, bool useTables /* = true*/)
 	{
+		m_UseTables = useTables;
 		m_Implementation = CoderImplementation(quantization, enlarge, algoBits);
 		if (useTables)
 			GenerateCodingTables();

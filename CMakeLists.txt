@@ -55,7 +55,10 @@ set (DSTREAM_LIB_HEADERS
 )
 
 # Add library
-link_directories(${EXTERNAL_DEPS}/libjpeg-turbo)
+link_directories(
+	${EXTERNAL_DEPS}/libjpeg-turbo
+	Build
+)
 add_library(dstream-static STATIC ${DSTREAM_LIB_SRC})
 target_link_libraries(dstream-static
 	PUBLIC turbojpeg-static
@@ -78,12 +81,16 @@ if (BUILD_DSTREAM_BENCHMARK)
 		benchmark/Timer.cpp
 		benchmark/JpegEncoder.cpp
 		benchmark/JpegDecoder.cpp
+		benchmark/StbImport.cpp
 		
 		benchmark/DepthmapReader.h
 		benchmark/ImageWriter.h
 		benchmark/Timer.h
+		
 		benchmark/JpegEncoder.h
 		benchmark/JpegDecoder.h
+		benchmark/stb_image.h
+		benchmark/stb_image_write.h
 	)
 
 	set (DSTREAM_BENCHMARK_HEADERS
@@ -92,6 +99,8 @@ if (BUILD_DSTREAM_BENCHMARK)
 		benchmark/Timer.h
 		benchmark/JpegEncoder.h
 		benchmark/JpegDecoder.h
+		benchmark/stb_image.h
+		benchmark/stb_image_write.h
 	)
 	
 	add_executable(dstream-benchmark ${DSTREAM_BENCHMARK_SRC})

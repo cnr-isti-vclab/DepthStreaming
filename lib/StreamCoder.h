@@ -14,7 +14,7 @@ namespace DStream
 				/*,typename std::enable_if<std::is_base_of_v<Coder, CoderImplementation>, bool>::type = true*/>
 	class StreamCoder
 	{
-		static_assert(std::is_base_of_v<Coder, CoderImplementation>, "Template parameter of class Coder must derive from AlgorithmImplementation.");
+		static_assert(std::is_base_of_v<Coder, CoderImplementation>, "Template parameter of class StreamCoder must derive from Coder.");
 	public:
 		StreamCoder(uint8_t quantization, bool enlarge, uint8_t algoBits, bool useTables = true);
 
@@ -33,14 +33,14 @@ namespace DStream
 		{
 			for (uint32_t i=0; i<nElements; i++)
 				for (int k = 0; k < 3; k++)
-					source[i][k] = m_SpacingTable.Enlarge[k][col[i][k]];
+					source[i][k] = m_SpacingTable.Enlarge[k][source[i][k]];
 		}
 
 		inline void Shrink(Color* source, uint32_t nElements)
 		{
 			for (uint32_t i = 0; i < nElements; i++)
 				for (int k = 0; k < 3; k++)
-					source[i][k] = m_SpacingTable.Shrink[k][col[i][k]];
+					source[i][k] = m_SpacingTable.Shrink[k][source[i][k]];
 		}
 
 	private:
