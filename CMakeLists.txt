@@ -27,6 +27,10 @@ set (DSTREAM_LIB_SRC
 	lib/Implementations/Packed.cpp
 	lib/Implementations/Hilbert.cpp
 	lib/Implementations/Morton.cpp
+	lib/Implementations/Hue.cpp
+	lib/Implementations/Split.cpp
+	lib/Implementations/Triangle.cpp
+	lib/Implementations/Phase.cpp
 
 	
 	lib/StreamCoder.h
@@ -38,6 +42,10 @@ set (DSTREAM_LIB_SRC
 	lib/Implementations/Packed.h
 	lib/Implementations/Hilbert.h
 	lib/Implementations/Morton.h
+	lib/Implementations/Hue.h
+	lib/Implementations/Split.h
+	lib/Implementations/Triangle.h
+	lib/Implementations/Phase.h
 )
 
 set (DSTREAM_LIB_HEADERS

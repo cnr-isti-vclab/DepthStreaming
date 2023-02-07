@@ -1,10 +1,20 @@
 #include <StreamCoder.h>
 #include <Implementations/Hilbert.h>
+#include <Implementations/Hue.h>
+#include <Implementations/Packed.h>
+#include <Implementations/Split.h>
+#include <Implementations/Phase.h>
+#include <Implementations/Triangle.h>
 
 namespace DStream
 {
 	template class StreamCoder<Hilbert>;
 	template class StreamCoder<Morton>;
+	template class StreamCoder<Split>;
+	template class StreamCoder<Packed>;
+	template class StreamCoder<Phase>;
+	template class StreamCoder<Hue>;
+	template class StreamCoder<Triangle>;
 
 	template <typename CoderImplementation
 			  /*, typename std::enable_if<std::is_base_of_v<Coder, CoderImplementation>, bool>::type = true */ >

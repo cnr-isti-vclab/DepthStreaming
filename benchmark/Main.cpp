@@ -1,7 +1,14 @@
 #include <StreamCoder.h>
 #include <DepthmapReader.h>
 #include <ImageWriter.h>
+
 #include <Implementations/Hilbert.h>
+#include <Implementations/Hue.h>
+#include <Implementations/Packed.h>
+#include <Implementations/Split.h>
+#include <Implementations/Morton.h>
+#include <Implementations/Phase.h>
+#include <Implementations/Triangle.h>
 
 using namespace DStream;
 
@@ -15,7 +22,7 @@ int main(int argc, char** argv)
 	uint8_t* encodedData = new uint8_t[nElements * 3];
 	uint16_t* decodedData = new uint16_t[nElements];
 
-	StreamCoder<Hilbert> coder(10, true, 2, false);
+	StreamCoder<Triangle> coder(10, true, 4, false);
 	coder.Encode(originalData, (Color*)encodedData, nElements);
 	coder.Decode((Color*)encodedData, decodedData, nElements);
 
