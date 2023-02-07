@@ -149,6 +149,7 @@ namespace DStream
 
 			TransposeAdvanceToRange(errors, 256);
 			RemoveZerosFromAdvance(errors);
+			TransposeAdvanceToRange(errors, 256);
 
 			int sum = 0;
 			for (uint32_t i = 0; i < errors.size(); i++)

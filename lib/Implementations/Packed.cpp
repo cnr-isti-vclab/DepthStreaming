@@ -11,6 +11,7 @@ namespace DStream
 
 		ret.x = (val >> (16 - m_AlgoBits)) << (8 - m_AlgoBits);
 		ret.y = ((val >> (16 - m_Quantization)) & ((1 << right) - 1)) << (8 - right);
+		ret.z = 0;
 
 		return ret;
 	}

@@ -11,6 +11,8 @@ namespace DStream
 		Morton() = default;
 		Morton(uint8_t quantization, uint8_t algoBits);
 
+		inline uint8_t GetUsedBits() { return std::min((uint8_t)6, m_AlgoBits); }
+
 		Color EncodeValue(uint16_t value);
 		uint16_t DecodeValue(Color value);
 	};

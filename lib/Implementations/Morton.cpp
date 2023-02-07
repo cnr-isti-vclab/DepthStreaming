@@ -11,7 +11,7 @@ namespace DStream
 		Color ret;
 		ret[0] = 0; ret[1] = 0; ret[2] = 0;
 
-		for (unsigned int i = 0; i <= m_AlgoBits; ++i) {
+		for (unsigned int i = 0; i <= std::min((uint8_t)6, m_AlgoBits); ++i) {
 			uint8_t selector = 1;
 			unsigned int shift_selector = 3 * i;
 			unsigned int shiftback = 2 * i;
