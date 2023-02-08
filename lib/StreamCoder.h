@@ -17,6 +17,7 @@ namespace DStream
 		static_assert(std::is_base_of_v<Coder, CoderImplementation>, "Template parameter of class StreamCoder must derive from Coder.");
 	public:
 		StreamCoder(uint8_t quantization, bool enlarge, uint8_t algoBits, bool useTables = true);
+		~StreamCoder() = default;
 
 		void Encode(const uint16_t* source, Color* dest, uint32_t nElements);
 		// Interpolate values from the table if necessary
@@ -52,8 +53,9 @@ namespace DStream
 		bool m_UseTables;
 		bool m_Enlarge;
 		SpacingTable m_SpacingTable;
+
 		std::unordered_map<uint16_t, Color> m_EncodingTable;
-		std::unordered_map<Color, uint16_t> m_DecodingTable;
+		std::vector<uint16_t> m_DecodingTable;
 	};
 
 }

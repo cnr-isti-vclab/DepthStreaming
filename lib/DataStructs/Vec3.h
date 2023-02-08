@@ -35,12 +35,12 @@ namespace DStream
             }
         }
 
-        inline bool operator==(const _vec3& other)
+        inline bool operator==(const _vec3& other) const
         {
             return other.x == x && other.y == y && other.z == z;
         }
 
-        inline bool operator!=(const _vec3& other)
+        inline bool operator!=(const _vec3& other) const
         {
             return other.x != x || other.y != y || other.z != z;
         }
@@ -82,9 +82,7 @@ namespace std
             // second and third and combine them using XOR
             // and bit shifting:
 
-            return ((hash<uint8_t>()(k.x)
-                ^ (hash<uint8_t>()(k.y) << 1)) >> 1)
-                ^ (hash<uint8_t>()(k.z) << 1);
+            return (((size_t)k.x) << 16) | (((size_t)k.y)) | ((size_t)k.x);
         }
     };
 }

@@ -14,47 +14,48 @@
 
 using namespace DStream;
 
-void EncodeDecode(const std::string& coder, uint16_t* originalData, uint8_t* encoded, uint16_t* decoded, uint32_t nElements, uint8_t quantization, bool enlarge)
+void EncodeDecode(const std::string& coder, uint16_t* originalData, uint8_t* encoded, uint16_t* decoded, uint32_t nElements, 
+	uint8_t quantization, bool enlarge, bool useTables)
 {
 	if (!coder.compare("Packed"))
 	{
-		StreamCoder<Packed> coder(quantization, enlarge, 8, false);
+		StreamCoder<Packed> coder(quantization, enlarge, 8, useTables);
 		coder.Encode(originalData, (Color*)encoded, nElements);
 		coder.Decode((Color*)encoded, decoded, nElements);
 	}
 	else if (!coder.compare("Hue"))
 	{
-		StreamCoder<Hue> coder(quantization, enlarge, 8, false);
+		StreamCoder<Hue> coder(quantization, enlarge, 8, useTables);
 		coder.Encode(originalData, (Color*)encoded, nElements);
 		coder.Decode((Color*)encoded, decoded, nElements);
 	}
 	else if (!coder.compare("Hilbert"))
 	{
-		StreamCoder<Hilbert> coder(quantization, enlarge, 3, false);
+		StreamCoder<Hilbert> coder(quantization, enlarge, 3, useTables);
 		coder.Encode(originalData, (Color*)encoded, nElements);
 		coder.Decode((Color*)encoded, decoded, nElements);
 	}
 	else if (!coder.compare("Morton"))
 	{
-		StreamCoder<Morton> coder(quantization, enlarge, 8, false);
+		StreamCoder<Morton> coder(quantization, enlarge, 8, useTables);
 		coder.Encode(originalData, (Color*)encoded, nElements);
 		coder.Decode((Color*)encoded, decoded, nElements);
 	}
 	else if (!coder.compare("Split"))
 	{
-		StreamCoder<Split> coder(quantization, enlarge, 8, false);
+		StreamCoder<Split> coder(quantization, enlarge, 8, useTables);
 		coder.Encode(originalData, (Color*)encoded, nElements);
 		coder.Decode((Color*)encoded, decoded, nElements);
 	}
 	else if (!coder.compare("Phase"))
 	{
-		StreamCoder<Phase> coder(quantization, enlarge, 8, false);
+		StreamCoder<Phase> coder(quantization, enlarge, 8, useTables);
 		coder.Encode(originalData, (Color*)encoded, nElements);
 		coder.Decode((Color*)encoded, decoded, nElements);
 	}
 	else
 	{
-		StreamCoder<Triangle> coder(quantization, enlarge, 8, false);
+		StreamCoder<Triangle> coder(quantization, enlarge, 8, useTables);
 		coder.Encode(originalData, (Color*)encoded, nElements);
 		coder.Decode((Color*)encoded, decoded, nElements);
 	}
@@ -101,7 +102,8 @@ int main(int argc, char** argv)
 
 	for (uint32_t i = 0; i < 7; i++)
 	{
-		EncodeDecode(coders[i], originalData, encodedData, decodedData, nElements, 10, true);
+		std::cout << "Benchmarking " << coders[i] << std::endl;
+		EncodeDecode(coders[i], originalData, encodedData, decodedData, nElements, 10, true, true);
 		ImageWriter::WriteEncoded(coders[i] + "encoded.jpg", encodedData, dmData.Width, dmData.Height, ImageFormat::JPG, 90);
 		ImageWriter::WriteDecoded(coders[i] + "decoded.png", decodedData, dmData.Width, dmData.Height);
 	}

@@ -14,6 +14,7 @@ namespace DStream
 		Color EncodeValue(uint16_t value);
 		uint16_t DecodeValue(Color value);
 
+		inline uint8_t GetEnlargeBits() { return m_AlgoBits + m_SegmentBits; }
 		inline uint8_t GetUsedBits() { return m_AlgoBits + m_SegmentBits; }
 
 	private:

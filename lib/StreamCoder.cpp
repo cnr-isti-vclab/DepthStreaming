@@ -45,6 +45,8 @@ static void RemoveZerosFromAdvance(std::vector<uint16_t>& advances)
 			nonzeroIdx++;
 		}
 	}
+
+	TransposeAdvanceToRange(nonZeros, 256);
 }
 
 namespace DStream
@@ -57,16 +59,16 @@ namespace DStream
 	template class StreamCoder<Hue>;
 	template class StreamCoder<Triangle>;
 
-	template <typename CoderImplementation
-			  /*, typename std::enable_if<std::is_base_of_v<Coder, CoderImplementation>, bool>::type = true */ >
+	template <typename CoderImplementation>
 	StreamCoder<CoderImplementation>::StreamCoder(uint8_t quantization, bool enlarge, uint8_t algoBits, bool useTables /* = true*/)
 	{
 		m_UseTables = useTables;
 		m_Enlarge = enlarge;
 		m_Implementation = CoderImplementation(quantization, algoBits);
+		
+		GenerateSpacingTables();
 		if (useTables)
 			GenerateCodingTables();
-		GenerateSpacingTables();
 	}
 
 	template<class CoderImplementation>
@@ -74,7 +76,8 @@ namespace DStream
 	{
 		if (m_UseTables)
 		{
-
+			for (uint32_t i = 0; i < nElements; i++)
+				dest[i] = m_EncodingTable[(source[i] >> (16 - m_Implementation.GetQuantization())) << (16 - m_Implementation.GetQuantization())];
 		}
 		else
 		{
@@ -97,16 +100,21 @@ namespace DStream
 	template<class CoderImplementation>
 	void StreamCoder<CoderImplementation>::Decode(const Color* source, uint16_t* dest, uint32_t nElements)
 	{
-		Color* inCols = new Color[nElements];
+		Color* inCols = nullptr;
 
 		if (m_Enlarge)
+		{
+			inCols = new Color[nElements];
 			Shrink(source, inCols, nElements);
+		}
 		else
-			memcpy(inCols, source, nElements * 3);
+			inCols = (Color*)source;
 
 		if (m_UseTables)
 		{
-
+			uint32_t usedBits = 1 << m_Implementation.GetUsedBits();
+			for (uint32_t i = 0; i < nElements; i++)
+				dest[i] = m_DecodingTable[inCols[i].x*usedBits*usedBits + inCols[i].y*usedBits + inCols[i].z];
 		}
 		else
 		{
@@ -114,25 +122,45 @@ namespace DStream
 				dest[i] = m_Implementation.DecodeValue(inCols[i]);
 		}
 
-		delete[] inCols;
+		if (m_Enlarge)
+			delete[] inCols;
 	}
 
 	template<class CoderImplementation>
 	void StreamCoder<CoderImplementation>::GenerateCodingTables()
 	{
+		uint32_t maxQuantizationValue = (1 << m_Implementation.GetQuantization());
+		uint32_t maxAlgoBitsValue = (1 << m_Implementation.GetUsedBits());
 
+		m_DecodingTable.resize(maxAlgoBitsValue * maxAlgoBitsValue * maxAlgoBitsValue);
+		for (uint32_t i = 0; i < maxAlgoBitsValue; i++)
+		{
+			for (uint32_t j = 0; j < maxAlgoBitsValue; j++)
+			{
+				for (uint32_t k = 0; k < maxAlgoBitsValue; k++)
+				{
+					m_DecodingTable[i * maxAlgoBitsValue * maxAlgoBitsValue + j * maxAlgoBitsValue + k] =
+						m_Implementation.DecodeValue({ (uint8_t)i, (uint8_t)j, (uint8_t)k });
+				}
+			}
+		}
+
+		for (uint32_t i = 0; i < maxQuantizationValue; i++)
+		{
+			uint16_t val = i << (16 - m_Implementation.GetQuantization());
+			m_EncodingTable[val] = m_Implementation.EncodeValue(val);
+		}
 	}
 
 	template<class CoderImplementation>
 	void StreamCoder<CoderImplementation>::GenerateSpacingTables()
 	{
 		// Init tables
-		uint32_t side = 1 << m_Implementation.GetUsedBits();
-
+		uint32_t side = 1 << m_Implementation.GetEnlargeBits();
 		// Init table memory
 		uint16_t* table = new uint16_t[side * side * side];
 
-		// [FUNCTION] Compute decoding table
+		// [OPTIMIZABLE] Compute decoding table
 		for (uint16_t i = 0; i < side; i++)
 			for (uint16_t j = 0; j < side; j++)
 				for (uint16_t k = 0; k < side; k++)
@@ -149,11 +177,6 @@ namespace DStream
 
 			TransposeAdvanceToRange(errors, 256);
 			RemoveZerosFromAdvance(errors);
-			TransposeAdvanceToRange(errors, 256);
-
-			int sum = 0;
-			for (uint32_t i = 0; i < errors.size(); i++)
-				sum += errors[i];
 
 			m_SpacingTable.Enlarge[e].push_back(0);
 			m_SpacingTable.Shrink[e].push_back(0);
@@ -180,13 +203,6 @@ namespace DStream
 			}
 		}
 
-		std::cout << "SPACING TABLE" << std::endl;
-		for (uint32_t i = 0; i < 3; i++)
-			std::cout << "Enlarge " << i << " size: " << m_SpacingTable.Enlarge[i].size() << std::endl;
-		for (uint32_t i = 0; i < 3; i++)
-			std::cout << "Shrink " << i << " size: " << m_SpacingTable.Shrink[i].size() << std::endl;
-		std::cout << std::endl;
-
 		delete[] table;
 	}
 
@@ -212,6 +228,7 @@ namespace DStream
 	std::vector<uint16_t> StreamCoder<CoderImplementation>::GetErrorVector(uint16_t* table, uint32_t tableSide, uint8_t axis)
 	{
 		std::vector<uint16_t> ret(tableSide - 1);
+
 		for (uint32_t k = 0; k < tableSide - 1; k++)
 		{
 			uint16_t max = 0;
