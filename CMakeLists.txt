@@ -21,9 +21,9 @@ ExternalProject_Add(libjpeg-turbo
 # LIB SOURCE
 set (DSTREAM_LIB_SRC
 	lib/StreamCoder.cpp
-	lib/Processing/Quantize.cpp
-	lib/Processing/NoiseRemoval.cpp
 	lib/Coder.cpp
+	lib/DepthProcessing.cpp
+	
 	lib/Implementations/Packed.cpp
 	lib/Implementations/Hilbert.cpp
 	lib/Implementations/Morton.cpp
@@ -36,8 +36,7 @@ set (DSTREAM_LIB_SRC
 	lib/StreamCoder.h
 	lib/DataStructs/Vec3.h
 	lib/DataStructs/Table.h
-	lib/Processing/Quantize.h
-	lib/Processing/NoiseRemoval.h
+	lib/DepthProcessing.h
 	lib/Coder.h
 	lib/Implementations/Packed.h
 	lib/Implementations/Hilbert.h
@@ -50,10 +49,9 @@ set (DSTREAM_LIB_SRC
 
 set (DSTREAM_LIB_HEADERS
 	lib/StreamCoder.h
-	lib/Processing/Quantize.h
-	lib/Processing/NoiseRemoval.h
-	
+	lib/DepthProcessing.h
 	lib/Coder.h
+	
 	lib/Implementations/Packed.h
 	lib/Implementations/Hilbert.h
 	lib/Implementations/Morton.h
