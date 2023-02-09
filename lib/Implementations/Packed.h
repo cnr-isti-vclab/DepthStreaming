@@ -12,5 +12,8 @@ namespace DStream
 
 		Color EncodeValue(uint16_t value);
 		uint16_t DecodeValue(Color value);
+
+		uint8_t GetUsedBits() { return 8; }
+		uint8_t GetEnlargeBits() { return 8; }
 	};
 }

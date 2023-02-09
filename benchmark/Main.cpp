@@ -88,7 +88,7 @@ std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 	else if (!algo.compare("Hilbert"))
 	{
 		ret.pop_back();
-		for (uint8_t i = 1; i <= 8; i++)
+		for (uint8_t i = 2; i <= 8; i++)
 		{
 			uint8_t algoBits = i;
 			uint8_t segmentBits = q - 3 * algoBits;
@@ -101,7 +101,10 @@ std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 	}
 	else if (!algo.compare("Packed"))
 	{
-		for (uint32_t i = q - 8; i < 8; i++)
+		uint8_t increase = 1;
+
+		if ((16 - q) >= 5) increase = 2;
+		for (uint32_t i = q - 8; i < 8; i+=increase)
 			ret.push_back(i);
 		return ret;
 	}
@@ -158,6 +161,24 @@ void AddBenchmarkResult(std::ofstream& file, std::string algo, std::string outFo
 	std::cout << errData.AvgError << std::endl;
 }
 
+void SaveError(uint16_t* original, uint16_t* processed, uint32_t width, uint32_t height, const std::string& path)
+{
+	uint32_t nElements = width * height;
+	uint8_t* errorData = new uint8_t[width * height * 3];
+
+	for (uint32_t i = 0; i < nElements; i++)
+	{
+		float err = std::log2(std::abs((int)original[i] - (int)processed[i]));
+		uint8_t turboIdx = 256 * (err / std::log2((float)(1 << 16)));
+
+		for (uint32_t j = 0; j < 3; j++)
+			errorData[i * 3 + j] = turbo_srgb_bytes[turboIdx][j];
+	}
+
+	ImageWriter::WriteError(path + "_error.png", errorData, width, height);
+	delete[] errorData;
+}
+
 template <typename Coder>
 void TestCoder(uint32_t q, uint32_t algo)
 {
@@ -185,30 +206,36 @@ void TestCoder(uint32_t q, uint32_t algo)
 }
 
 template <typename T>
-void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, uint8_t* encoded, uint16_t* decoded, 
-	uint32_t nElements, uint32_t width, uint32_t height, std::vector<std::string> path)
+void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, uint8_t* encoded, uint16_t* decoded, uint16_t* original,
+	uint32_t width, uint32_t height, std::vector<std::string> path)
 {
-	//[CODE] nELements is redundant
+	uint32_t nElements = width * height;
 
 	std::string currPath = GetPathFromComponents(path);
 	StreamCoder<T> coder(q, enlarge, algoBits, true);
 	uint8_t* readData = new uint8_t[nElements * 3];
 	coder.Encode(src, (Color*)encoded, nElements);
+	coder.Decode((Color*)encoded, decoded, nElements);
+	ImageWriter::WriteDecoded(currPath + "_lossless.png", decoded, width, height);
 
 	// Save with varying jpeg qualities, decode
 	for (uint8_t j = 70; j <= 100; j+=10)
 	{
 		std::stringstream ss;
 		ss << "Quality" << (int)j;
-
 		ImageWriter::WriteEncoded(currPath + ss.str() + ".jpg", encoded, width, height, ImageFormat::JPG, j);
-		JpegDecoder decoder;
-		int w, h;
-		/*
-		decoder.init((currPath + ss.str() + ".jpg").c_str(), w, h);
-		decoder.readRows(h, readData);
-		*/
-		std::cout << "End";
+
+		JpegDecoder decoder; int w, h;
+		decoder.setJpegColorSpace(J_COLOR_SPACE::JCS_RGB);
+		decoder.decode((currPath + ss.str() + ".jpg").c_str(), readData, w, h);
+
+		coder.Decode((Color*)readData, decoded, nElements);
+		ImageWriter::WriteDecoded(currPath + ss.str() + "_decoded.png", decoded, width, height);
+		SaveError(original, decoded, width, height, currPath + ss.str() + "_decoded");
+
+		DepthProcessing::DenoiseMedian(decoded, width, height, 750, 1);
+		ImageWriter::WriteDecoded(currPath + ss.str() + "_decoded_denoised.png", decoded, width, height);
+		SaveError(original, decoded, width, height, currPath + ss.str() + "_decoded_denoised");
 	}
 }
 
@@ -239,10 +266,12 @@ int main(int argc, char** argv)
 
 	for (uint32_t c = 0; c < 7; c++)
 	{
+		std::cout << "CODER: " << coders[c] << std::endl;
 		AddFolderLevel(coders[c], -1, folders);
 
 		for (uint32_t q = 0; q < 4; q++)
 		{
+			std::cout << "QUANTIZATION: " << (int)quantizations[q] << std::endl;
 			AddFolderLevel("Quantization", quantizations[q], folders);
 
 			uint16_t* quantizedData = DepthProcessing::Quantize(originalData, quantizations[q], nElements);
@@ -253,15 +282,13 @@ int main(int argc, char** argv)
 				if (algoBits.size() > 1)
 					AddFolderLevel("Parameter", algoBits[p], folders);
 
-				if (!coders[c].compare("Hilbert")) 
-					BenchmarkCoder<Hilbert>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, nElements, dmData.Width, dmData.Height, folders);
-				if (!coders[c].compare("Morton")) BenchmarkCoder<Morton>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, nElements, dmData.Width, dmData.Height, folders);
-				if (!coders[c].compare("Hue")) 
-					BenchmarkCoder<Hue>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, nElements, dmData.Width, dmData.Height, folders);
-				if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, nElements, dmData.Width, dmData.Height, folders);
-				if (!coders[c].compare("Split")) BenchmarkCoder<Split>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, nElements, dmData.Width, dmData.Height, folders);
-				if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, nElements, dmData.Width, dmData.Height, folders);
-				if (!coders[c].compare("Packed")) BenchmarkCoder<Packed>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, nElements, dmData.Width, dmData.Height, folders);
+				if (!coders[c].compare("Hilbert")) BenchmarkCoder<Hilbert>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, originalData, dmData.Width, dmData.Height, folders);
+				if (!coders[c].compare("Morton")) BenchmarkCoder<Morton>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, originalData, dmData.Width, dmData.Height, folders);
+				if (!coders[c].compare("Hue")) BenchmarkCoder<Hue>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, originalData, dmData.Width, dmData.Height, folders);
+				if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, originalData, dmData.Width, dmData.Height, folders);
+				if (!coders[c].compare("Split")) BenchmarkCoder<Split>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, originalData, dmData.Width, dmData.Height, folders);
+				if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, originalData, dmData.Width, dmData.Height, folders);
+				if (!coders[c].compare("Packed")) BenchmarkCoder<Packed>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, originalData, dmData.Width, dmData.Height, folders);
 
 				if (algoBits.size() > 1)
 					folders.pop_back();

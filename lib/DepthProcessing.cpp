@@ -5,7 +5,7 @@
 
 namespace DStream
 {
-	void DepthProcessing::DenoiseMedian(uint16_t* data, uint32_t width, uint32_t height, uint32_t threshold, uint32_t halfWind /* = 1*/)
+	void DepthProcessing::DenoiseMedian(uint16_t* data, uint32_t width, uint32_t height, uint32_t threshold, int halfWind /* = 1*/)
 	{
         for (int y = 0; y < height; y++)
         {
@@ -30,7 +30,7 @@ namespace DStream
                 std::sort(neighbors.begin(), neighbors.end());
                 float err = std::abs(current - neighbors[neighbors.size() / 2]);
 
-                if (err > 5000)
+                if (err > threshold)
                     data[x + y * width] = neighbors[neighbors.size() / 2];
                 else
                     data[x + y * width] = current;
@@ -38,7 +38,7 @@ namespace DStream
         }
 	}
 
-	void DepthProcessing::DenoiseMedianExclusive(uint16_t* data, uint32_t width, uint32_t height, uint32_t threshold, uint32_t halfWind)
+	void DepthProcessing::DenoiseMedianExclusive(uint16_t* data, uint32_t width, uint32_t height, uint32_t threshold, int halfWind)
 	{
         for (int y = 0; y < height; y++)
         {
@@ -77,7 +77,6 @@ namespace DStream
 
                 // Compute distance matrix
                 int* distanceMatrix = new int[matSize * matSize];
-                int outlierThreshold = 750;
 
                 for (int i = 0; i < matSize; i++)
                     for (int j = 0; j < matSize; j++)
@@ -86,7 +85,7 @@ namespace DStream
                 uint32_t outliers = 0;
                 // Check if there's an outlier
                 for (uint32_t i = 0; i < matSize; i++)
-                    if (distanceMatrix[i*matSize] > outlierThreshold)
+                    if (distanceMatrix[i*matSize] > threshold)
                         outliers++;
 
                 // Find the right outliers (for each neighbor, return the one with the biggest row + column sum)
@@ -131,7 +130,7 @@ namespace DStream
                 float err = std::abs(current - avg);
                 std::sort(goodNeighbors.begin(), goodNeighbors.end());
 
-                if (err > 750)
+                if (err > threshold)
                     data[x + y * width] = goodNeighbors[goodNeighbors.size() / 2];
                 else
                     data[x + y * width] = current;
