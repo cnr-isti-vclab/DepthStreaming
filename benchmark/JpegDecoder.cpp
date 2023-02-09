@@ -49,6 +49,18 @@ namespace DStream
 		return decode(img, width, height);
 	}
 
+	bool JpegDecoder::decodeNonAlloc(const char* path, uint8_t* buffer, int& width, int& height)
+	{
+		FILE* file = fopen(path, "rb");
+		if (!file) return false;
+		jpeg_stdio_src(&decInfo, file);
+		init(width, height);
+		int readed = readRows(height, buffer);
+		if (readed != height)
+			return false;
+		return true;
+	}
+
 
 	bool JpegDecoder::decode(uint8_t*& img, int& width, int& height) {
 		init(width, height);

@@ -24,6 +24,7 @@ namespace DStream
 		J_COLOR_SPACE getColorSpace() const;
 		bool decode(uint8_t* buffer, size_t len, uint8_t*& img, int& width, int& height);
 		bool decode(const char* path, uint8_t*& img, int& width, int& height);
+		bool decodeNonAlloc(const char* path, uint8_t* buffer, int& width, int& height);
 		bool decode(FILE* file, uint8_t*& img, int& width, int& height);
 
 		//file streaming reading support

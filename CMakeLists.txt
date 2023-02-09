@@ -9,13 +9,33 @@ option(BUILD_DSTREAM_CMD		"Build the command line executable that encodes or dec
 set(CMAKE_CXX_STANDARD 17)
 set (EXTERNAL_DEPS	${CMAKE_BINARY_DIR}/../ext/)
 
-# Build libjpeg
+# Configure dependencies
+set(BUILD_EXAMPLES OFF CACHE INTERNAL "" FORCE)
+set(ENABLED_SHARED OFF CACHE INTERNAL "" FORCE)
+
 ExternalProject_Add(libjpeg-turbo
 	PREFIX libjpeg-turbo
 	BINARY_DIR ${EXTERNAL_DEPS}/libjpeg-turbo
 	URL https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.1.90.tar.gz
 	URL_HASH SHA256=426d097a29bd67ab7ef8584673ba2e0da5fe65dcddd0c8daa123bdcb7a5e871f
 	BUILD_COMMAND cmake ./.
+)
+
+# Build libpng
+ExternalProject_Add(libpng
+	PREFIX libpng
+	BINARY_DIR ${EXTERNAL_DEPS}/libpng
+	URL https://github.com/glennrp/libpng/archive/refs/tags/v1.6.39.tar.gz
+	URL_HASH SHA256=a00e9d2f2f664186e4202db9299397f851aea71b36a35e74910b8820e380d441
+	CMAKE_ARGS
+		-DPNG_SHARED=FALSE
+		-DPNG_STATIC=TRUE
+		-DPNG_HARDWARE_OPTIMIZATIONS=TRUE
+		-DPNG_EXECUTABLES=FALSE
+		-DPNG_TESTS=FALSE
+		-DSKIP_INSTALL_ALL=TRUE
+	BUILD_COMMAND cmake ./.
+	
 )
 
 # LIB SOURCE
@@ -63,7 +83,7 @@ set (DSTREAM_LIB_HEADERS
 # Add library
 link_directories(
 	${EXTERNAL_DEPS}/libjpeg-turbo
-	Build
+	build
 )
 add_library(dstream-static STATIC ${DSTREAM_LIB_SRC})
 target_link_libraries(dstream-static

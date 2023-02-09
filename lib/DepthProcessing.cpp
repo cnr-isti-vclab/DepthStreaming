@@ -138,11 +138,9 @@ namespace DStream
         }
 	}
 
-    uint16_t* DepthProcessing::Quantize(uint16_t* source, uint8_t q, uint32_t nElements)
+    void DepthProcessing::Quantize(uint16_t* source, uint16_t* dest, uint8_t q, uint32_t nElements)
     {
-        uint16_t* ret = new uint16_t[nElements];
         for (uint32_t i = 0; i < nElements; i++)
-            ret[i] = (source[i] >> (16 - q)) << (16 - q);
-        return ret;
+            dest[i] = (source[i] >> (16 - q)) << (16 - q);
     }
 }

@@ -113,8 +113,9 @@ namespace DStream
 		if (m_UseTables)
 		{
 			uint32_t usedBits = 1 << m_Implementation.GetUsedBits();
+			uint32_t usedBits2 = usedBits * usedBits;
 			for (uint32_t i = 0; i < nElements; i++)
-				dest[i] = m_DecodingTable[inCols[i].x*usedBits*usedBits + inCols[i].y*usedBits + inCols[i].z];
+				dest[i] = m_DecodingTable[inCols[i].x* usedBits2 + inCols[i].y*usedBits + inCols[i].z];
 		}
 		else
 		{
