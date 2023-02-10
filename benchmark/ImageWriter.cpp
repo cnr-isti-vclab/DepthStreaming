@@ -1,6 +1,7 @@
 #include <ImageWriter.h>
 #include <DataStructs/Vec3.h>
 #include <JpegEncoder.h>
+#include <png.h>
 
 #include <StbImport.cpp>
 #include <stb_image.h>
@@ -41,12 +42,23 @@ namespace DStream
             colorData[i].y = quantizedVal;
             colorData[i].z = quantizedVal;
         }
-        stbi_write_png(path.c_str(), width, height, 3, (void*)colorData, 0);
+        ImageWriter::WritePNG(path, (uint8_t*)colorData, width, height);
         delete[] colorData;
     }
 
     void ImageWriter::WriteError(const std::string& path, uint8_t* data, uint32_t width, uint32_t height)
     {
-        stbi_write_png(path.c_str(), width, height, 3, (void*)data, 0);
+        WritePNG(path, data, width, height);
+    }
+
+    void ImageWriter::WritePNG(const std::string& path, uint8_t* data, uint32_t width, uint32_t height)
+    {
+        png_image image;
+        memset(&image, 0, sizeof image);
+        image.version = PNG_IMAGE_VERSION;
+        image.width = width;
+        image.height = height;
+
+        png_image_write_to_file(&image, path.c_str(), 0, data, 0, NULL);
     }
 }

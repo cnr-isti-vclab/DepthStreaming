@@ -7,7 +7,7 @@ option(BUILD_DSTREAM_BENCHMARK	"Build the benchmark that compares different dept
 option(BUILD_DSTREAM_CMD		"Build the command line executable that encodes or decodes depthmaps" ON)
 
 set(CMAKE_CXX_STANDARD 17)
-set (EXTERNAL_DEPS	${CMAKE_BINARY_DIR}/../ext/)
+set (EXTERNAL_DEPS	${CMAKE_BINARY_DIR}/../ext)
 
 # Configure dependencies
 set(BUILD_EXAMPLES OFF CACHE INTERNAL "" FORCE)
@@ -18,7 +18,17 @@ ExternalProject_Add(libjpeg-turbo
 	BINARY_DIR ${EXTERNAL_DEPS}/libjpeg-turbo
 	URL https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.1.90.tar.gz
 	URL_HASH SHA256=426d097a29bd67ab7ef8584673ba2e0da5fe65dcddd0c8daa123bdcb7a5e871f
-	BUILD_COMMAND cmake ./.
+)
+
+# Build zlib
+ExternalProject_Add(zlib
+	PREFIX zlib
+	BINARY_DIR ${EXTERNAL_DEPS}/zlib
+	URL https://github.com/madler/zlib/releases/download/v1.2.13/zlib-1.2.13.tar.gz
+	URL_HASH SHA256=b3a24de97a8fdbc835b9833169501030b8977031bcb54b3b3ac13740f846ab30
+	CMAKE_ARGS
+		-DBUILD_SHARED_LIBS=FALSE
+		-DSKIP_INSTALL_ALL=TRUE
 )
 
 # Build libpng
@@ -34,8 +44,6 @@ ExternalProject_Add(libpng
 		-DPNG_EXECUTABLES=FALSE
 		-DPNG_TESTS=FALSE
 		-DSKIP_INSTALL_ALL=TRUE
-	BUILD_COMMAND cmake ./.
-	
 )
 
 # LIB SOURCE
@@ -83,19 +91,24 @@ set (DSTREAM_LIB_HEADERS
 # Add library
 link_directories(
 	${EXTERNAL_DEPS}/libjpeg-turbo
-	build
+	${EXTERNAL_DEPS}/libpng
+	${EXTERNAL_DEPS}/zlib
 )
+
 add_library(dstream-static STATIC ${DSTREAM_LIB_SRC})
 target_link_libraries(dstream-static
 	PUBLIC turbojpeg-static
+	PUBLIC libpng16_static
+	PUBLIC zlibstatic
 )
 target_include_directories (dstream-static
 	PUBLIC lib
-#	PUBLIC lib/Implementations
-#	PUBLIC lib/Processing
-#	PUBLIC lib/DataStructs
 	PUBLIC ${CMAKE_BINARY_DIR}/libjpeg-turbo/src/libjpeg-turbo/
 	PUBLIC ${EXTERNAL_DEPS}/libjpeg-turbo
+	PUBLIC ${CMAKE_BINARY_DIR}/libpng/src/libpng
+	PUBLIC ${EXTERNAL_DEPS}/libpng
+	PUBLIC ${CMAKE_BINARY_DIR}/zlib/src/zlib
+	PUBLIC ${EXTERNAL_DEPS}/zlib
 )
 
 # Add benchmark

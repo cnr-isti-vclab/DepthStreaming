@@ -14,5 +14,8 @@ namespace DStream
 		static void WriteDecoded(const std::string& path, uint16_t* data, uint32_t width, uint32_t height);
 
 		static void WriteError(const std::string& path, uint8_t* data, uint32_t width, uint32_t height);
+
+	private:
+		static void WritePNG(const std::string& path, uint8_t* data, uint32_t width, uint32_t height);
 	};
 }
