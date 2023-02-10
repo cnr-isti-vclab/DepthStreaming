@@ -1,4 +1,5 @@
 #include "Hue.h"
+#include <math.h>
 
 namespace DStream
 {

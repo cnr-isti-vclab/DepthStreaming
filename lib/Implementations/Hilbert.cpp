@@ -15,12 +15,20 @@ namespace DStream
 
 	Hilbert::Hilbert(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits)
 	{
-		assert(algoBits * 3 < quantization, "Bits reserved for the algorithm (%ud) are too many for the selected quantization level (%ud", algoBits, quantization);
+#ifdef _WIN32
+		assert(algoBits * 3 < quantization, "Bits reserved for the algorithm (%ud) are too many for the selected quantization level (%ud)", algoBits, quantization);
+#else
+		assert(algoBits * 3 < quantization);
+#endif
 
 		m_AlgoBits = algoBits;
 		m_SegmentBits = quantization - 3 * m_AlgoBits;
 
+#ifdef _WIN32
 		assert(m_AlgoBits + m_SegmentBits <= 8, "Bits reserved for the algorithm (%ud) aren't enough for the selected quantization level (%ud", algoBits, quantization);
+#else
+		assert(m_AlgoBits + m_SegmentBits <= 8);
+#endif
 
         m_Morton = Morton(quantization, algoBits);
 	}

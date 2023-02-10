@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21.1)
+cmake_minimum_required(VERSION 3.19.1)
 cmake_policy(SET CMP0002 NEW)
 include(ExternalProject)
 project(DStream)
@@ -13,38 +13,47 @@ set (EXTERNAL_DEPS	${CMAKE_BINARY_DIR}/../ext)
 set(BUILD_EXAMPLES OFF CACHE INTERNAL "" FORCE)
 set(ENABLED_SHARED OFF CACHE INTERNAL "" FORCE)
 
-ExternalProject_Add(libjpeg-turbo
-	PREFIX libjpeg-turbo
-	BINARY_DIR ${EXTERNAL_DEPS}/libjpeg-turbo
-	URL https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.1.90.tar.gz
-	URL_HASH SHA256=426d097a29bd67ab7ef8584673ba2e0da5fe65dcddd0c8daa123bdcb7a5e871f
-)
+if(MSVC)
+	ExternalProject_Add(libjpeg-turbo
+		PREFIX libjpeg-turbo
+		BINARY_DIR ${EXTERNAL_DEPS}/libjpeg-turbo
+		URL https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.1.90.tar.gz
+		URL_HASH SHA256=426d097a29bd67ab7ef8584673ba2e0da5fe65dcddd0c8daa123bdcb7a5e871f
+	)
 
-# Build zlib
-ExternalProject_Add(zlib
-	PREFIX zlib
-	BINARY_DIR ${EXTERNAL_DEPS}/zlib
-	URL https://github.com/madler/zlib/releases/download/v1.2.13/zlib-1.2.13.tar.gz
-	URL_HASH SHA256=b3a24de97a8fdbc835b9833169501030b8977031bcb54b3b3ac13740f846ab30
-	CMAKE_ARGS
-		-DBUILD_SHARED_LIBS=FALSE
-		-DSKIP_INSTALL_ALL=TRUE
-)
+	# Build zlib
+	ExternalProject_Add(zlib
+		PREFIX zlib
+		BINARY_DIR ${EXTERNAL_DEPS}/zlib
+		URL https://github.com/madler/zlib/releases/download/v1.2.13/zlib-1.2.13.tar.gz
+		URL_HASH SHA256=b3a24de97a8fdbc835b9833169501030b8977031bcb54b3b3ac13740f846ab30
+		CMAKE_ARGS
+			-DBUILD_SHARED_LIBS=FALSE
+			-DSKIP_INSTALL_ALL=TRUE
+	)
 
-# Build libpng
-ExternalProject_Add(libpng
-	PREFIX libpng
-	BINARY_DIR ${EXTERNAL_DEPS}/libpng
-	URL https://github.com/glennrp/libpng/archive/refs/tags/v1.6.39.tar.gz
-	URL_HASH SHA256=a00e9d2f2f664186e4202db9299397f851aea71b36a35e74910b8820e380d441
-	CMAKE_ARGS
-		-DPNG_SHARED=FALSE
-		-DPNG_STATIC=TRUE
-		-DPNG_HARDWARE_OPTIMIZATIONS=TRUE
-		-DPNG_EXECUTABLES=FALSE
-		-DPNG_TESTS=FALSE
-		-DSKIP_INSTALL_ALL=TRUE
+	# Build libpng
+	ExternalProject_Add(libpng
+		PREFIX libpng
+		BINARY_DIR ${EXTERNAL_DEPS}/libpng
+		URL https://github.com/glennrp/libpng/archive/refs/tags/v1.6.39.tar.gz
+		URL_HASH SHA256=a00e9d2f2f664186e4202db9299397f851aea71b36a35e74910b8820e380d441
+		CMAKE_ARGS
+			-DPNG_SHARED=FALSE
+			-DPNG_STATIC=TRUE
+			-DPNG_HARDWARE_OPTIMIZATIONS=TRUE
+			-DPNG_EXECUTABLES=FALSE
+			-DPNG_TESTS=FALSE
+			-DSKIP_INSTALL_ALL=TRUE
 )
+else()
+	find_package (JPEG REQUIRED)
+	find_package (PNG REQUIRED)
+	find_package (ZLIB REQUIRED)
+endif()
+
+
+
 
 # LIB SOURCE
 set (DSTREAM_LIB_SRC
@@ -96,20 +105,34 @@ link_directories(
 )
 
 add_library(dstream-static STATIC ${DSTREAM_LIB_SRC})
-target_link_libraries(dstream-static
-	PUBLIC turbojpeg-static
-	PUBLIC libpng16_static
-	PUBLIC zlibstatic
-)
-target_include_directories (dstream-static
-	PUBLIC lib
-	PUBLIC ${CMAKE_BINARY_DIR}/libjpeg-turbo/src/libjpeg-turbo/
-	PUBLIC ${EXTERNAL_DEPS}/libjpeg-turbo
-	PUBLIC ${CMAKE_BINARY_DIR}/libpng/src/libpng
-	PUBLIC ${EXTERNAL_DEPS}/libpng
-	PUBLIC ${CMAKE_BINARY_DIR}/zlib/src/zlib
-	PUBLIC ${EXTERNAL_DEPS}/zlib
-)
+if(MSVC)
+	target_link_libraries(dstream-static
+		PUBLIC turbojpeg-static
+		PUBLIC libpng16_static
+		PUBLIC zlibstatic
+	)
+	target_include_directories (dstream-static
+		PUBLIC lib
+		PUBLIC ${CMAKE_BINARY_DIR}/libjpeg-turbo/src/libjpeg-turbo/
+		PUBLIC ${EXTERNAL_DEPS}/libjpeg-turbo
+		PUBLIC ${CMAKE_BINARY_DIR}/libpng/src/libpng
+		PUBLIC ${EXTERNAL_DEPS}/libpng
+		PUBLIC ${CMAKE_BINARY_DIR}/zlib/src/zlib
+		PUBLIC ${EXTERNAL_DEPS}/zlib
+	)
+else()
+	target_link_libraries(dstream-static
+		PUBLIC ${JPEG_LIBRARIES}
+		PUBLIC ${PNG_LIBRARIES}
+		PUBLIC ${ZLIB_LIBRARIES}
+	)
+	target_include_directories (dstream-static
+		PUBLIC lib
+		${JPEG_INCLUDE_DIR}
+		${PNG_INCLUDE_DIR}
+		${ZLIB_INCLUDE_DIR}
+	)
+endif()
 
 # Add benchmark
 if (BUILD_DSTREAM_BENCHMARK)

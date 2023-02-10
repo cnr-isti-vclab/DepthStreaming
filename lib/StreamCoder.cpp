@@ -8,6 +8,9 @@
 
 #include <iostream>
 
+#include <math.h>
+#include <string.h>
+
 static void TransposeAdvanceToRange(std::vector<uint16_t>& vec, uint16_t rangeMax)
 {
 	uint32_t errorSum = 0;

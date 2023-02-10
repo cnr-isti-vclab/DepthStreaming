@@ -1,4 +1,5 @@
 #include "Triangle.h"
+#include <math.h>
 
 namespace DStream
 {
