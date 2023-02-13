@@ -2,11 +2,6 @@
 #include <DataStructs/Vec3.h>
 #include <JpegEncoder.h>
 #include <png.h>
-
-#include <StbImport.cpp>
-#include <stb_image.h>
-#include <stb_image_write.h>
-
 #include <fstream>
 
 namespace DStream
@@ -53,12 +48,25 @@ namespace DStream
 
     void ImageWriter::WritePNG(const std::string& path, uint8_t* data, uint32_t width, uint32_t height)
     {
-        png_image image;
-        memset(&image, 0, sizeof image);
-        image.version = PNG_IMAGE_VERSION;
-        image.width = width;
-        image.height = height;
+        FILE* fp = fopen(path.c_str(), "wb");
 
-        png_image_write_to_file(&image, path.c_str(), 0, data, 0, NULL);
+        png_image image;
+        png_bytep* rows = (png_bytep*)malloc(sizeof(png_bytep) * height);
+        png_structp s = png_create_write_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
+        png_infop pi = png_create_info_struct(s);
+        png_byte color_type = PNG_COLOR_TYPE_RGB;
+
+        for (int i = 0; i < height; ++i)
+            rows[i] = data + i * 3 * width;
+        
+        png_init_io(s, fp);
+        png_set_IHDR(s, pi, width, height, 8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+        png_set_filter(s, 0, PNG_FILTER_NONE);
+
+        png_write_info(s, pi);
+        png_write_image(s, rows);
+        png_write_end(s, NULL);
+        
+        fclose(fp);
     }
 }

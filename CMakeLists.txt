@@ -15,12 +15,12 @@ set(BUILD_EXAMPLES OFF CACHE INTERNAL "" FORCE)
 set(ENABLED_SHARED OFF CACHE INTERNAL "" FORCE)
 
 if(MSVC)
-#	ExternalProject_Add(libjpeg-turbo
-#		PREFIX libjpeg-turbo
-#		BINARY_DIR ${EXTERNAL_DEPS}/libjpeg-turbo
-#		URL https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.1.90.tar.gz
-#		URL_HASH SHA256=426d097a29bd67ab7ef8584673ba2e0da5fe65dcddd0c8daa123bdcb7a5e871f
-#	)
+	ExternalProject_Add(libjpeg-turbo
+		PREFIX libjpeg-turbo
+		BINARY_DIR ${EXTERNAL_DEPS}/libjpeg-turbo
+		URL https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.1.90.tar.gz
+		URL_HASH SHA256=426d097a29bd67ab7ef8584673ba2e0da5fe65dcddd0c8daa123bdcb7a5e871f
+	)
 #
 	# Build zlib
 #	ExternalProject_Add(zlib
@@ -34,19 +34,19 @@ if(MSVC)
 #	)
 
 	# Build libpng
-	ExternalProject_Add(libpng
-		PREFIX libpng
-		BINARY_DIR ${EXTERNAL_DEPS}/libpng
-		URL https://github.com/glennrp/libpng/archive/refs/tags/v1.6.39.tar.gz
-		URL_HASH SHA256=a00e9d2f2f664186e4202db9299397f851aea71b36a35e74910b8820e380d441
-		CMAKE_ARGS
-			-DPNG_SHARED=FALSE
-			-DPNG_STATIC=TRUE
-			-DPNG_HARDWARE_OPTIMIZATIONS=TRUE
-			-DPNG_EXECUTABLES=FALSE
-			-DPNG_TESTS=FALSE
-			-DSKIP_INSTALL_ALL=TRUE
-)
+#	ExternalProject_Add(libpng
+#		PREFIX libpng
+#		BINARY_DIR ${EXTERNAL_DEPS}/libpng
+#		URL https://github.com/glennrp/libpng/archive/refs/tags/v1.6.39.tar.gz
+#		URL_HASH SHA256=a00e9d2f2f664186e4202db9299397f851aea71b36a35e74910b8820e380d441
+#		CMAKE_ARGS
+#			-DPNG_SHARED=FALSE
+#			-DPNG_STATIC=TRUE
+#			-DPNG_HARDWARE_OPTIMIZATIONS=TRUE
+#			-DPNG_EXECUTABLES=FALSE
+#			-DPNG_TESTS=FALSE
+#			-DSKIP_INSTALL_ALL=TRUE
+#)
 else()
 	find_package (JPEG REQUIRED)
 	find_package (PNG REQUIRED)
@@ -144,7 +144,6 @@ if (BUILD_DSTREAM_BENCHMARK)
 		benchmark/Timer.cpp
 		benchmark/JpegEncoder.cpp
 		benchmark/JpegDecoder.cpp
-		benchmark/StbImport.cpp
 		
 		benchmark/DepthmapReader.h
 		benchmark/ImageWriter.h
@@ -152,8 +151,6 @@ if (BUILD_DSTREAM_BENCHMARK)
 		
 		benchmark/JpegEncoder.h
 		benchmark/JpegDecoder.h
-		benchmark/stb_image.h
-		benchmark/stb_image_write.h
 	)
 
 	set (DSTREAM_BENCHMARK_HEADERS
@@ -162,8 +159,6 @@ if (BUILD_DSTREAM_BENCHMARK)
 		benchmark/Timer.h
 		benchmark/JpegEncoder.h
 		benchmark/JpegDecoder.h
-		benchmark/stb_image.h
-		benchmark/stb_image_write.h
 	)
 	
 	add_executable(dstream-benchmark ${DSTREAM_BENCHMARK_SRC})

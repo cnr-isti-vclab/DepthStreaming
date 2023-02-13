@@ -17,6 +17,7 @@
 #include <iostream>
 #include <sstream>
 #include <filesystem>
+#include <map>
 
 #include <math.h>
 
@@ -34,53 +35,6 @@ struct ErrorData
 
 	uint32_t EncodedTextureSize;
 };
-
-void EncodeDecode(const std::string& coder, uint16_t* originalData, uint8_t* encoded, uint16_t* decoded, uint32_t nElements, 
-	uint8_t quantization, bool enlarge, bool useTables)
-{
-	if (!coder.compare("Packed"))
-	{
-		StreamCoder<Packed> coder(quantization, enlarge, 8, useTables);
-		coder.Encode(originalData, (Color*)encoded, nElements);
-		coder.Decode((Color*)encoded, decoded, nElements);
-	}
-	else if (!coder.compare("Hue"))
-	{
-		StreamCoder<Hue> coder(quantization, enlarge, 8, useTables);
-		coder.Encode(originalData, (Color*)encoded, nElements);
-		coder.Decode((Color*)encoded, decoded, nElements);
-	}
-	else if (!coder.compare("Hilbert"))
-	{
-		StreamCoder<Hilbert> coder(quantization, enlarge, 3, useTables);
-		coder.Encode(originalData, (Color*)encoded, nElements);
-		coder.Decode((Color*)encoded, decoded, nElements);
-	}
-	else if (!coder.compare("Morton"))
-	{
-		StreamCoder<Morton> coder(quantization, enlarge, 8, useTables);
-		coder.Encode(originalData, (Color*)encoded, nElements);
-		coder.Decode((Color*)encoded, decoded, nElements);
-	}
-	else if (!coder.compare("Split"))
-	{
-		StreamCoder<Split> coder(quantization, enlarge, 8, useTables);
-		coder.Encode(originalData, (Color*)encoded, nElements);
-		coder.Decode((Color*)encoded, decoded, nElements);
-	}
-	else if (!coder.compare("Phase"))
-	{
-		StreamCoder<Phase> coder(quantization, enlarge, 8, useTables);
-		coder.Encode(originalData, (Color*)encoded, nElements);
-		coder.Decode((Color*)encoded, decoded, nElements);
-	}
-	else
-	{
-		StreamCoder<Triangle> coder(quantization, enlarge, 8, useTables);
-		coder.Encode(originalData, (Color*)encoded, nElements);
-		coder.Decode((Color*)encoded, decoded, nElements);
-	}
-}
 
 std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 {
@@ -143,14 +97,14 @@ void AddFolderLevel(const std::string& str, int val, std::vector<std::string>& c
 	std::filesystem::create_directory(GetPathFromComponents(currStructure));
 }
 
-void AddBenchmarkResult(std::ofstream& file, std::string algo, std::string outFormat, int quantization,
-	int jpegQuality, int parameter, const ErrorData& errData)
+void AddBenchmarkResult(std::ofstream& file, std::string algo, int quantization, int jpegQuality, int parameter, const ErrorData& errData)
 {
 	std::stringstream configName;
-	configName << algo << "_Q:" << quantization;
-	if (!outFormat.compare("JPG"))
-		configName << "_J:" << jpegQuality;
-	if (!algo.compare("HILBERT") || !algo.compare("PACKED"))
+	std::string cleanAlgo = algo.substr(algo.find_last_of(":") + 1, algo.length());
+
+	configName << cleanAlgo << "_Q:" << quantization;
+	configName << "_J:" << jpegQuality;
+	if (!cleanAlgo.compare("Hilbert") || !cleanAlgo.compare("Packed"))
 		configName << "_P:" << parameter;
 
 	//"Configuration, Max Error, Avg Error, Despeckle Max Error, Despeckle Avg Error, Compressed Size\n";
@@ -160,26 +114,83 @@ void AddBenchmarkResult(std::ofstream& file, std::string algo, std::string outFo
 	else
 		file << "/,/,";
 	file << errData.EncodedTextureSize << "\n";
-
-	std::cout << errData.AvgError << std::endl;
 }
 
-void SaveError(uint16_t* original, uint16_t* processed, uint8_t* colorBuffer, uint32_t width, uint32_t height, const std::string& path)
+void SaveError(uint16_t* original, uint16_t* processed, uint8_t* colorBuffer, uint32_t width, uint32_t height, const std::string& path, ErrorData& errData)
 {
-	DSTR_PROFILE_SCOPE("SaveError");
+	std::map<float, int, std::less<float>> errorFrequencies;
 
-	uint32_t nElements = width * height;
+	std::ofstream histogram(path + "histo.csv");
+	int nBars = 20;
 
-	for (uint32_t i = 0; i < nElements; i++)
 	{
-		float err = std::log2(std::abs((int)original[i] - (int)processed[i]));
-		uint8_t turboIdx = 256 * (err / std::log2((float)(1 << 16)));
+		DSTR_PROFILE_SCOPE("ComputeLogErr");
 
-		for (uint32_t j = 0; j < 3; j++)
-			colorBuffer[i * 3 + j] = turbo_srgb_bytes[turboIdx][j];
+		uint32_t nElements = width * height;
+		float errSum = 0;
+		float maxErr = -1;
+		float log216 = std::log2((float)(1 << 16));
+		
+		for (uint32_t i = 0; i < nElements; i++)
+		{
+			float err = std::log2(1.0f + std::abs((int)original[i] - (int)processed[i]));
+			uint8_t turboIdx = 256 * (err / log216);
+
+			if (errorFrequencies.find(err) == errorFrequencies.end()) errorFrequencies[err] = 1;
+			else errorFrequencies[err]++;
+
+			errSum += err;
+			maxErr = std::max(maxErr, err);
+
+			for (uint32_t j = 0; j < 3; j++)
+				colorBuffer[i * 3 + j] = turbo_srgb_bytes[turboIdx][j];
+		}
+
+
+		// Create histogram
+		int advance = std::ceil((float)errorFrequencies.size() / nBars);
+		int idx = 0;
+		float freqSum = 0;
+		float minErrBound = 20;
+		float maxErrBound = -1;
+
+		for (auto freq : errorFrequencies)
+		{
+			if (idx < advance)
+			{
+				idx++;
+				minErrBound = std::min(minErrBound, freq.first);
+				maxErrBound = std::max(maxErrBound, freq.first);
+				freqSum += freq.second;
+			}
+			else
+			{
+				histogram << minErrBound << "-" << maxErrBound << "," << freqSum << std::endl;
+				minErrBound = 20;
+				maxErrBound = -1;
+				idx = 0;
+				freqSum = 0;
+			}
+		}
+
+		// Save error data
+		errSum /= nElements;
+		if (path.find("denoised") != std::string::npos)
+		{
+			errData.DespeckledAvgError = errSum;
+			errData.DespeckledMaxError = maxErr;
+		}
+		else
+		{
+			errData.AvgError = errSum;
+			errData.MaxError = maxErr;
+		}
 	}
 
-	ImageWriter::WriteError(path + "_error.png", colorBuffer, width, height);
+	{
+		DSTR_PROFILE_SCOPE("WriteErrorTexture");
+		ImageWriter::WriteError(path + "_error.png", colorBuffer, width, height);
+	}
 }
 
 template <typename Coder>
@@ -215,18 +226,22 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 	uint32_t nElements = width * height;
 
 	std::string currPath = GetPathFromComponents(path);
+	std::ofstream csv("Output/results.csv", std::ios::out | std::ios::app);
+
 	StreamCoder<T> coder(q, enlarge, algoBits, true);
 	coder.Encode(src, (Color*)encoded, nElements);
 	coder.Decode((Color*)encoded, decoded, nElements);
+	
 	ImageWriter::WriteDecoded(currPath + "_lossless.png", decoded, width, height);
 
 	// Save with varying jpeg qualities, decode
 	for (uint8_t j = 70; j <= 100; j+=10)
 	{
+		ErrorData err;
+
 		std::stringstream ss;
 		ss << "Quality" << (int)j;
 		DSTR_PROFILE_SCOPE("Quality");
-
 		{
 			DSTR_PROFILE_SCOPE("WriteEncoded");
 			ImageWriter::WriteEncoded(currPath + ss.str() + ".jpg", encoded, width, height, ImageFormat::JPG, j);
@@ -246,9 +261,11 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 		}
 
 		{
-			DSTR_PROFILE_SCOPE("WriteError");
-			ImageWriter::WriteDecoded(currPath + ss.str() + "_decoded.png", decoded, width, height);
-			SaveError(original, decoded, jpegBuffer, width, height, currPath + ss.str() + "_decoded");
+			{
+				DSTR_PROFILE_SCOPE("WriteDecoded");
+				ImageWriter::WriteDecoded(currPath + ss.str() + "_decoded.png", decoded, width, height);
+			}
+			SaveError(original, decoded, jpegBuffer, width, height, currPath + ss.str() + "_decoded", err);
 		}
 
 		{
@@ -259,16 +276,21 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 		{
 			DSTR_PROFILE_SCOPE("WriteErrorDenoised");
 			ImageWriter::WriteDecoded(currPath + ss.str() + "_decoded_denoised.png", decoded, width, height);
-			SaveError(original, decoded, jpegBuffer, width, height, currPath + ss.str() + "_decoded_denoised");
+			SaveError(original, decoded, jpegBuffer, width, height, currPath + ss.str() + "_decoded_denoised", err);
 		}
+
+		err.EncodedTextureSize = std::filesystem::file_size(currPath + ss.str() + ".jpg");
+		AddBenchmarkResult(csv, typeid(T).name(), q, j, algoBits, err);
 	}
+
+	csv.close();
 }
 
 int main(int argc, char** argv)
 {
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 
-	std::string coders[7] = { "Morton", "Hue", "Hilbert", "Triangle", "Split", "Phase", "Packed" };
+	std::string coders[7] = { "Hilbert", "Hue", "Morton", "Triangle", "Split", "Phase", "Packed" };
 	uint8_t quantizations[4] = {10, 12, 14, 16};
 	bool enlarge[2] = {true, false};
 	bool denoising[2] = { false, true };
@@ -291,9 +313,15 @@ int main(int argc, char** argv)
 	std::vector<std::string> folders;
 	AddFolderLevel("Output", -1, folders);
 
+	// CSV File
+	std::ofstream csv("Output/results.csv");
+	csv.clear();
+	csv << "Configuration, Max Error, Avg Error, Despeckle Max Error, Despeckle Avg Error, Compressed Size\n";
+	csv.close();
+
 	//TestCoder<Triangle>(16, 8);
 
-	for (uint32_t c = 0; c < 1; c++)
+	for (uint32_t c = 0; c < 7; c++)
 	{
 		std::cout << "CODER: " << coders[c] << std::endl;
 		AddFolderLevel(coders[c], -1, folders);
