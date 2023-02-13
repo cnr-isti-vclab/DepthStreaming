@@ -37,5 +37,5 @@ build
 
 # Other
 *.bak
-ext
 .vs
+ext
