@@ -14,7 +14,6 @@
 static void TransposeAdvanceToRange(std::vector<uint16_t>& vec, uint16_t rangeMax)
 {
 	uint32_t errorSum = 0;
-	// Scale advance vector from 0 to 256
 	for (uint32_t i = 0; i < vec.size(); i++)
 		errorSum += vec[i];
 
@@ -22,34 +21,49 @@ static void TransposeAdvanceToRange(std::vector<uint16_t>& vec, uint16_t rangeMa
 		vec[i] = std::round(((float)vec[i] / errorSum) * rangeMax);
 }
 
-static void RemoveZerosFromAdvance(std::vector<uint16_t>& advances)
+static void NormalizeAdvance(std::vector<uint16_t>& advances)
 {
+	TransposeAdvanceToRange(advances, 255);
+
+	// Count zeros, store non zeros
 	std::vector<uint16_t> nonZeros;
 	uint16_t zeroes = 0;
 	for (uint16_t i = 0; i < advances.size(); i++)
 	{
 		if (advances[i] == 0)
-		{
-			advances[i] = 1;
 			zeroes++;
-		}
 		else
 			nonZeros.push_back(advances[i]);
 	}
 
-	TransposeAdvanceToRange(nonZeros, 256 - zeroes);
+	// Make sure the sum of the non zero elements is 256 - nZeros (we'll set the zeros to ones)
+	TransposeAdvanceToRange(nonZeros, 255 - zeroes);
 
+	// Update the non zero elements, turn the zeros into ones
 	uint32_t nonzeroIdx = 0;
+	uint32_t max = 0;
+	uint32_t maxIdx;
+	uint32_t sum = 0;
+
 	for (uint32_t i = 0; i < advances.size(); i++)
 	{
-		if (advances[i] != 1)
+		if (advances[i] != 0)
 		{
 			advances[i] = nonZeros[nonzeroIdx];
 			nonzeroIdx++;
 		}
+		else
+			advances[i] = 1;
+
+		sum += advances[i];
+		max = std::max<uint32_t>(max, advances[i]);
+		if (max == advances[i])
+			maxIdx = i;
 	}
 
-	TransposeAdvanceToRange(nonZeros, 256);
+	// Remove from the max in case the sum still isn't 256
+	if (sum != 255)
+		advances[maxIdx] -= (sum - 255);
 }
 
 namespace DStream
@@ -175,12 +189,14 @@ namespace DStream
 		{
 			// Init error vector
 			std::vector<uint16_t> errors = GetErrorVector(table, side, e);
+			if (errors.size() < 255)
+				NormalizeAdvance(errors);
+			else
+				for (uint32_t i = 0; i < 255; i++)
+					errors[i] = 1;
 
 			// Create spacings based on that vector
 			uint32_t nextNumber = 0;
-
-			TransposeAdvanceToRange(errors, 256);
-			RemoveZerosFromAdvance(errors);
 
 			m_SpacingTable.Enlarge[e].push_back(0);
 			m_SpacingTable.Shrink[e].push_back(0);
@@ -205,6 +221,12 @@ namespace DStream
 						m_SpacingTable.Shrink[e].push_back(i);
 				}
 			}
+		}
+
+		if (m_SpacingTable.Shrink[0].size() != 256 || m_SpacingTable.Shrink[1].size() != 256 || m_SpacingTable.Shrink[2].size() != 256)
+		{
+			std::cout << "Q: " << (int)m_Implementation.GetQuantization() << ", algo: " << (int)m_Implementation.GetAlgoBits() << std::endl;
+			std::cout << "Table size: " << m_SpacingTable.Shrink[0].size() << "," << m_SpacingTable.Shrink[1].size() << "," << m_SpacingTable.Shrink[2].size() << std::endl;
 		}
 
 		delete[] table;
@@ -240,7 +262,8 @@ namespace DStream
 			{
 				for (uint32_t j = 0; j < tableSide; j++)
 				{
-					switch (i)
+
+					switch (axis)
 					{
 					case 0:
 						max = std::max<uint16_t>(max, abs(table[k * tableSide * tableSide + i * tableSide + j] - 
@@ -257,7 +280,11 @@ namespace DStream
 					}
 				}
 			}
+			
 			ret[k] = max;
+
+			/*if (ret[k] > 40000)
+				ret[k] /= 128;*/
 		}
 
 		return ret;

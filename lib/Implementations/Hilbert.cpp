@@ -43,8 +43,7 @@ namespace DStream
 		std::swap(v[0], v[2]);
 		TransposeFromHilbertCoords(v);
 
-		// OPTIONAL SUBDIVISION
-
+		// SUBDIVISION
 		Color v2 = m_Morton.EncodeValue(val + 1);
 		std::swap(v2[0], v2[2]);
 		TransposeFromHilbertCoords(v2);

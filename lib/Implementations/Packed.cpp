@@ -9,8 +9,10 @@ namespace DStream
 		Color ret;
 		uint32_t right = m_Quantization - m_AlgoBits;
 
-		ret.x = (val >> (16 - m_AlgoBits)) << (8 - m_AlgoBits);
-		ret.y = ((val >> (16 - m_Quantization)) & ((1 << right) - 1)) << (8 - right);
+		val >>= (16 - m_Quantization);
+
+		ret.x = (val >> right) << (8 - m_AlgoBits);
+		ret.y = (val & ((1 << right) - 1)) << (8 - right);
 		ret.z = 0;
 
 		return ret;
@@ -18,15 +20,14 @@ namespace DStream
 
 	uint16_t Packed::DecodeValue(Color col)
 	{
-		Color copy = col;
 		uint16_t highPart, lowPart;
 		uint32_t right = m_Quantization - m_AlgoBits;
 
-		copy.x >>= (8 - m_AlgoBits);
-		copy.y >>= (8 - right);
+		col.x >>= (8 - m_AlgoBits);
+		col.y >>= (8 - right);
 
-		highPart = copy.x << (m_Quantization - m_AlgoBits);
-		lowPart = copy.y;
+		highPart = col.x << right; 
+		lowPart = col.y;
 
 		return (highPart + lowPart) << (16 - m_Quantization);
 	}

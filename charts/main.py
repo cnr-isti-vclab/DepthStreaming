@@ -23,6 +23,11 @@ def create_graphs():
         quantization = int(numbers[0])
         jpeg = int(((float(numbers[1]) - 60) / 30) * 100)
         parameter = int(numbers[2])
+        algo = line[0:line.find("_")]
+
+#        if algo == "Hilbert" and not ((quantization == 10 and parameter == 2) or (quantization == 12 and parameter == 2) or (quantization == 14)
+#            or (quantization == 16 and parameter == 4)):
+#            continue
 
         csv = line[line.index(",") + 1: len(line)].split(",")
         maxErr = float(csv[0])
@@ -31,8 +36,8 @@ def create_graphs():
         avgDespeckledErr = float(csv[3])
         jpegSize = float(csv[4]) / 1000
 
-        algoNames.append(line[0:line.find("_")])
-        errors.append(avgDespeckledErr)
+        algoNames.append(algo)
+        errors.append(avgErr)
         jpegSizes.append(jpegSize)
         labels.append(config)
         quantizations.append(quantization)
@@ -42,7 +47,7 @@ def create_graphs():
 
 
     data = list(zip(errors, jpegSizes, labels, quantizations, jpegQualities, params, uneditedJpeg, algoNames))
-    data = sorted(data, key=lambda x: x[1])
+    data.sort(key=lambda x: x[1])
 
     errors, jpegSizes, configs, quantizations, jpegQualities, params, uneditedJpeg, algoNames = (zip(*data))
     errors = list(errors)
@@ -54,12 +59,10 @@ def create_graphs():
     uneditedJpeg = list(uneditedJpeg)
     algoNames = list(algoNames)
 
-    for i in range(0, len(jpegSizes)):
-        jpegSizes[i] = str(jpegSizes[i]) + "KB"
-
     fig = px.scatter(x=jpegSizes, y=errors, labels={"x": "Compressed texture size", "y": "Logarithmic mean error"}, color=quantizations, size=jpegQualities,
                      hover_data={"Parameter": params, "Jpeg quality": uneditedJpeg}, symbol=algoNames)
     fig.show()
+    fig.update_layout({  "xaxis": {    "type": "category"  }})
 
 
 # Press the green button in the gutter to run the script.

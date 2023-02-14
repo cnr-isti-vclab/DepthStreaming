@@ -194,27 +194,47 @@ void SaveError(uint16_t* original, uint16_t* processed, uint8_t* colorBuffer, ui
 }
 
 template <typename Coder>
-void TestCoder(uint32_t q, uint32_t algo)
+void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 0)
 {
 	Coder c(q, algo);
 	float avg = 0;
 	float max = 0;
-	for (uint32_t i = 0; i < 65535; i++)
+	StreamCoder<Coder> sc(q, true, algo);
+
+	for (uint32_t i = 50528; i < 65535; i+=63)
 	{
 		uint32_t quantized = (i >> (16 - q));
 		quantized <<= 16 - q;
 
 		Color col = c.EncodeValue(quantized);
-		uint16_t v = c.DecodeValue(col);
+		sc.Enlarge(&col, &col, 1);
+#if 0
+		for (int j = minNoise; j <= maxNoise; j += advance)
+		{
+			for (int k = 0; k < 3; k++)
+				if (((int)col[k]) + j >= 0 && ((int)col[k]) + j <= 255)
+					col[k] += j;
+			/*if (j == 8)
+				std::cout << "Incoming error" << std::endl;*/
+			sc.Shrink(&col, &col, 1);
+			
+			uint16_t v = c.DecodeValue(col);
 
-		quantized <<= (16 - q);
-		int err = std::abs((int)v - (int)quantized);
-		avg += err;
-		max = std::max<int>(max, err);
+			quantized <<= (16 - q);
+			int err = std::abs((int)v - (int)quantized);
+			avg += err;
+			max = std::max<int>(max, err);
 
-		//std::cout << "ERR: " << err << ", decoded: " << v << ", correct: " << quantized << std::endl;
+			/*
+			if (err > 64)
+			{
+				std::cout << "Big err" << std::endl;
+				std::cout << "ERR: " << err << ", decoded: " << v << ", correct: " << quantized << std::endl;
+			}*/
+		}
+#endif
 	}
-	avg /= 65536;
+	avg /= 65536 * ((maxNoise - minNoise) / advance);
 
 	std::cout << "Avg: " << avg << ", max: " << max << std::endl;
 }
@@ -228,7 +248,7 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 	std::string currPath = GetPathFromComponents(path);
 	std::ofstream csv("Output/results.csv", std::ios::out | std::ios::app);
 
-	StreamCoder<T> coder(q, enlarge, algoBits, true);
+	StreamCoder<T> coder(q, false, algoBits, false);
 	coder.Encode(src, (Color*)encoded, nElements);
 	coder.Decode((Color*)encoded, decoded, nElements);
 	
@@ -237,6 +257,9 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 	// Save with varying jpeg qualities, decode
 	for (uint8_t j = 70; j <= 100; j+=10)
 	{
+		if (j != 100)
+			continue;
+
 		ErrorData err;
 
 		std::stringstream ss;
@@ -290,7 +313,7 @@ int main(int argc, char** argv)
 {
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 
-	std::string coders[7] = { "Hilbert", "Hue", "Morton", "Triangle", "Split", "Phase", "Packed" };
+	std::string coders[7] = { "Packed", "Hilbert", "Morton", "Triangle", "Split", "Phase", "Hue" };
 	uint8_t quantizations[4] = {10, 12, 14, 16};
 	bool enlarge[2] = {true, false};
 	bool denoising[2] = { false, true };
@@ -319,7 +342,8 @@ int main(int argc, char** argv)
 	csv << "Configuration, Max Error, Avg Error, Despeckle Max Error, Despeckle Avg Error, Compressed Size\n";
 	csv.close();
 
-	//TestCoder<Triangle>(16, 8);
+	//TestCoder<Packed>(10, 8);
+	//TestCoder<Hilbert>(16, 5, -32, 32, 8);
 
 	for (uint32_t c = 0; c < 7; c++)
 	{
@@ -345,7 +369,7 @@ int main(int argc, char** argv)
 				if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, jpegBuffer, originalData, dmData.Width, dmData.Height, folders);
 				if (!coders[c].compare("Split")) BenchmarkCoder<Split>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, jpegBuffer, originalData, dmData.Width, dmData.Height, folders);
 				if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, jpegBuffer, originalData, dmData.Width, dmData.Height, folders);
-				if (!coders[c].compare("Packed")) BenchmarkCoder<Packed>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, jpegBuffer, originalData, dmData.Width, dmData.Height, folders);
+				if (!coders[c].compare("Packed")) BenchmarkCoder<Packed>(quantizations[q], false, algoBits[p], quantizedData, encodedData, decodedData, jpegBuffer, originalData, dmData.Width, dmData.Height, folders);
 
 				if (algoBits.size() > 1)
 					folders.pop_back();
