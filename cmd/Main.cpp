@@ -137,7 +137,7 @@ int ParseOptions(int argc, char** argv, std::string& inDir, std::string& outDir,
 #ifdef _WIN32
         std::cerr << "Too many arguments or argument before other options\n";
 #else
-        cerr << "Too many arguments\n";
+        std::cerr << "Too many arguments\n";
 #endif
         Usage();
         return -8;

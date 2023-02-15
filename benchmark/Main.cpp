@@ -56,7 +56,7 @@ std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 
 		return ret;
 	}
-	else if (!algo.compare("Packed"))
+	else if (!algo.compare("Packed") || (!algo.compare("Split")))
 	{
 		uint8_t increase = 1;
 
@@ -65,8 +65,6 @@ std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 			ret.push_back(i);
 		return ret;
 	}
-	else if (!algo.compare("Split"))
-		return ret;
 	else if (!algo.compare("Triangle"))
 		return ret;
 	else if (!algo.compare("Phase"))
@@ -104,7 +102,7 @@ void AddBenchmarkResult(std::ofstream& file, std::string algo, int quantization,
 
 	configName << cleanAlgo << "_Q:" << quantization;
 	configName << "_J:" << jpegQuality;
-	if (!cleanAlgo.compare("Hilbert") || !cleanAlgo.compare("Packed"))
+	if (!cleanAlgo.compare("Hilbert") || !cleanAlgo.compare("Packed") || !cleanAlgo.compare("Split"))
 		configName << "_P:" << parameter;
 
 	//"Configuration, Max Error, Avg Error, Despeckle Max Error, Despeckle Avg Error, Compressed Size\n";
@@ -322,7 +320,8 @@ int main(int argc, char** argv)
 
 	// Read raw data
 	DepthmapData dmData;
-	DepthmapReader reader("envoi_RTI/MNT.asc", DepthmapFormat::ASC, dmData);
+	//DepthmapReader reader("envoi_RTI/MNT.asc", DepthmapFormat::ASC, dmData);
+	DepthmapReader reader("MNT.asc", DepthmapFormat::ASC, dmData);
 	uint32_t nElements = dmData.Width * dmData.Height;
 
 	// Prepare auxiliary buffers
