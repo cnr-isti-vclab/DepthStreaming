@@ -41,7 +41,7 @@ std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 	std::vector<uint8_t> ret = { 8 };
 
 	if (!algo.compare("Morton"))
-		return ret;
+		return { 6 };
 	else if (!algo.compare("Hilbert"))
 	{
 		ret.pop_back();
@@ -60,10 +60,11 @@ std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 	{
 		uint8_t increase = 1;
 
-		if ((16 - q) >= 5) increase = 2;
+		if ((16 - q) >= 4) increase = 2;
 		for (uint32_t i = q - 8; i < 8; i+=increase)
 			ret.push_back(i);
-		return ret;
+		return { (uint8_t)(q - 8) };
+
 	}
 	else if (!algo.compare("Triangle"))
 		return ret;
@@ -205,6 +206,13 @@ void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, in
 		quantized <<= 16 - q;
 
 		Color col = c.EncodeValue(quantized);
+		uint16_t v = c.DecodeValue(col);
+
+		quantized <<= (16 - q);
+		int err = std::abs((int)v - (int)quantized);
+		avg += err;
+		max = std::max<int>(max, err);
+
 		sc.Enlarge(&col, &col, 1);
 #if 0
 		for (int j = minNoise; j <= maxNoise; j += advance)
@@ -232,7 +240,7 @@ void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, in
 		}
 #endif
 	}
-	avg /= 65536 * ((maxNoise - minNoise) / advance);
+	avg /= 65536;
 
 	std::cout << "Avg: " << avg << ", max: " << max << std::endl;
 }
@@ -242,6 +250,7 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 	uint32_t width, uint32_t height, std::vector<std::string> path)
 {
 	uint32_t nElements = width * height;
+	uint8_t jpegLevels[5] = {70, 80, 90, 95, 100};
 
 	std::string currPath = GetPathFromComponents(path);
 	std::ofstream csv("Output/results.csv", std::ios::out | std::ios::app);
@@ -253,19 +262,16 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 	ImageWriter::WriteDecoded(currPath + "_lossless.png", decoded, width, height);
 
 	// Save with varying jpeg qualities, decode
-	for (uint8_t j = 70; j <= 100; j+=10)
+	for (uint8_t j = 0; j < 5; j++)
 	{
-		if (j != 100)
-			continue;
-
 		ErrorData err;
 
 		std::stringstream ss;
-		ss << "Quality" << (int)j;
+		ss << "Quality" << (int)jpegLevels[j];
 		DSTR_PROFILE_SCOPE("Quality");
 		{
 			DSTR_PROFILE_SCOPE("WriteEncoded");
-			ImageWriter::WriteEncoded(currPath + ss.str() + ".jpg", encoded, width, height, ImageFormat::JPG, j);
+			ImageWriter::WriteEncoded(currPath + ss.str() + ".jpg", encoded, width, height, ImageFormat::JPG, jpegLevels[j]);
 		}
 
 		{
@@ -301,7 +307,8 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 		}
 
 		err.EncodedTextureSize = std::filesystem::file_size(currPath + ss.str() + ".jpg");
-		AddBenchmarkResult(csv, typeid(T).name(), q, j, algoBits, err);
+		// TODO: remove typeid
+		AddBenchmarkResult(csv, typeid(T).name(), q, jpegLevels[j], algoBits, err);
 	}
 
 	csv.close();
@@ -311,7 +318,7 @@ int main(int argc, char** argv)
 {
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 
-	std::string coders[7] = { "Packed", "Hilbert", "Morton", "Triangle", "Split", "Phase", "Hue" };
+	std::string coders[7] = { "Hilbert", "Split", "Hue", "Triangle", "Packed", "Morton", "Phase" };
 	uint8_t quantizations[4] = {10, 12, 14, 16};
 	bool enlarge[2] = {true, false};
 	bool denoising[2] = { false, true };
@@ -320,8 +327,8 @@ int main(int argc, char** argv)
 
 	// Read raw data
 	DepthmapData dmData;
-	//DepthmapReader reader("envoi_RTI/MNT.asc", DepthmapFormat::ASC, dmData);
-	DepthmapReader reader("MNT.asc", DepthmapFormat::ASC, dmData);
+	DepthmapReader reader("envoi_RTI/MNT.asc", DepthmapFormat::ASC, dmData);
+	//DepthmapReader reader("MNT.asc", DepthmapFormat::ASC, dmData);
 	uint32_t nElements = dmData.Width * dmData.Height;
 
 	// Prepare auxiliary buffers
@@ -340,6 +347,9 @@ int main(int argc, char** argv)
 	csv.clear();
 	csv << "Configuration, Max Error, Avg Error, Despeckle Max Error, Despeckle Avg Error, Compressed Size\n";
 	csv.close();
+
+	//TestCoder<Packed>(16, 8);
+	//TestCoder<Split>(16, 8);
 
 	//TestCoder<Packed>(10, 8);
 	//TestCoder<Hilbert>(16, 5, -32, 32, 8);

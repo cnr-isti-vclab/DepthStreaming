@@ -35,7 +35,6 @@ namespace DStream
 
 	Color Hilbert::EncodeValue(uint16_t val)
 	{
-		val >>= 16 - m_Quantization;
 		int frac = val & ((1 << m_SegmentBits) - 1);
 		val >>= m_SegmentBits;
 
@@ -94,9 +93,7 @@ namespace DStream
         v1 <<= m_SegmentBits;
         for (int i = 0; i < 3; i++)
             v1 += fract[i] * sgn(nextCol[i] - prevCol[i]);
-
-        v1 <<= 16 - m_Quantization;
-        return v1;
+        return v1 << (16 - m_Quantization);
 	}
 
 	void Hilbert::SubdivideValue(Color& value, Color& nextValue, uint8_t fract)

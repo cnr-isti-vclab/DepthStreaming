@@ -164,10 +164,7 @@ namespace DStream
 		}
 
 		for (uint32_t i = 0; i < maxQuantizationValue; i++)
-		{
-			uint16_t val = i << (16 - m_Implementation.GetQuantization());
-			m_EncodingTable[val] = m_Implementation.EncodeValue(val);
-		}
+			m_EncodingTable[i] = m_Implementation.EncodeValue(i);
 	}
 
 	template<class CoderImplementation>

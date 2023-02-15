@@ -8,7 +8,7 @@ namespace DStream
 	Color Triangle::EncodeValue(uint16_t val)
 	{
         Color ret;
-        // [PARAM] p should probably be decided depending on algobits
+        val <<= (16 - m_Quantization);
         uint32_t p = (1 << 9);
 
         uint8_t Ld, Ha, Hb;
@@ -24,31 +24,6 @@ namespace DStream
 
         ret[0] = Ld; ret[1] = Ha; ret[2] = Hb;
         return ret;
-
-        /*
-        const float w = 65536.0f;
-        const float p = 512.0f / w;
-        Color ret;
-
-        float Ld, Ha, Hb;
-        Ld = (val + 0.5) / w;
-
-        float mod = fmod(Ld / (p/2.0f), 2.0f);
-        if (mod <= 1)
-            Ha = mod;
-        else
-            Ha = 2 - mod;
-
-        float mod2 = fmod((Ld - p/4.0f) / (p/2.0f), 2.0f);
-        if (mod2 <= 1)
-            Hb = mod2;
-        else
-            Hb = 2 - mod2;
-
-        Ld *= 255; Ha *= 255; Hb *= 255;
-        ret[0] = Ld; ret[1] = Ha; ret[2] = Hb;
-
-        return ret;*/
 	}
 
 	uint16_t Triangle::DecodeValue(Color col)

@@ -9,8 +9,6 @@ namespace DStream
 		Color ret;
 		uint32_t right = m_Quantization - m_AlgoBits;
 
-		val >>= (16 - m_Quantization);
-
 		ret.x = (val >> right) << (8 - m_AlgoBits);
 		ret.y = (val & ((1 << right) - 1)) << (8 - right);
 		ret.z = 0;

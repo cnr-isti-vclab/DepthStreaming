@@ -10,8 +10,8 @@ namespace DStream
 	Color Phase::EncodeValue(uint16_t val)
 	{
 		Color ret;
-		const float P = 16384.0f;
-		const float w = 65535.0f;
+		const float P = 1 << (m_Quantization - 2);
+		const float w = 1 << m_Quantization;
 
 		ret[0] = 255 * (0.5f + 0.5f * std::cos(M_PI * 2.0f * (val / P)));
 		ret[1] = 255 * (val / w);
