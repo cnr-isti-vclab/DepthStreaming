@@ -1,0 +1,1 @@
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webputils.dir\Release\webputils.lib

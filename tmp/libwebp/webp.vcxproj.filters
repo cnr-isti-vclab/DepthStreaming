@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\build\libwebp\src\libwebp\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdecode.dir\$(Configuration)\alpha_dec.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdecode.dir\$(Configuration)\buffer_dec.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdecode.dir\$(Configuration)\frame_dec.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdecode.dir\$(Configuration)\idec_dec.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdecode.dir\$(Configuration)\io_dec.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdecode.dir\$(Configuration)\quant_dec.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdecode.dir\$(Configuration)\tree_dec.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdecode.dir\$(Configuration)\vp8_dec.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdecode.dir\$(Configuration)\vp8l_dec.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdecode.dir\$(Configuration)\webp_dec.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\alpha_processing.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\cpu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\dec.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\dec_clip_tables.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\filters.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\lossless.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\rescaler.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\upsampling.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\yuv.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\alpha_processing_sse41.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\dec_sse41.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\lossless_sse41.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\upsampling_sse41.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\yuv_sse41.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\alpha_processing_sse2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\dec_sse2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\filters_sse2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\lossless_sse2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\rescaler_sse2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\upsampling_sse2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\yuv_sse2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\cost.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\lossless_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\ssim.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\cost_sse2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\enc_sse2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\lossless_enc_sse2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\ssim_sse2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\enc_sse41.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpdsp.dir\$(Configuration)\lossless_enc_sse41.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\alpha_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\analysis_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\backward_references_cost_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\backward_references_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\config_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\cost_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\filter_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\frame_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\histogram_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\iterator_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\near_lossless_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\picture_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\picture_csp_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\picture_psnr_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\picture_rescale_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\picture_tools_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\predictor_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\quant_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\syntax_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\token_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\tree_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\vp8l_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webpencode.dir\$(Configuration)\webp_enc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webputils.dir\$(Configuration)\bit_reader_utils.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webputils.dir\$(Configuration)\color_cache_utils.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webputils.dir\$(Configuration)\filters_utils.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webputils.dir\$(Configuration)\huffman_utils.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webputils.dir\$(Configuration)\quant_levels_dec_utils.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webputils.dir\$(Configuration)\rescaler_utils.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webputils.dir\$(Configuration)\random_utils.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webputils.dir\$(Configuration)\thread_utils.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webputils.dir\$(Configuration)\utils.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webputils.dir\$(Configuration)\bit_writer_utils.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webputils.dir\$(Configuration)\huffman_encode_utils.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\webputils.dir\$(Configuration)\quant_levels_utils.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Object Libraries">
+      <UniqueIdentifier>{3F11C95F-867B-3C83-890E-1978377AA7D2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

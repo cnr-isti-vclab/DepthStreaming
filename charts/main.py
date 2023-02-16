@@ -3,7 +3,7 @@ import re
 import plotly as py
 
 def create_graphs():
-    file = open("../build/Output/results.csv")
+    file = open("../build/WebpOutput/results.csv")
     lines = file.readlines()
 
     labels = []
@@ -37,7 +37,7 @@ def create_graphs():
         jpegSize = float(csv[4]) / 1000
 
         algoNames.append(algo)
-        errors.append(avgDespeckledErr)
+        errors.append(avgErr)
         jpegSizes.append(jpegSize)
         labels.append(config)
         quantizations.append(quantization)
@@ -60,7 +60,7 @@ def create_graphs():
     algoNames = list(algoNames)
 
     fig = px.scatter(x=jpegSizes, y=errors, labels={"x": "Compressed texture size", "y": "Logarithmic mean error"}, color=quantizations, size=jpegQualities,
-                     hover_data={"Parameter": params, "Jpeg quality": uneditedJpeg}, symbol=algoNames, title="Old")
+                     hover_data={"Parameter": params, "Jpeg quality": uneditedJpeg}, symbol=algoNames, title="WEBP JPEG")
     fig.show()
     fig.update_layout({  "xaxis": {    "type": "category"  }})
 

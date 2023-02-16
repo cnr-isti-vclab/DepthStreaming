@@ -1,0 +1,489 @@
+Performing C SOURCE FILE Test HAVE_BUILTIN_BSWAP16 failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_0cf07.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  src.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(3,13): warning C4013: '__builtin_bswap16' non definita. Verrà considerata come esterna che restituisce un int. [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_0cf07.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D HAVE_BUILTIN_BSWAP16 /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_0cf07.dir\Debug\\" /Fd"cmTC_0cf07.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c"
+src.obj : error LNK2019: riferimento al simbolo esterno __builtin_bswap16 non risolto nella funzione main [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_0cf07.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\Debug\cmTC_0cf07.exe : fatal error LNK1120: 1 esterni non risolti [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_0cf07.vcxproj]
+
+
+Source file was:
+
+    int main(void) {
+      (void)__builtin_bswap16(0);
+      return 0;
+    }
+  
+Performing C SOURCE FILE Test HAVE_BUILTIN_BSWAP32 failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_6fc42.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  src.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(3,13): warning C4013: '__builtin_bswap32' non definita. Verrà considerata come esterna che restituisce un int. [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_6fc42.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D HAVE_BUILTIN_BSWAP32 /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_6fc42.dir\Debug\\" /Fd"cmTC_6fc42.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c"
+src.obj : error LNK2019: riferimento al simbolo esterno __builtin_bswap32 non risolto nella funzione main [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_6fc42.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\Debug\cmTC_6fc42.exe : fatal error LNK1120: 1 esterni non risolti [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_6fc42.vcxproj]
+
+
+Source file was:
+
+    int main(void) {
+      (void)__builtin_bswap32(0);
+      return 0;
+    }
+  
+Performing C SOURCE FILE Test HAVE_BUILTIN_BSWAP64 failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_8fe86.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  src.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(3,13): warning C4013: '__builtin_bswap64' non definita. Verrà considerata come esterna che restituisce un int. [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_8fe86.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D HAVE_BUILTIN_BSWAP64 /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_8fe86.dir\Debug\\" /Fd"cmTC_8fe86.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c"
+src.obj : error LNK2019: riferimento al simbolo esterno __builtin_bswap64 non risolto nella funzione main [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_8fe86.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\Debug\cmTC_8fe86.exe : fatal error LNK1120: 1 esterni non risolti [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_8fe86.vcxproj]
+
+
+Source file was:
+
+    int main(void) {
+      (void)__builtin_bswap64(0);
+      return 0;
+    }
+  
+Determining if the include file pthread.h exists failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_dd08f.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  CheckIncludeFile.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_dd08f.dir\Debug\\" /Fd"cmTC_dd08f.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1,10): fatal error C1083: Non è possibile aprire il file inclusione: 'pthread.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_dd08f.vcxproj]
+
+
+
+Performing C SOURCE FILE Test FLAG_HAVE_PTHREAD_PRIO_INHERIT failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_ec1f1.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  src.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D FLAG_HAVE_PTHREAD_PRIO_INHERIT /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_ec1f1.dir\Debug\\" /Fd"cmTC_ec1f1.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c"
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(2,18): fatal error C1083: Non è possibile aprire il file inclusione: 'pthread.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_ec1f1.vcxproj]
+
+
+Source file was:
+
+        #include <pthread.h>
+        int main (void) {
+          int attr = PTHREAD_PRIO_INHERIT;
+          return attr;
+        }
+      
+Determining if files dlfcn.h exist failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_8aa07.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  HAVE_DLFCN_H.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_8aa07.dir\Debug\\" /Fd"cmTC_8aa07.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CheckIncludeFiles\HAVE_DLFCN_H.c"
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CheckIncludeFiles\HAVE_DLFCN_H.c(2,10): fatal error C1083: Non è possibile aprire il file inclusione: 'dlfcn.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_8aa07.vcxproj]
+
+
+Source:
+/* */
+#include <dlfcn.h>
+
+
+int main(void){return 0;}
+
+Determining if files GLUT/glut.h exist failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_8a348.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  HAVE_GLUT_GLUT_H.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CheckIncludeFiles\HAVE_GLUT_GLUT_H.c(2,10): fatal error C1083: Non è possibile aprire il file inclusione: 'GLUT/glut.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_8a348.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_8a348.dir\Debug\\" /Fd"cmTC_8a348.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CheckIncludeFiles\HAVE_GLUT_GLUT_H.c"
+
+
+Source:
+/* */
+#include <GLUT/glut.h>
+
+
+int main(void){return 0;}
+
+Determining if files GL/glut.h exist failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_81879.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  HAVE_GL_GLUT_H.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CheckIncludeFiles\HAVE_GL_GLUT_H.c(2,10): fatal error C1083: Non è possibile aprire il file inclusione: 'GL/glut.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_81879.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_81879.dir\Debug\\" /Fd"cmTC_81879.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CheckIncludeFiles\HAVE_GL_GLUT_H.c"
+
+
+Source:
+/* */
+#include <GL/glut.h>
+
+
+int main(void){return 0;}
+
+Determining if files OpenGL/glut.h exist failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_040a9.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  HAVE_OPENGL_GLUT_H.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CheckIncludeFiles\HAVE_OPENGL_GLUT_H.c(2,10): fatal error C1083: Non è possibile aprire il file inclusione: 'OpenGL/glut.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_040a9.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_040a9.dir\Debug\\" /Fd"cmTC_040a9.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CheckIncludeFiles\HAVE_OPENGL_GLUT_H.c"
+
+
+Source:
+/* */
+#include <OpenGL/glut.h>
+
+
+int main(void){return 0;}
+
+Determining if files strings.h exist failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_3b515.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  HAVE_STRINGS_H.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_3b515.dir\Debug\\" /Fd"cmTC_3b515.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CheckIncludeFiles\HAVE_STRINGS_H.c"
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CheckIncludeFiles\HAVE_STRINGS_H.c(2,10): fatal error C1083: Non è possibile aprire il file inclusione: 'strings.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_3b515.vcxproj]
+
+
+Source:
+/* */
+#include <strings.h>
+
+
+int main(void){return 0;}
+
+Determining if files unistd.h exist failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_84cd0.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  HAVE_UNISTD_H.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_84cd0.dir\Debug\\" /Fd"cmTC_84cd0.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CheckIncludeFiles\HAVE_UNISTD_H.c"
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CheckIncludeFiles\HAVE_UNISTD_H.c(2,10): fatal error C1083: Non è possibile aprire il file inclusione: 'unistd.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_84cd0.vcxproj]
+
+
+Source:
+/* */
+#include <unistd.h>
+
+
+int main(void){return 0;}
+
+Performing C SOURCE FILE Test WEBP_HAVE_FLAG_MIPS32 failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_a3fbf.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  src.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2065: 'this': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_a3fbf.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'is' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_a3fbf.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2065: 'is': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_a3fbf.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'not' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_a3fbf.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2065: 'not': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_a3fbf.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'valid' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_a3fbf.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2065: 'valid': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_a3fbf.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'code' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_a3fbf.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2065: 'code': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_a3fbf.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2143: errore di sintassi: ';' mancante prima di 'return' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_a3fbf.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\build\libwebp\src\libwebp" /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D WEBP_HAVE_FLAG_MIPS32 /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_a3fbf.dir\Debug\\" /Fd"cmTC_a3fbf.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c"
+
+
+Source file was:
+
+      #include "C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libwebp/src/libwebp/cmake/../src/dsp/dsp.h"
+      int main(void) {
+        #if !defined(WEBP_USE_MIPS32)
+        this is not valid code
+        #endif
+        return 0;
+      }
+    
+Performing C SOURCE FILE Test WEBP_HAVE_FLAG_MIPS32 failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_f0c4d.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  NOTFOUND
+c1 : fatal error C1083: Non è possibile aprire il file origine: 'NOTFOUND': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f0c4d.vcxproj]
+  src.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\build\libwebp\src\libwebp" /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D WEBP_HAVE_FLAG_MIPS32 /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_f0c4d.dir\Debug\\" /Fd"cmTC_f0c4d.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue  NOTFOUND "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c"
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2065: 'this': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f0c4d.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'is' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f0c4d.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2065: 'is': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f0c4d.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'not' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f0c4d.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2065: 'not': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f0c4d.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'valid' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f0c4d.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2065: 'valid': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f0c4d.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'code' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f0c4d.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2065: 'code': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f0c4d.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2143: errore di sintassi: ';' mancante prima di 'return' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f0c4d.vcxproj]
+  Generazione del codice in corso...
+
+
+Source file was:
+
+      #include "C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libwebp/src/libwebp/cmake/../src/dsp/dsp.h"
+      int main(void) {
+        #if !defined(WEBP_USE_MIPS32)
+        this is not valid code
+        #endif
+        return 0;
+      }
+    
+Performing C SOURCE FILE Test WEBP_HAVE_FLAG_MIPS_DSP_R2 failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_6d08e.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  src.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2065: 'this': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_6d08e.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'is' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_6d08e.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2065: 'is': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_6d08e.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'not' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_6d08e.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2065: 'not': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_6d08e.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'valid' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_6d08e.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2065: 'valid': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_6d08e.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'code' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_6d08e.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2065: 'code': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_6d08e.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2143: errore di sintassi: ';' mancante prima di 'return' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_6d08e.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\build\libwebp\src\libwebp" /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D WEBP_HAVE_FLAG_MIPS_DSP_R2 /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_6d08e.dir\Debug\\" /Fd"cmTC_6d08e.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c"
+
+
+Source file was:
+
+      #include "C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libwebp/src/libwebp/cmake/../src/dsp/dsp.h"
+      int main(void) {
+        #if !defined(WEBP_USE_MIPS_DSP_R2)
+        this is not valid code
+        #endif
+        return 0;
+      }
+    
+Performing C SOURCE FILE Test WEBP_HAVE_FLAG_MIPS_DSP_R2 failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_e5584.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  NOTFOUND
+c1 : fatal error C1083: Non è possibile aprire il file origine: 'NOTFOUND': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_e5584.vcxproj]
+  src.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\build\libwebp\src\libwebp" /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D WEBP_HAVE_FLAG_MIPS_DSP_R2 /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_e5584.dir\Debug\\" /Fd"cmTC_e5584.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue  NOTFOUND "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c"
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2065: 'this': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_e5584.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'is' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_e5584.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2065: 'is': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_e5584.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'not' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_e5584.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2065: 'not': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_e5584.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'valid' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_e5584.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2065: 'valid': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_e5584.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'code' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_e5584.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2065: 'code': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_e5584.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2143: errore di sintassi: ';' mancante prima di 'return' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_e5584.vcxproj]
+  Generazione del codice in corso...
+
+
+Source file was:
+
+      #include "C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libwebp/src/libwebp/cmake/../src/dsp/dsp.h"
+      int main(void) {
+        #if !defined(WEBP_USE_MIPS_DSP_R2)
+        this is not valid code
+        #endif
+        return 0;
+      }
+    
+Performing C SOURCE FILE Test WEBP_HAVE_FLAG_NEON failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_526cb.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  src.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2065: 'this': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_526cb.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'is' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_526cb.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2065: 'is': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_526cb.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'not' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_526cb.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2065: 'not': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_526cb.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'valid' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_526cb.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2065: 'valid': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_526cb.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'code' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_526cb.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2065: 'code': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_526cb.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2143: errore di sintassi: ';' mancante prima di 'return' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_526cb.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\build\libwebp\src\libwebp" /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D WEBP_HAVE_FLAG_NEON /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_526cb.dir\Debug\\" /Fd"cmTC_526cb.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c"
+
+
+Source file was:
+
+      #include "C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libwebp/src/libwebp/cmake/../src/dsp/dsp.h"
+      int main(void) {
+        #if !defined(WEBP_USE_NEON)
+        this is not valid code
+        #endif
+        return 0;
+      }
+    
+Performing C SOURCE FILE Test WEBP_HAVE_FLAG_NEON failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_fe278.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  NOTFOUND
+c1 : fatal error C1083: Non è possibile aprire il file origine: 'NOTFOUND': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_fe278.vcxproj]
+  src.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\build\libwebp\src\libwebp" /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D WEBP_HAVE_FLAG_NEON /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_fe278.dir\Debug\\" /Fd"cmTC_fe278.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue  NOTFOUND "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c"
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2065: 'this': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_fe278.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'is' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_fe278.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2065: 'is': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_fe278.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'not' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_fe278.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2065: 'not': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_fe278.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'valid' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_fe278.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2065: 'valid': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_fe278.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'code' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_fe278.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2065: 'code': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_fe278.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2143: errore di sintassi: ';' mancante prima di 'return' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_fe278.vcxproj]
+  Generazione del codice in corso...
+
+
+Source file was:
+
+      #include "C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libwebp/src/libwebp/cmake/../src/dsp/dsp.h"
+      int main(void) {
+        #if !defined(WEBP_USE_NEON)
+        this is not valid code
+        #endif
+        return 0;
+      }
+    
+Performing C SOURCE FILE Test WEBP_HAVE_FLAG_MSA failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_f8da4.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  src.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2065: 'this': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f8da4.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'is' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f8da4.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2065: 'is': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f8da4.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'not' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f8da4.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2065: 'not': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f8da4.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'valid' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f8da4.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2065: 'valid': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f8da4.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'code' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f8da4.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2065: 'code': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f8da4.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2143: errore di sintassi: ';' mancante prima di 'return' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_f8da4.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\build\libwebp\src\libwebp" /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D WEBP_HAVE_FLAG_MSA /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_f8da4.dir\Debug\\" /Fd"cmTC_f8da4.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c"
+
+
+Source file was:
+
+      #include "C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libwebp/src/libwebp/cmake/../src/dsp/dsp.h"
+      int main(void) {
+        #if !defined(WEBP_USE_MSA)
+        this is not valid code
+        #endif
+        return 0;
+      }
+    
+Performing C SOURCE FILE Test WEBP_HAVE_FLAG_MSA failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libwebp/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_79089.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  NOTFOUND
+c1 : fatal error C1083: Non è possibile aprire il file origine: 'NOTFOUND': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_79089.vcxproj]
+  src.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\build\libwebp\src\libwebp" /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D WEBP_HAVE_FLAG_MSA /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_79089.dir\Debug\\" /Fd"cmTC_79089.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue  NOTFOUND "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c"
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2065: 'this': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_79089.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,14): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'is' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_79089.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2065: 'is': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_79089.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,17): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'not' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_79089.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2065: 'not': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_79089.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,21): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'valid' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_79089.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2065: 'valid': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_79089.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(5,27): error C2146: errore di sintassi: ';' mancante prima dell'identificatore 'code' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_79089.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2065: 'code': identificatore non dichiarato [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_79089.vcxproj]
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\src.c(7,9): error C2143: errore di sintassi: ';' mancante prima di 'return' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libwebp\CMakeFiles\CMakeTmp\cmTC_79089.vcxproj]
+  Generazione del codice in corso...
+
+
+Source file was:
+
+      #include "C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libwebp/src/libwebp/cmake/../src/dsp/dsp.h"
+      int main(void) {
+        #if !defined(WEBP_USE_MSA)
+        this is not valid code
+        #endif
+        return 0;
+      }
+    

@@ -21,6 +21,26 @@ if(MSVC)
 		URL https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.1.90.tar.gz
 		URL_HASH SHA256=426d097a29bd67ab7ef8584673ba2e0da5fe65dcddd0c8daa123bdcb7a5e871f
 	)
+	
+#	ExternalProject_Add(libwebp
+#		PREFIX libwebp
+#		BINARY_DIR ${EXTERNAL_DEPS}/libwebp
+#		URL https://github.com/webmproject/libwebp/archive/refs/tags/v1.3.0.tar.gz
+#		URL_HASH SHA256=dc9860d3fe06013266c237959e1416b71c63b36f343aae1d65ea9c94832630e1
+#		CMAKE_ARGS
+#			-DWEBP_BUILD_ANIM_UTILS=FALSE
+#			-DWEBP_BUILD_ANIM_UTILS=FALSE
+#			-DWEBP_BUILD_DWEBP=FALSE
+#			-DWEBP_BUILD_GIF2WEBP=FALSE
+#			-DWEBP_BUILD_IMG2WEBP=FALSE
+#			-DWEBP_BUILD_VWEBP=FALSE
+#			-DWEBP_BUILD_WEBPINFO=FALSE
+#			-DWEBP_BUILD_LIBWEBPMUX=FALSE
+#			-DWEBP_BUILD_WEBPMUX=FALSE
+#			-DWEBP_BUILD_EXTRAS=FALSE
+#			-DWEBP_BUILD_EXTRAS=FALSE
+#	)
+			
 #
 	# Build zlib
 #	ExternalProject_Add(zlib
@@ -103,6 +123,7 @@ link_directories(
 	${EXTERNAL_DEPS}/libjpeg-turbo
 	${EXTERNAL_DEPS}/libpng
 	${EXTERNAL_DEPS}/zlib
+	${EXTERNAL_DEPS}/libwebp
 )
 
 add_library(dstream-static STATIC ${DSTREAM_LIB_SRC})
@@ -111,6 +132,7 @@ if(MSVC)
 		PUBLIC turbojpeg-static
 		PUBLIC libpng16_static
 		PUBLIC zlibstatic
+		PUBLIC libwebp
 	)
 	target_include_directories (dstream-static
 		PUBLIC lib
@@ -120,6 +142,8 @@ if(MSVC)
 		PUBLIC ${EXTERNAL_DEPS}/libpng
 		PUBLIC ${CMAKE_BINARY_DIR}/zlib/src/zlib
 		PUBLIC ${EXTERNAL_DEPS}/zlib
+		PUBLIC ${CMAKE_BINARY_DIR}/libwebp/src/libwebp/src
+		PUBLIC ${EXTERNAL_DEPS}/libwebp/src
 	)
 else()
 	target_link_libraries(dstream-static
@@ -139,6 +163,7 @@ endif()
 if (BUILD_DSTREAM_BENCHMARK)
 	set (DSTREAM_BENCHMARK_SRC
 		benchmark/DepthmapReader.cpp
+		benchmark/ImageReader.cpp
 		benchmark/ImageWriter.cpp
 		benchmark/Main.cpp
 		benchmark/Timer.cpp
@@ -147,6 +172,7 @@ if (BUILD_DSTREAM_BENCHMARK)
 		
 		benchmark/DepthmapReader.h
 		benchmark/ImageWriter.h
+		benchmark/ImageReader.h
 		benchmark/Timer.h
 		
 		benchmark/JpegEncoder.h
@@ -156,6 +182,7 @@ if (BUILD_DSTREAM_BENCHMARK)
 	set (DSTREAM_BENCHMARK_HEADERS
 		benchmark/DepthmapReader.h
 		benchmark/ImageWriter.h
+		benchmark/ImageReader.h
 		benchmark/Timer.h
 		benchmark/JpegEncoder.h
 		benchmark/JpegDecoder.h

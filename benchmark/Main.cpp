@@ -2,6 +2,7 @@
 #include <DepthmapReader.h>
 #include <DepthProcessing.h>
 #include <ImageWriter.h>
+#include <ImageReader.h>
 #include <JpegDecoder.h>
 #include <Timer.h>
 
@@ -20,6 +21,8 @@
 #include <map>
 
 #include <math.h>
+#include <png.h>
+#include <webp/decode.h>
 
 using namespace DStream;
 
@@ -35,6 +38,9 @@ struct ErrorData
 
 	uint32_t EncodedTextureSize;
 };
+
+enum class ImageFormat { PNG = 0, JPG, WEBP };
+std::string outputFolder = "WebpOutputJpeg";
 
 std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 {
@@ -65,6 +71,7 @@ std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 			ret.push_back(i);
 		return { (uint8_t)(q - 8) };
 
+		return ret;
 	}
 	else if (!algo.compare("Triangle"))
 		return ret;
@@ -188,7 +195,7 @@ void SaveError(uint16_t* original, uint16_t* processed, uint8_t* colorBuffer, ui
 
 	{
 		DSTR_PROFILE_SCOPE("WriteErrorTexture");
-		ImageWriter::WriteError(path + "_error.png", colorBuffer, width, height);
+		ImageWriter::WritePNG(path + "_error.png", colorBuffer, width, height);
 	}
 }
 
@@ -246,23 +253,28 @@ void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, in
 }
 
 template <typename T>
-void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, uint8_t* encoded, uint16_t* decoded, uint8_t* jpegBuffer, uint16_t* original,
-	uint32_t width, uint32_t height, std::vector<std::string> path)
+void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, uint8_t* encoded, uint16_t* decoded, uint8_t* colorBuffer, uint16_t* original,
+	uint32_t width, uint32_t height, std::vector<std::string> path, ImageFormat format = ImageFormat::JPG)
 {
 	uint32_t nElements = width * height;
 	uint8_t jpegLevels[5] = {70, 80, 90, 95, 100};
 
 	std::string currPath = GetPathFromComponents(path);
-	std::ofstream csv("Output/results.csv", std::ios::out | std::ios::app);
+	std::ofstream csv(outputFolder+"/results.csv", std::ios::out | std::ios::app);
 
-	StreamCoder<T> coder(q, false, algoBits, false);
+	StreamCoder<T> coder(q, true, algoBits, false);
 	coder.Encode(src, (Color*)encoded, nElements);
 	coder.Decode((Color*)encoded, decoded, nElements);
 	
 	ImageWriter::WriteDecoded(currPath + "_lossless.png", decoded, width, height);
+	uint32_t minQuality = 4;
+	uint32_t maxQuality = 4;
+
+	if (format == ImageFormat::JPG)
+		minQuality = 0;
 
 	// Save with varying jpeg qualities, decode
-	for (uint8_t j = 0; j < 5; j++)
+	for (uint8_t j = minQuality; j < maxQuality; j++)
 	{
 		ErrorData err;
 
@@ -271,20 +283,27 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 		DSTR_PROFILE_SCOPE("Quality");
 		{
 			DSTR_PROFILE_SCOPE("WriteEncoded");
-			ImageWriter::WriteEncoded(currPath + ss.str() + ".jpg", encoded, width, height, ImageFormat::JPG, jpegLevels[j]);
+			switch (format)
+			{
+			case ImageFormat::JPG: ImageWriter::WriteJPEG(currPath + ss.str() + ".jpg", encoded, width, height, jpegLevels[j]); break;
+			case ImageFormat::PNG: ImageWriter::WritePNG(currPath + ss.str() + ".png", encoded, width, height); break;
+			case ImageFormat::WEBP: ImageWriter::WriteWEBP(currPath + ss.str() + ".webp", encoded, width, height); break;
+			}
 		}
 
 		{
-			DSTR_PROFILE_SCOPE("JpegDecode");
-
-			JpegDecoder decoder; int w, h;
-			decoder.setJpegColorSpace(J_COLOR_SPACE::JCS_RGB);
-			decoder.decodeNonAlloc((currPath + ss.str() + ".jpg").c_str(), jpegBuffer, w, h);
+			DSTR_PROFILE_SCOPE("ImageDecode");
+			switch (format)
+			{
+			case ImageFormat::JPG: ImageReader::ReadJPEG(currPath + ss.str() + ".jpg", colorBuffer); break;
+			case ImageFormat::PNG: ImageReader::ReadPNG(currPath + ss.str() + ".png", colorBuffer); break; 
+			case ImageFormat::WEBP: ImageReader::ReadWEBP(currPath + ss.str() + ".webp", colorBuffer, nElements * 3); break;
+			}
 		}
 
 		{
 			DSTR_PROFILE_SCOPE("DStreamDecode");
-			coder.Decode((Color*)jpegBuffer, decoded, nElements);
+			coder.Decode((Color*)colorBuffer, decoded, nElements);
 		}
 
 		{
@@ -292,21 +311,28 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 				DSTR_PROFILE_SCOPE("WriteDecoded");
 				ImageWriter::WriteDecoded(currPath + ss.str() + "_decoded.png", decoded, width, height);
 			}
-			SaveError(original, decoded, jpegBuffer, width, height, currPath + ss.str() + "_decoded", err);
+			SaveError(original, decoded, colorBuffer, width, height, currPath + ss.str() + "_decoded", err);
 		}
 
 		{
 			DSTR_PROFILE_SCOPE("Denoise");
-			DepthProcessing::DenoiseMedian(decoded, width, height, 750, 1);
+			DepthProcessing::DenoiseMedian(decoded, width, height, 750);
 		}
 
 		{
 			DSTR_PROFILE_SCOPE("WriteErrorDenoised");
 			ImageWriter::WriteDecoded(currPath + ss.str() + "_decoded_denoised.png", decoded, width, height);
-			SaveError(original, decoded, jpegBuffer, width, height, currPath + ss.str() + "_decoded_denoised", err);
+			SaveError(original, decoded, colorBuffer, width, height, currPath + ss.str() + "_decoded_denoised", err);
 		}
 
-		err.EncodedTextureSize = std::filesystem::file_size(currPath + ss.str() + ".jpg");
+		std::string extension;
+		switch (format)
+		{
+		case ImageFormat::JPG: extension = ".jpg"; break;
+		case ImageFormat::PNG: extension = ".png"; break;
+		case ImageFormat::WEBP: extension = ".webp"; break;
+		}
+		err.EncodedTextureSize = std::filesystem::file_size(currPath + ss.str() + extension);
 		// TODO: remove typeid
 		AddBenchmarkResult(csv, typeid(T).name(), q, jpegLevels[j], algoBits, err);
 	}
@@ -327,23 +353,23 @@ int main(int argc, char** argv)
 
 	// Read raw data
 	DepthmapData dmData;
-	DepthmapReader reader("envoi_RTI/MNT.asc", DepthmapFormat::ASC, dmData);
+	DepthmapReader reader("Input/envoi_RTI/MNT.asc", DepthmapFormat::ASC, dmData);
 	//DepthmapReader reader("MNT.asc", DepthmapFormat::ASC, dmData);
 	uint32_t nElements = dmData.Width * dmData.Height;
 
 	// Prepare auxiliary buffers
 	uint16_t* originalData = reader.GetData();
 	uint8_t* encodedData = new uint8_t[nElements * 3];
-	uint8_t* jpegBuffer = new uint8_t[nElements * 3];
+	uint8_t* colorBuffer = new uint8_t[nElements * 3];
 	uint16_t* decodedData = new uint16_t[nElements];
 	uint16_t* quantizedData = new uint16_t[nElements];
 
 	// Folder structures
 	std::vector<std::string> folders;
-	AddFolderLevel("Output", -1, folders);
+	AddFolderLevel(outputFolder, -1, folders);
 
 	// CSV File
-	std::ofstream csv("Output/results.csv");
+	std::ofstream csv(outputFolder + "/results.csv");
 	csv.clear();
 	csv << "Configuration, Max Error, Avg Error, Despeckle Max Error, Despeckle Avg Error, Compressed Size\n";
 	csv.close();
@@ -372,13 +398,13 @@ int main(int argc, char** argv)
 				if (algoBits.size() > 1)
 					AddFolderLevel("Parameter", algoBits[p], folders);
 
-				if (!coders[c].compare("Hilbert")) BenchmarkCoder<Hilbert>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, jpegBuffer, originalData, dmData.Width, dmData.Height, folders);
-				if (!coders[c].compare("Morton")) BenchmarkCoder<Morton>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, jpegBuffer, originalData, dmData.Width, dmData.Height, folders);
-				if (!coders[c].compare("Hue")) BenchmarkCoder<Hue>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, jpegBuffer, originalData, dmData.Width, dmData.Height, folders);
-				if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, jpegBuffer, originalData, dmData.Width, dmData.Height, folders);
-				if (!coders[c].compare("Split")) BenchmarkCoder<Split>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, jpegBuffer, originalData, dmData.Width, dmData.Height, folders);
-				if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, jpegBuffer, originalData, dmData.Width, dmData.Height, folders);
-				if (!coders[c].compare("Packed")) BenchmarkCoder<Packed>(quantizations[q], false, algoBits[p], quantizedData, encodedData, decodedData, jpegBuffer, originalData, dmData.Width, dmData.Height, folders);
+				if (!coders[c].compare("Hilbert")) BenchmarkCoder<Hilbert>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, ImageFormat::WEBP);
+				if (!coders[c].compare("Morton")) BenchmarkCoder<Morton>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, ImageFormat::WEBP);
+				if (!coders[c].compare("Hue")) BenchmarkCoder<Hue>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, ImageFormat::WEBP);
+				if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, ImageFormat::WEBP);
+				if (!coders[c].compare("Split")) BenchmarkCoder<Split>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, ImageFormat::WEBP);
+				if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, ImageFormat::WEBP);
+				if (!coders[c].compare("Packed")) BenchmarkCoder<Packed>(quantizations[q], false, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, ImageFormat::WEBP);
 
 				if (algoBits.size() > 1)
 					folders.pop_back();
@@ -392,7 +418,7 @@ int main(int argc, char** argv)
 	delete[] encodedData;
 	delete[] decodedData;
 	delete[] quantizedData;
-	delete[] jpegBuffer;
+	delete[] colorBuffer;
 	//delete[] originalData;
 
 	DSTR_PROFILE_END_SESSION();

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\build\libwebp\src\libwebp\imageio\imageio_util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\build\libwebp\src\libwebp\imageio\imageio_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\build\libwebp\src\libwebp\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{2731A8C8-0411-327F-B4E6-65023155BAA1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{BA339C7D-B01A-3B6E-99E9-A326E1DA106F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

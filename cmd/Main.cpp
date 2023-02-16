@@ -13,6 +13,12 @@
 #include <Implementations/Morton.h>
 #include <Implementations/Triangle.h>
 
+/*
+    - Parameter to enlarge
+    - Parameter to use tables
+    - 
+*/
+
 using namespace DStream;
 
 #ifndef _WIN32
@@ -31,13 +37,13 @@ void Usage()
         R"use(Usage: dstream-cmd [OPTIONS] <DIRECTORY>
 
     DIRECTORY is the path to the folder containing the depth data
-      -d <output>: output folder in which compressed data will be saved
-      -r <recursive>: navigate the input directory recursively and encode all the files contained in it
+      -d <output>: output folder in which final data will be saved
+      -r <recursive>: navigate the input directory recursively and process all the files contained in it
       -a <algorithm>: algorithm to be used (algorithm names: PACKED, TRIANGLE, MORTON, HILBERT, PHASE, SPLIT, HUE)
       -q <quantization>: quantization level
       -b <bits>: number of bits dedicated to the algorithm (only used by Hilbert and Packed). The remaining ones will be used to enlarge / shrink data
-      -j <quality>: JPEG quality to be used
-      -s <save>: save the decoded version of the images in png format
+      -j <quality>: JPEG quality to use if encoding
+      -m <mode>: program mode, E for encoding, D for decoding
       -?: display this message
       -h: display this message
 
@@ -45,13 +51,12 @@ void Usage()
 }
 
 int ParseOptions(int argc, char** argv, std::string& inDir, std::string& outDir, std::string& algo, uint8_t& quantization, uint8_t& jpeg, 
-    uint8_t& algoBits, bool& decode, bool& recursive)
+    uint8_t& algoBits,  bool& recursive, std::string& mode)
 {
     int c;
-    decode = false;
     recursive = false;
 
-    while ((c = getopt(argc, argv, "d:a:q:j:b:srh::")) != -1) {
+    while ((c = getopt(argc, argv, "d:a:q:j::b:m:rh::")) != -1) {
         switch (c) {
         case 'd':
         {
@@ -116,8 +121,13 @@ int ParseOptions(int argc, char** argv, std::string& inDir, std::string& outDir,
                 return -4;
             }
         }
-        case 's':
-            decode = true;
+        case 'm':
+            mode = optarg;
+            if (mode != "D" && mode != "E")
+            {
+                std::cerr << "Unknown program mode " << mode << std::endl;
+                Usage();
+            }
             break;
         case 'h':
         case '?': Usage(); return -5;
@@ -149,6 +159,24 @@ int ParseOptions(int argc, char** argv, std::string& inDir, std::string& outDir,
         std::cerr << "Specified input folder does not exist." << std::endl;
         return -9;
     }
+    return 0;
+}
+
+int ValidateInput(const std::string& algorithm, uint8_t quantization, uint8_t jpeg, uint8_t algoBits, const std::string& mode)
+{
+    if (mode == "D" && jpeg <= 100)
+        std::cout << "JPEG quality specified, but DECODING mode is set. The quality parameter will be ignored." << std::endl;
+    if (algorithm == "Hilbert")
+    {
+        uint8_t segmentBits = quantization - 3 * algoBits;
+
+        if (!(algoBits * 3 < quantization && algoBits + segmentBits <= 8))
+        {
+            std::cerr << "The specified amount of bits reserved for the Hilbert algorithm is not enough for the given quantization level." << std::endl;
+            return -1;
+        }
+    }
+
     return 0;
 }
 
@@ -199,18 +227,94 @@ void EncodeDecode(const std::string& coder, uint16_t* originalData, uint8_t* enc
     }
 }
 
+void Encode(const std::filesystem::path& filePath, const std::string& outputDirectory, const std::string& coder, uint8_t quantization, uint8_t jpeg, uint8_t algoBits)
+{
+    // Read depthmap here
+
+    if (!coder.compare("Packed"))
+    {
+        StreamCoder<Packed> coder(quantization, enlarge, 8, useTables);
+        coder.Encode(originalData, (Color*)encoded, nElements);
+    }
+    else if (!coder.compare("Hue"))
+    {
+        StreamCoder<Hue> coder(quantization, enlarge, 8, useTables);
+        coder.Encode(originalData, (Color*)encoded, nElements);
+    }
+    else if (!coder.compare("Hilbert"))
+    {
+        StreamCoder<Hilbert> coder(quantization, enlarge, 3, useTables);
+        coder.Encode(originalData, (Color*)encoded, nElements);
+    }
+    else if (!coder.compare("Morton"))
+    {
+        StreamCoder<Morton> coder(quantization, enlarge, 8, useTables);
+        coder.Encode(originalData, (Color*)encoded, nElements);
+    }
+    else if (!coder.compare("Split"))
+    {
+        StreamCoder<Split> coder(quantization, enlarge, 8, useTables);
+        coder.Encode(originalData, (Color*)encoded, nElements);
+    }
+    else if (!coder.compare("Phase"))
+    {
+        StreamCoder<Phase> coder(quantization, enlarge, 8, useTables);
+        coder.Encode(originalData, (Color*)encoded, nElements);
+    }
+    else
+    {
+        StreamCoder<Triangle> coder(quantization, enlarge, 8, useTables);
+        coder.Encode(originalData, (Color*)encoded, nElements);
+    }
+
+    // Save encoded texture here
+}
+
+void Decode(const std::filesystem::path& filePath, const std::string& outputDirectory, const std::string& coder, uint8_t quantization, uint8_t jpeg, uint8_t algoBits)
+{
+
+}
+
+std::vector<std::filesystem::path> GetFiles(const std::filesystem::path& path, bool recursive)
+{
+    std::vector<std::filesystem::path> ret;
+
+    for (auto file : std::filesystem::directory_iterator(path))
+    {
+        if (file.is_directory() && recursive)
+        {
+            std::vector<std::filesystem::path> toAppend = GetFiles(file, recursive);
+            ret.insert(ret.end(), toAppend.begin(), toAppend.end());
+        }
+        else
+            ret.push_back(file);
+    }
+
+    return ret;
+}
+
 int main(int argc, char** argv)
 {
     bool saveDecoded, recursive;
     uint8_t quantization, jpeg, algoBits;
-    std::string inDir, outDir, algorithm;
+    std::string inDir, outDir, algorithm, mode;
 
-    if (ParseOptions(argc, argv, inDir, outDir, algorithm, quantization, jpeg, algoBits, saveDecoded, recursive) != 0)
+    if (ParseOptions(argc, argv, inDir, outDir, algorithm, quantization, jpeg, algoBits, recursive, mode) != 0)
         return -1;
+    if (ValidateInput(algorithm, quantization, jpeg, algoBits, mode) != 0)
+        return -2;
 
     std::filesystem::path inputDir = std::filesystem::path(inDir);
-    //for (auto files : )
+    std::vector<std::filesystem::path> files = GetFiles(inputDir, recursive);
 
+    for (auto file : files)
+    {
+        if (mode == "E")
+            Encode(file, outDir, algorithm, quantization, jpeg, algoBits);
+        else
+            Decode(file, outDir, algorithm, quantization, algoBits);
+
+    }
 
 	return 0;
 }

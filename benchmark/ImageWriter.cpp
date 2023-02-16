@@ -3,10 +3,11 @@
 #include <JpegEncoder.h>
 #include <png.h>
 #include <fstream>
+#include <webp/encode.h>
 
 namespace DStream
 {
-    void ImageWriter::WriteEncoded(const std::string& path, uint8_t* data, uint32_t width, uint32_t height, ImageFormat format, uint32_t quality /* = 100*/)
+    void ImageWriter::WriteJPEG(const std::string& path, uint8_t* data, uint32_t width, uint32_t height, uint32_t quality /* = 100*/)
     {
         uint8_t* encodedData = new uint8_t[width * height * 3];
         unsigned long retSize;
@@ -41,11 +42,6 @@ namespace DStream
         delete[] colorData;
     }
 
-    void ImageWriter::WriteError(const std::string& path, uint8_t* data, uint32_t width, uint32_t height)
-    {
-        WritePNG(path, data, width, height);
-    }
-
     void ImageWriter::WritePNG(const std::string& path, uint8_t* data, uint32_t width, uint32_t height)
     {
         FILE* fp = fopen(path.c_str(), "wb");
@@ -69,4 +65,15 @@ namespace DStream
         
         fclose(fp);
     }
+
+    void ImageWriter::WriteWEBP(const std::string& path, uint8_t* data, uint32_t width, uint32_t height)
+    {
+        uint8_t* buf;
+        size_t wrote = WebPEncodeLosslessRGB(data, width, height, width * 3, &buf);
+        std::ofstream outFile;
+        outFile.open(path, std::ios::out | std::ios::binary);
+        outFile.write((const char*)buf, wrote);
+        outFile.close();
+    }
+
 }
