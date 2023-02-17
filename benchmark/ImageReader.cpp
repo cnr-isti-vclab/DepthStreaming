@@ -40,10 +40,13 @@ namespace DStream
 	void ImageReader::ReadWEBP(const std::string& path, uint8_t* dest, int nElements)
 	{
 		FILE* fp = fopen(path.c_str(), "rb");
-		size_t read = fread(dest, sizeof(char), nElements, fp);
+		uint8_t* fileData = new uint8_t[nElements];
+		size_t read = fread(fileData, sizeof(char), nElements, fp);
 		int w, h;
-		uint8_t* ret = WebPDecodeRGB(dest, nElements, &w, &h);
-		memcpy(dest, ret, nElements);
-		WebPFree(ret);
+
+		WebPGetInfo(fileData, read, &w, &h);
+		WebPDecodeRGBInto(fileData, read, dest, nElements, w * 3);
+
+		delete[] fileData;
 	}
 }

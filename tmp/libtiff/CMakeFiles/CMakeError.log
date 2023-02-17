@@ -1,0 +1,452 @@
+Performing C SOURCE FILE Test HAVE_LD_VERSION_SCRIPT failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_0b39f.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D HAVE_LD_VERSION_SCRIPT /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_0b39f.dir\Debug\\" /Fd"cmTC_0b39f.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue  -Wl,--version-script=C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/conftest.map "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\src.c"
+  cl : error della riga di comando D8021 : argomento numerico '/Wl,--version-script=C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/conftest.map' non valido
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(700,5): error MSB6006: "CL.exe" terminato con il codice 2. [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_0b39f.vcxproj]
+
+
+Source file was:
+int main(void){return 0;}
+Determining if the include file strings.h exists failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_06303.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  CheckIncludeFile.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_06303.dir\Debug\\" /Fd"cmTC_06303.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1,10): fatal error C1083: Non è possibile aprire il file inclusione: 'strings.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_06303.vcxproj]
+
+
+
+Determining if the include file sys/time.h exists failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_dfeb5.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  CheckIncludeFile.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1,10): fatal error C1083: Non è possibile aprire il file inclusione: 'sys/time.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_dfeb5.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_dfeb5.dir\Debug\\" /Fd"cmTC_dfeb5.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+
+
+
+Determining if the include file unistd.h exists failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_a1de9.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  CheckIncludeFile.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_a1de9.dir\Debug\\" /Fd"cmTC_a1de9.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1,10): fatal error C1083: Non è possibile aprire il file inclusione: 'unistd.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_a1de9.vcxproj]
+
+
+
+Determining if the getopt exist failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_984e5.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  CheckSymbolExists.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_984e5.dir\Debug\\" /Fd"cmTC_984e5.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckSymbolExists.c"
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckSymbolExists.c(2,10): fatal error C1083: Non è possibile aprire il file inclusione: 'unistd.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_984e5.vcxproj]
+
+
+File C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <unistd.h>
+#include <stdio.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef getopt
+  return ((int*)(&getopt))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the optarg exist failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_f6e5d.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  CheckSymbolExists.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_f6e5d.dir\Debug\\" /Fd"cmTC_f6e5d.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckSymbolExists.c"
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckSymbolExists.c(2,10): fatal error C1083: Non è possibile aprire il file inclusione: 'getopt.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_f6e5d.vcxproj]
+
+
+File C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <getopt.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef optarg
+  return ((int*)(&optarg))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the mmap exist failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_91a25.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  CheckSymbolExists.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckSymbolExists.c(2,10): fatal error C1083: Non è possibile aprire il file inclusione: 'sys/mman.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_91a25.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_91a25.dir\Debug\\" /Fd"cmTC_91a25.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckSymbolExists.c"
+
+
+File C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/mman.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef mmap
+  return ((int*)(&mmap))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the setmode exist failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_29761.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  CheckSymbolExists.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_29761.dir\Debug\\" /Fd"cmTC_29761.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckSymbolExists.c"
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckSymbolExists.c(2,10): fatal error C1083: Non è possibile aprire il file inclusione: 'unistd.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_29761.vcxproj]
+
+
+File C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <unistd.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef setmode
+  return ((int*)(&setmode))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the include file GL/gl.h exists failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_2e41e.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  CheckIncludeFile.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_2e41e.dir\Debug\\" /Fd"cmTC_2e41e.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1157,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1157,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1157,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glAccum' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1157,33): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1157,58): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1158,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1158,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1158,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glAlphaFunc' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1158,37): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1158,63): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1159,21): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1159,30): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1159,30): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glAreTexturesResident' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1159,52): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1159,109): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1160,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1160,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1160,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glArrayElement' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1160,40): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1160,48): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1161,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1161,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1161,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glBegin' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1161,33): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1161,45): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1162,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1162,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1162,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glBindTexture' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1162,39): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1162,69): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1163,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1163,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1163,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glBitmap' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1163,34): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1163,147): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1164,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1164,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1164,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glBlendFunc' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1164,37): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1164,68): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1165,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1165,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1165,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glCallList' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1165,36): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1165,48): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1166,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1166,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1166,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glCallLists' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1166,37): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1166,81): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1167,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1167,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1167,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glClear' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1167,33): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1167,49): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1168,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1168,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1168,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glClearAccum' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1168,38): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1168,94): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1169,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1169,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1169,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glClearColor' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1169,38): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1169,98): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1170,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1170,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1170,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glClearDepth' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1170,38): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1170,53): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1171,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1171,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1171,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glClearIndex' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1171,38): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1171,48): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1172,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1172,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1172,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glClearStencil' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1172,40): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1172,48): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1173,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1173,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1173,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glClipPlane' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1173,37): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1173,76): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1174,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1174,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1174,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glColor3b' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1174,35): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1174,73): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1175,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1175,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1175,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glColor3bv' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1175,36): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1175,52): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1176,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1176,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1176,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glColor3d' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1176,35): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1176,79): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1177,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1177,16): fatal error C1003: il conteggio degli errori supera 100. Interruzione della compilazione [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_2e41e.vcxproj]
+
+
+
+Determining if the include file GL/glu.h exists failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_e21e7.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  CheckIncludeFile.c
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_e21e7.dir\Debug\\" /Fd"cmTC_e21e7.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1157,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1157,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1157,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glAccum' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1157,33): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1157,58): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1158,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1158,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1158,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glAlphaFunc' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1158,37): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1158,63): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1159,21): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1159,30): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1159,30): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glAreTexturesResident' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1159,52): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1159,109): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1160,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1160,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1160,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glArrayElement' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1160,40): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1160,48): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1161,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1161,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1161,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glBegin' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1161,33): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1161,45): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1162,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1162,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1162,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glBindTexture' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1162,39): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1162,69): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1163,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1163,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1163,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glBitmap' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1163,34): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1163,147): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1164,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1164,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1164,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glBlendFunc' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1164,37): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1164,68): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1165,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1165,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1165,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glCallList' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1165,36): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1165,48): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1166,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1166,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1166,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glCallLists' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1166,37): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1166,81): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1167,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1167,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1167,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glClear' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1167,33): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1167,49): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1168,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1168,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1168,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glClearAccum' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1168,38): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1168,94): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1169,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1169,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1169,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glClearColor' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1169,38): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1169,98): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1170,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1170,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1170,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glClearDepth' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1170,38): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1170,53): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1171,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1171,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1171,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glClearIndex' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1171,38): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1171,48): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1172,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1172,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1172,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glClearStencil' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1172,40): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1172,48): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1173,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1173,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1173,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glClipPlane' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1173,37): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1173,76): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1174,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1174,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1174,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glColor3b' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1174,35): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1174,73): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1175,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1175,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1175,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glColor3bv' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1175,36): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1175,52): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1176,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1176,25): error C2085: 'APIENTRY': non nell'elenco di parametri formali [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1176,25): error C2146: errore di sintassi: ',' mancante prima dell'identificatore 'glColor3d' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1176,35): error C2143: errore di sintassi: ';' mancante prima di '(' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1176,79): error C2059: errore di sintassi: ')' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1177,16): error C2054: previsto '(' dopo 'WINGDIAPI' [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\GL/gl.h(1177,16): fatal error C1003: il conteggio degli errori supera 100. Interruzione della compilazione [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_e21e7.vcxproj]
+
+
+
+Determining if the include file GL/glut.h exists failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_9e192.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  CheckIncludeFile.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1,10): fatal error C1083: Non è possibile aprire il file inclusione: 'GL/glut.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_9e192.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_9e192.dir\Debug\\" /Fd"cmTC_9e192.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+
+
+
+Determining if the include file GLUT/glut.h exists failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_77b05.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  CheckIncludeFile.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1,10): fatal error C1083: Non è possibile aprire il file inclusione: 'GLUT/glut.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_77b05.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_77b05.dir\Debug\\" /Fd"cmTC_77b05.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+
+
+
+Determining if the include file OpenGL/gl.h exists failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_0343c.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  CheckIncludeFile.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1,10): fatal error C1083: Non è possibile aprire il file inclusione: 'OpenGL/gl.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_0343c.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_0343c.dir\Debug\\" /Fd"cmTC_0343c.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+
+
+
+Determining if the include file OpenGL/glu.h exists failed with the following output:
+Change Dir: C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_1a96a.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine versione 17.2.1+52cd2da31 per .NET Framework
+Copyright (C) Microsoft Corporation. Tutti i diritti sono riservati.
+
+  Microsoft (R) C/C++ Optimizing Compiler versione 19.32.31329 per x64
+  CheckIncludeFile.c
+C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1,10): fatal error C1083: Non è possibile aprire il file inclusione: 'OpenGL/glu.h': No such file or directory [C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\cmTC_1a96a.vcxproj]
+  Copyright (C) Microsoft Corporation. Tutti i diritti  sono riservati.
+  cl /c /I"C:\Program Files\vcpkg\installed\x64-windows\include" /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_1a96a.dir\Debug\\" /Fd"cmTC_1a96a.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Users\nicol\Desktop\Lavoro\Repo\CNR-DepthStreaming\ext\libtiff\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+
+
+

@@ -40,7 +40,7 @@ struct ErrorData
 };
 
 enum class ImageFormat { PNG = 0, JPG, WEBP };
-std::string outputFolder = "WebpOutputJpeg";
+std::string outputFolder = "OutTmp";
 
 std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 {
@@ -270,11 +270,11 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 	uint32_t minQuality = 4;
 	uint32_t maxQuality = 4;
 
-	if (format == ImageFormat::JPG)
+	if (format == ImageFormat::JPG || format == ImageFormat::WEBP)
 		minQuality = 0;
 
 	// Save with varying jpeg qualities, decode
-	for (uint8_t j = minQuality; j < maxQuality; j++)
+	for (uint8_t j = minQuality; j <= maxQuality; j++)
 	{
 		ErrorData err;
 
@@ -287,7 +287,7 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 			{
 			case ImageFormat::JPG: ImageWriter::WriteJPEG(currPath + ss.str() + ".jpg", encoded, width, height, jpegLevels[j]); break;
 			case ImageFormat::PNG: ImageWriter::WritePNG(currPath + ss.str() + ".png", encoded, width, height); break;
-			case ImageFormat::WEBP: ImageWriter::WriteWEBP(currPath + ss.str() + ".webp", encoded, width, height); break;
+			case ImageFormat::WEBP: ImageWriter::WriteWEBP(currPath + ss.str() + ".webp", encoded, width, height, jpegLevels[j]); break;
 			}
 		}
 

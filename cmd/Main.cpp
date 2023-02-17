@@ -230,7 +230,7 @@ void EncodeDecode(const std::string& coder, uint16_t* originalData, uint8_t* enc
 void Encode(const std::filesystem::path& filePath, const std::string& outputDirectory, const std::string& coder, uint8_t quantization, uint8_t jpeg, uint8_t algoBits)
 {
     // Read depthmap here
-
+    /*
     if (!coder.compare("Packed"))
     {
         StreamCoder<Packed> coder(quantization, enlarge, 8, useTables);
@@ -266,7 +266,7 @@ void Encode(const std::filesystem::path& filePath, const std::string& outputDire
         StreamCoder<Triangle> coder(quantization, enlarge, 8, useTables);
         coder.Encode(originalData, (Color*)encoded, nElements);
     }
-
+    */
     // Save encoded texture here
 }
 
@@ -312,7 +312,7 @@ int main(int argc, char** argv)
         if (mode == "E")
             Encode(file, outDir, algorithm, quantization, jpeg, algoBits);
         else
-            Decode(file, outDir, algorithm, quantization, algoBits);
+            Decode(file, outDir, algorithm, quantization, 100, algoBits);
 
     }
 

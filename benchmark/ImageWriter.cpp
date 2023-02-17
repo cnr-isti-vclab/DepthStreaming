@@ -66,14 +66,19 @@ namespace DStream
         fclose(fp);
     }
 
-    void ImageWriter::WriteWEBP(const std::string& path, uint8_t* data, uint32_t width, uint32_t height)
+    void ImageWriter::WriteWEBP(const std::string& path, uint8_t* data, uint32_t width, uint32_t height, uint32_t quality /*= 0*/)
     {
         uint8_t* buf;
-        size_t wrote = WebPEncodeLosslessRGB(data, width, height, width * 3, &buf);
+        size_t wrote;
+
+        if (quality == 0)
+            wrote = WebPEncodeLosslessRGB(data, width, height, width * 3, &buf);
+        else
+            wrote = WebPEncodeRGB(data, width, height, width * 3, quality, &buf);
+
         std::ofstream outFile;
         outFile.open(path, std::ios::out | std::ios::binary);
         outFile.write((const char*)buf, wrote);
         outFile.close();
     }
-
 }

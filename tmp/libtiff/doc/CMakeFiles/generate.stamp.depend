@@ -1,0 +1,7 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-3.23/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/FindPython/Support.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/FindPython3.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/Sphinx.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/doc/CMakeLists.txt

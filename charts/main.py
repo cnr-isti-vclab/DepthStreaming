@@ -3,7 +3,7 @@ import re
 import plotly as py
 
 def create_graphs():
-    file = open("../build/WebpOutput/results.csv")
+    file = open("../build/WebpOutputJpeg/results.csv")
     lines = file.readlines()
 
     labels = []

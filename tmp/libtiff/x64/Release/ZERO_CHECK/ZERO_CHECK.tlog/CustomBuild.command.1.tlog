@@ -1,0 +1,10 @@
+^C:\USERS\NICOL\DESKTOP\LAVORO\REPO\CNR-DEPTHSTREAMING\EXT\LIBTIFF\CMAKEFILES\5F33D6022B68E9051B2148352DAAB3CC\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff -BC:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/tiff.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,0 +1,10 @@
+^C:\USERS\NICOL\DESKTOP\LAVORO\REPO\CNR-DEPTHSTREAMING\EXT\LIBTIFF\CMAKEFILES\5F33D6022B68E9051B2148352DAAB3CC\INSTALL_FORCE.RULE
+setlocal
+cd .
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

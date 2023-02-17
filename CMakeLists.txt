@@ -67,9 +67,27 @@ if(MSVC)
 #			-DPNG_TESTS=FALSE
 #			-DSKIP_INSTALL_ALL=TRUE
 #)
+
+# Build libtiff
+#	ExternalProject_Add(libtiff
+#		PREFIX libtiff
+#		BINARY_DIR ${EXTERNAL_DEPS}/libtiff
+#		URL https://gitlab.com/libtiff/libtiff/-/archive/v4.5.0/libtiff-v4.5.0.tar.gz
+#		URL_HASH SHA256=9c89263dc6b12d89ea0f0af3f36020797f17a6d3d247bf06d66fdbbef98609af
+#		CMAKE_ARGS
+#			-Dtiff-tools=FALSE
+#			-Dtiff-tests=FALSE
+#			-Dtiff-contrib=FALSE
+#			-Dtiff-install=FALSE
+#)
+	
+	
+	
 else()
 	find_package (JPEG REQUIRED)
 	find_package (PNG REQUIRED)
+	find_package (WEBP REQUIRED)
+	find_package (TIFF REQUIRED)
 	find_package (ZLIB REQUIRED)
 endif()
 
@@ -124,6 +142,7 @@ link_directories(
 	${EXTERNAL_DEPS}/libpng
 	${EXTERNAL_DEPS}/zlib
 	${EXTERNAL_DEPS}/libwebp
+	${EXTERNAL_DEPS}/libtiff/libtiff
 )
 
 add_library(dstream-static STATIC ${DSTREAM_LIB_SRC})
@@ -133,6 +152,7 @@ if(MSVC)
 		PUBLIC libpng16_static
 		PUBLIC zlibstatic
 		PUBLIC libwebp
+		PUBLIC tiff
 	)
 	target_include_directories (dstream-static
 		PUBLIC lib
@@ -144,18 +164,24 @@ if(MSVC)
 		PUBLIC ${EXTERNAL_DEPS}/zlib
 		PUBLIC ${CMAKE_BINARY_DIR}/libwebp/src/libwebp/src
 		PUBLIC ${EXTERNAL_DEPS}/libwebp/src
+		PUBLIC ${CMAKE_BINARY_DIR}/libtiff/src/libtiff
+		PUBLIC ${EXTERNAL_DEPS}/libtiff/src
 	)
 else()
 	target_link_libraries(dstream-static
 		PUBLIC ${JPEG_LIBRARIES}
 		PUBLIC ${PNG_LIBRARIES}
 		PUBLIC ${ZLIB_LIBRARIES}
+		PUBLIC ${WEBP_LIBRARIES}
+		PUBLIC ${TIFF_LIBRARIES}
 	)
 	target_include_directories (dstream-static
 		PUBLIC lib
 		${JPEG_INCLUDE_DIR}
 		${PNG_INCLUDE_DIR}
 		${ZLIB_INCLUDE_DIR}
+		${WEBP_INCLUDE_DIR}
+		${TIFF_INCLUDE_DIR}
 	)
 endif()
 

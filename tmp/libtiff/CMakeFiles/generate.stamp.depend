@@ -1,0 +1,76 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-3.23/Modules/CMakeCInformation.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CMakeCXXInformation.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CMakeCommonLanguageInclude.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CMakeGenericSystem.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CMakeInitializeConfigs.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CMakeLanguageInformation.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CMakeRCInformation.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CMakeSystemSpecificInformation.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CMakeSystemSpecificInitialize.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CheckCCompilerFlag.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CheckCSourceCompiles.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CheckIncludeFile.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CheckIncludeFileCXX.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CheckLibraryExists.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CheckSymbolExists.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/CheckTypeSize.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/Compiler/CMakeCommonCompilerMacros.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/Compiler/MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/Compiler/MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/FindGLUT.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/FindOpenGL.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/FindPkgConfig.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/FindZLIB.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/GNUInstallDirs.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/Internal/CheckCompilerFlag.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/Internal/CheckFlagCommonConfig.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/Internal/CheckSourceCompiles.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/Platform/Windows-MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/Platform/Windows-MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/Platform/Windows-MSVC.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/Platform/Windows.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/Platform/WindowsPaths.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/SelectLibraryConfigurations.cmake
+C:/Program Files/CMake/share/cmake-3.23/Modules/TestBigEndian.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/CMakeLists.txt
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/AutotoolsCompat.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/AutotoolsVersion.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/CXXLibrary.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/CompilerChecks.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/DeflateCodec.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/FindCMath.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/FindDeflate.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/FindJBIG.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/FindJPEG.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/FindLERC.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/FindLibLZMA.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/FindWebP.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/FindZSTD.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/IncludeChecks.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/InternalCodecs.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/JBIGCodec.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/JPEGCodec.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/LERCCodec.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/LZMACodec.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/LargeFileSupport.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/LibraryFeatures.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/LinkerChecks.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/OpenGLChecks.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/PixarLogCodec.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/PkgConfig.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/ProcessorChecks.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/Release.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/SymbolChecks.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/TypeSizeChecks.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/WebPCodec.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/WindowsSupport.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/cmake/ZSTDCodec.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/build/libtiff/src/libtiff/libtiff-4.pc.in
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/3.23.1/CMakeCCompiler.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/3.23.1/CMakeCXXCompiler.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/3.23.1/CMakeRCCompiler.cmake
+C:/Users/nicol/Desktop/Lavoro/Repo/CNR-DepthStreaming/ext/libtiff/CMakeFiles/3.23.1/CMakeSystem.cmake
