@@ -49,4 +49,40 @@ namespace DStream
 
 		delete[] fileData;
 	}
+
+	void ImageReader::ReadSplitWEBP(const std::string& path, uint8_t* dest, int nElements)
+	{
+		FILE* redFp = fopen((path + ".red.webp").c_str(), "rb");
+		FILE* greenFp = fopen((path + ".green.webp").c_str(), "rb");
+
+		uint8_t* redData = new uint8_t[nElements];
+		uint8_t* greenData = new uint8_t[nElements];
+		uint8_t* redDest = new uint8_t[nElements];
+		uint8_t* greenDest = new uint8_t[nElements];
+
+		size_t redRead = fread(redData, sizeof(char), nElements, redFp);
+		size_t greenRead = fread(greenData, sizeof(char), nElements, greenFp);
+		int w, h;
+
+		WebPGetInfo(redData, redRead, &w, &h);
+		WebPDecodeRGBInto(redData, redRead, redDest, nElements, w * 3);
+
+		WebPGetInfo(greenData, greenRead, &w, &h);
+		WebPDecodeRGBInto(greenData, greenRead, greenDest, nElements, w * 3);
+
+		for (uint32_t i = 0; i < nElements; i += 3)
+		{
+			dest[i] = redDest[i];
+			dest[i+1] = greenDest[i];
+			dest[i+2] = 0;
+		}
+
+		fclose(redFp);
+		fclose(greenFp);
+
+		delete[] redData;
+		delete[] greenData;
+		delete[] redDest;
+		delete[] greenDest;
+	}
 }

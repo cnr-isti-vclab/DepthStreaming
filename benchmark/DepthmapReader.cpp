@@ -1,19 +1,25 @@
 #include <DepthmapReader.h>
 
+#include <libtiff/tiff.h>
+#include <libtiff/tiffio.h>
+
 #include <iostream>
 #include <filesystem>
 
 namespace DStream
 {
-    DepthmapReader::DepthmapReader(const std::string& path, DepthmapFormat format, DepthmapData& dmData)
+    DepthmapReader::DepthmapReader(const std::string& path, DepthmapFormat format, DepthmapData& dmData, bool quantize /* = true*/)
     {
         switch (format)
         {
         case DepthmapFormat::ASC:
-            ParseASC(path, dmData);
+            ParseASC(path, dmData, quantize);
+            break;
+        case DepthmapFormat::TIF:
+            ParseTIFF(path, dmData, quantize);
             break;
         default:
-            std::cout << "Unsupported depthmap input format" << std::endl;
+            std::cerr << "Unsupported depthmap input format" << std::endl;
             break;
         }
     }
@@ -23,7 +29,7 @@ namespace DStream
         delete[] m_Data;
     }
 
-    void DepthmapReader::ParseASC(const std::string& path, DepthmapData& dmData)
+    void DepthmapReader::ParseASC(const std::string& path, DepthmapData& dmData, bool quantize)
     {
         if (!std::filesystem::exists(path))
         {
@@ -64,11 +70,60 @@ namespace DStream
         }
 
         // Quantize
-        for (uint32_t i = 0; i < dmData.Width * dmData.Height; i++)
-            m_Data[i] = ((tmp[i] - min) / (float)(max - min)) * 65535.0f;
+        if (quantize)
+            for (uint32_t i = 0; i < dmData.Width * dmData.Height; i++)
+                m_Data[i] = ((tmp[i] - min) / (float)(max - min)) * 65535.0f;
 
         dmData.Valid = true;
         fclose(fp);
         delete[] tmp;
+    }
+
+    void DepthmapReader::ParseTIFF(const std::string& path, DepthmapData& dmData, bool quantize)
+    {
+        TIFF* inFile = TIFFOpen(path.c_str(), "r");
+        int width, height, stripSize, nStrips;
+        int16_t min = 32767, max = -32768;
+
+        TIFFGetField(inFile, TIFFTAG_IMAGEWIDTH, &width);
+        TIFFGetField(inFile, TIFFTAG_IMAGELENGTH, &height);
+        stripSize = TIFFStripSize(inFile);
+        nStrips = TIFFNumberOfStrips(inFile);
+
+        dmData.Width = width;
+        dmData.Height = height;
+        int16_t* tmpBuffer = new int16_t[width * height];
+        m_Data = new uint16_t[width * height];
+        
+        tdata_t buf = _TIFFmalloc(stripSize);
+        tstrip_t strip;
+
+        uint32_t read = 0;
+
+        for (strip = 0; strip < nStrips; strip++)
+        {
+            TIFFReadEncodedStrip(inFile, strip, buf, stripSize);
+            memcpy(tmpBuffer + read, buf, stripSize);
+            
+            read += stripSize / sizeof(int16_t);
+        }
+
+        if (quantize)
+        {
+            for (uint32_t i = 0; i < width * height; i++)
+            {
+                min = std::min(min, tmpBuffer[i]);
+                max = std::max(max, tmpBuffer[i]);
+            }
+
+            for (uint32_t i=0; i<width * height; i++)
+                m_Data[i] = ((float)(tmpBuffer[i] - min) / (max - min)) * 65535.0f;
+        }
+
+        _TIFFfree(buf);
+        TIFFClose(inFile);
+
+        delete[] tmpBuffer;
+        dmData.Valid = true;
     }
 }

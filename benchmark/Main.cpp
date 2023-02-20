@@ -40,7 +40,7 @@ struct ErrorData
 };
 
 enum class ImageFormat { PNG = 0, JPG, WEBP };
-std::string outputFolder = "OutTmp";
+std::string outputFolder = "NewOut/WebpSplitGreenRed";
 
 std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 {
@@ -254,7 +254,7 @@ void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, in
 
 template <typename T>
 void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, uint8_t* encoded, uint16_t* decoded, uint8_t* colorBuffer, uint16_t* original,
-	uint32_t width, uint32_t height, std::vector<std::string> path, ImageFormat format = ImageFormat::JPG)
+	uint32_t width, uint32_t height, std::vector<std::string> path, const std::string& coderName, ImageFormat format = ImageFormat::JPG)
 {
 	uint32_t nElements = width * height;
 	uint8_t jpegLevels[5] = {70, 80, 90, 95, 100};
@@ -287,7 +287,17 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 			{
 			case ImageFormat::JPG: ImageWriter::WriteJPEG(currPath + ss.str() + ".jpg", encoded, width, height, jpegLevels[j]); break;
 			case ImageFormat::PNG: ImageWriter::WritePNG(currPath + ss.str() + ".png", encoded, width, height); break;
-			case ImageFormat::WEBP: ImageWriter::WriteWEBP(currPath + ss.str() + ".webp", encoded, width, height, jpegLevels[j]); break;
+			case ImageFormat::WEBP:
+				if (coderName == "Packed" || coderName == "Split")
+				{
+					ImageWriter::WriteSplitWEBP(currPath + ss.str() + ".webp", encoded, width, height, jpegLevels[j]);
+					break;
+				}
+				else
+				{
+					ImageWriter::WriteWEBP(currPath + ss.str() + ".webp", encoded, width, height, jpegLevels[j]);
+					break;
+				}
 			}
 		}
 
@@ -297,7 +307,17 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 			{
 			case ImageFormat::JPG: ImageReader::ReadJPEG(currPath + ss.str() + ".jpg", colorBuffer); break;
 			case ImageFormat::PNG: ImageReader::ReadPNG(currPath + ss.str() + ".png", colorBuffer); break; 
-			case ImageFormat::WEBP: ImageReader::ReadWEBP(currPath + ss.str() + ".webp", colorBuffer, nElements * 3); break;
+			case ImageFormat::WEBP: 
+				if (coderName == "Packed" || coderName == "Split")
+				{
+					ImageReader::ReadSplitWEBP(currPath + ss.str() + ".webp", colorBuffer, nElements * 3); 
+					break;
+				}
+				else
+				{
+					ImageReader::ReadWEBP(currPath + ss.str() + ".webp", colorBuffer, nElements * 3);
+					break;
+				}
 			}
 		}
 
@@ -314,6 +334,7 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 			SaveError(original, decoded, colorBuffer, width, height, currPath + ss.str() + "_decoded", err);
 		}
 
+		/*
 		{
 			DSTR_PROFILE_SCOPE("Denoise");
 			DepthProcessing::DenoiseMedian(decoded, width, height, 750);
@@ -324,6 +345,7 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 			ImageWriter::WriteDecoded(currPath + ss.str() + "_decoded_denoised.png", decoded, width, height);
 			SaveError(original, decoded, colorBuffer, width, height, currPath + ss.str() + "_decoded_denoised", err);
 		}
+		*/
 
 		std::string extension;
 		switch (format)
@@ -332,7 +354,11 @@ void BenchmarkCoder(uint8_t q, bool enlarge, uint8_t algoBits, uint16_t* src, ui
 		case ImageFormat::PNG: extension = ".png"; break;
 		case ImageFormat::WEBP: extension = ".webp"; break;
 		}
-		err.EncodedTextureSize = std::filesystem::file_size(currPath + ss.str() + extension);
+		if (extension != ".webp")
+			err.EncodedTextureSize = std::filesystem::file_size(currPath + ss.str() + extension);
+		else
+			err.EncodedTextureSize = std::filesystem::file_size(currPath + ss.str() + extension + ".red.webp") +
+			std::filesystem::file_size(currPath + ss.str() + extension + ".green.webp");
 		// TODO: remove typeid
 		AddBenchmarkResult(csv, typeid(T).name(), q, jpegLevels[j], algoBits, err);
 	}
@@ -344,7 +370,7 @@ int main(int argc, char** argv)
 {
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 
-	std::string coders[7] = { "Hilbert", "Split", "Hue", "Triangle", "Packed", "Morton", "Phase" };
+	std::string coders[7] = { "Split", "Packed", "Hilbert", "Phase", "Hue", "Morton", "Triangle" };
 	uint8_t quantizations[4] = {10, 12, 14, 16};
 	bool enlarge[2] = {true, false};
 	bool denoising[2] = { false, true };
@@ -380,7 +406,7 @@ int main(int argc, char** argv)
 	//TestCoder<Packed>(10, 8);
 	//TestCoder<Hilbert>(16, 5, -32, 32, 8);
 
-	for (uint32_t c = 0; c < 7; c++)
+	for (uint32_t c = 0; c < 2; c++)
 	{
 		std::cout << "CODER: " << coders[c] << std::endl;
 		AddFolderLevel(coders[c], -1, folders);
@@ -398,13 +424,13 @@ int main(int argc, char** argv)
 				if (algoBits.size() > 1)
 					AddFolderLevel("Parameter", algoBits[p], folders);
 
-				if (!coders[c].compare("Hilbert")) BenchmarkCoder<Hilbert>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, ImageFormat::WEBP);
-				if (!coders[c].compare("Morton")) BenchmarkCoder<Morton>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, ImageFormat::WEBP);
-				if (!coders[c].compare("Hue")) BenchmarkCoder<Hue>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, ImageFormat::WEBP);
-				if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, ImageFormat::WEBP);
-				if (!coders[c].compare("Split")) BenchmarkCoder<Split>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, ImageFormat::WEBP);
-				if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, ImageFormat::WEBP);
-				if (!coders[c].compare("Packed")) BenchmarkCoder<Packed>(quantizations[q], false, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, ImageFormat::WEBP);
+				if (!coders[c].compare("Hilbert")) BenchmarkCoder<Hilbert>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, "Hilbert", ImageFormat::WEBP);
+				if (!coders[c].compare("Morton")) BenchmarkCoder<Morton>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, "Morton", ImageFormat::WEBP);
+				if (!coders[c].compare("Hue")) BenchmarkCoder<Hue>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, "Hue", ImageFormat::WEBP);
+				if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, "Triangle", ImageFormat::WEBP);
+				if (!coders[c].compare("Split")) BenchmarkCoder<Split>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, "Split", ImageFormat::WEBP);
+				if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(quantizations[q], true, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, "Phase", ImageFormat::WEBP);
+				if (!coders[c].compare("Packed")) BenchmarkCoder<Packed>(quantizations[q], false, algoBits[p], quantizedData, encodedData, decodedData, colorBuffer, originalData, dmData.Width, dmData.Height, folders, "Packed", ImageFormat::WEBP);
 
 				if (algoBits.size() > 1)
 					folders.pop_back();

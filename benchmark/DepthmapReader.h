@@ -6,7 +6,7 @@
 
 namespace DStream
 {
-    enum DepthmapFormat { NONE = 0, ASC = 1 };
+    enum DepthmapFormat { NONE = 0, ASC, TIF, DEM, XYZ };
 
     struct DepthmapData
     {
@@ -26,12 +26,16 @@ namespace DStream
 	class DepthmapReader
 	{
     public:
-        DepthmapReader(const std::string& path, DepthmapFormat format, DepthmapData& dmData);
+        DepthmapReader() = default;
+        DepthmapReader(const std::string& path, DepthmapFormat format, DepthmapData& dmData, bool quantize = true);
         ~DepthmapReader();
         inline uint16_t* GetData() { return m_Data; }
 
     private:
-        void ParseASC(const std::string& path, DepthmapData& dmData);
+        void ParseASC(const std::string& path, DepthmapData& dmData, bool quantize);
+        void ParseTIFF(const std::string& path, DepthmapData& dmData, bool quantize);
+        void ParseDEM(const std::string& path, DepthmapData& dmData, bool quantize);
+        void ParseXYZ(const std::string& path, DepthmapData& dmData, bool quantize);
 
     private:
         uint16_t* m_Data;
