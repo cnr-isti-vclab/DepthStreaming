@@ -3,7 +3,7 @@ import re
 import plotly as py
 
 def create_graphs():
-    file = open("../build/WebpOutputJpeg/results.csv")
+    file = open("../build/OldOutput/Output/results.csv")
     lines = file.readlines()
 
     labels = []
@@ -32,8 +32,8 @@ def create_graphs():
         csv = line[line.index(",") + 1: len(line)].split(",")
         maxErr = float(csv[0])
         avgErr = float(csv[1])
-        maxDespeckledErr = float(csv[2])
-        avgDespeckledErr = float(csv[3])
+        maxDespeckledErr = float(csv[2]) if csv[2] != "/" else 0
+        avgDespeckledErr = float(csv[3]) if csv[3] != "/" else 0
         jpegSize = float(csv[4]) / 1000
 
         algoNames.append(algo)
@@ -60,7 +60,7 @@ def create_graphs():
     algoNames = list(algoNames)
 
     fig = px.scatter(x=jpegSizes, y=errors, labels={"x": "Compressed texture size", "y": "Logarithmic mean error"}, color=quantizations, size=jpegQualities,
-                     hover_data={"Parameter": params, "Jpeg quality": uneditedJpeg}, symbol=algoNames, title="WEBP JPEG")
+                     hover_data={"Parameter": params, "Jpeg quality": uneditedJpeg}, symbol=algoNames, title="PNG")
     fig.show()
     fig.update_layout({  "xaxis": {    "type": "category"  }})
 

@@ -79,6 +79,7 @@ if(MSVC)
 #			-Dtiff-tests=FALSE
 #			-Dtiff-contrib=FALSE
 #			-Dtiff-install=FALSE
+#			-DBUILD_SHARED_LIBS=FALSE
 #)
 	
 	
@@ -90,9 +91,6 @@ else()
 	find_package (TIFF REQUIRED)
 	find_package (ZLIB REQUIRED)
 endif()
-
-
-
 
 # LIB SOURCE
 set (DSTREAM_LIB_SRC
@@ -123,19 +121,6 @@ set (DSTREAM_LIB_SRC
 	lib/Implementations/Phase.h
 )
 
-set (DSTREAM_LIB_HEADERS
-	lib/StreamCoder.h
-	lib/DepthProcessing.h
-	lib/Coder.h
-	
-	lib/Implementations/Packed.h
-	lib/Implementations/Hilbert.h
-	lib/Implementations/Morton.h
-
-	lib/DataStructs/Table.h
-	lib/DataStructs/Vec3.h
-)
-
 # Add library
 link_directories(
 	${EXTERNAL_DEPS}/libjpeg-turbo
@@ -152,8 +137,13 @@ if(MSVC)
 		PUBLIC libpng16_static
 		PUBLIC zlibstatic
 		PUBLIC libwebp
-		PUBLIC tiff
 	)
+	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+		target_link_libraries(dstream-static PUBLIC ${EXTERNAL_DEPS}/libtiff/libtiff/Debug/tiffd.lib)
+	else()
+		target_link_libraries(dstream-static PUBLIC ${EXTERNAL_DEPS}/libtiff/libtiff/Release/tiff.lib)
+	endif()
+
 	target_include_directories (dstream-static
 		PUBLIC lib
 		PUBLIC ${CMAKE_BINARY_DIR}/libjpeg-turbo/src/libjpeg-turbo/
@@ -165,7 +155,7 @@ if(MSVC)
 		PUBLIC ${CMAKE_BINARY_DIR}/libwebp/src/libwebp/src
 		PUBLIC ${EXTERNAL_DEPS}/libwebp/src
 		PUBLIC ${CMAKE_BINARY_DIR}/libtiff/src/libtiff
-		PUBLIC ${EXTERNAL_DEPS}/libtiff/src
+		PUBLIC ${EXTERNAL_DEPS}/libtiff/libtiff
 	)
 else()
 	target_link_libraries(dstream-static
@@ -204,15 +194,6 @@ if (BUILD_DSTREAM_BENCHMARK)
 		benchmark/JpegEncoder.h
 		benchmark/JpegDecoder.h
 	)
-
-	set (DSTREAM_BENCHMARK_HEADERS
-		benchmark/DepthmapReader.h
-		benchmark/ImageWriter.h
-		benchmark/ImageReader.h
-		benchmark/Timer.h
-		benchmark/JpegEncoder.h
-		benchmark/JpegDecoder.h
-	)
 	
 	add_executable(dstream-benchmark ${DSTREAM_BENCHMARK_SRC})
 	target_include_directories (dstream-benchmark
@@ -227,11 +208,19 @@ endif()
 if (BUILD_DSTREAM_CMD)
 	set (DSTREAM_CMD_SRC
 		cmd/Main.cpp
+		benchmark/DepthmapReader.cpp
+		benchmark/ImageReader.cpp
+		benchmark/ImageWriter.cpp
+		
+		benchmark/DepthmapReader.h
+		benchmark/ImageWriter.h
+		benchmark/ImageReader.h
 	)
 	
 	add_executable(dstream-cmd ${DSTREAM_CMD_SRC})
 	target_include_directories (dstream-cmd
 		PRIVATE cmd
+		PRIVATE benchmark
 	)
 	target_link_libraries(dstream-cmd
 		PUBLIC dstream-static

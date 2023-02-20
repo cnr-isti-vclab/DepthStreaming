@@ -4,6 +4,10 @@
 #include <string>
 #include <filesystem>
 
+#include <DepthmapReader.h>
+#include <ImageReader.h>
+#include <ImageWriter.h>
+
 #include <StreamCoder.h>
 #include <Implementations/Hilbert.h>
 #include <Implementations/Hue.h>
@@ -16,7 +20,7 @@
 /*
     - Parameter to enlarge
     - Parameter to use tables
-    - 
+    - TODO: quantization parameter optional, extracted from file if not specified
 */
 
 using namespace DStream;
@@ -229,45 +233,60 @@ void EncodeDecode(const std::string& coder, uint16_t* originalData, uint8_t* enc
 
 void Encode(const std::filesystem::path& filePath, const std::string& outputDirectory, const std::string& coder, uint8_t quantization, uint8_t jpeg, uint8_t algoBits)
 {
+    std::string extension = filePath.extension().string();
+    DepthmapData dmData;
+    DepthmapReader reader;
+    uint16_t* depthData;
+    uint8_t* encoded;
+    uint32_t nElements;
+
+    if (extension == ".asc")
+        reader = DepthmapReader(filePath.string(), DepthmapFormat::ASC, dmData, true);
+    else if (extension == ".tif" || extension == ".tiff")
+        reader = DepthmapReader(filePath.string(), DepthmapFormat::TIF, dmData, true);
+
+    nElements = dmData.Width * dmData.Height;
+    encoded = new uint8_t[nElements * 3];
+
     // Read depthmap here
-    /*
     if (!coder.compare("Packed"))
     {
         StreamCoder<Packed> coder(quantization, enlarge, 8, useTables);
-        coder.Encode(originalData, (Color*)encoded, nElements);
+        coder.Encode(depthData, (Color*)encoded, nElements);
     }
     else if (!coder.compare("Hue"))
     {
         StreamCoder<Hue> coder(quantization, enlarge, 8, useTables);
-        coder.Encode(originalData, (Color*)encoded, nElements);
+        coder.Encode(depthData, (Color*)encoded, nElements);
     }
     else if (!coder.compare("Hilbert"))
     {
         StreamCoder<Hilbert> coder(quantization, enlarge, 3, useTables);
-        coder.Encode(originalData, (Color*)encoded, nElements);
+        coder.Encode(depthData, (Color*)encoded, nElements);
     }
     else if (!coder.compare("Morton"))
     {
         StreamCoder<Morton> coder(quantization, enlarge, 8, useTables);
-        coder.Encode(originalData, (Color*)encoded, nElements);
+        coder.Encode(depthData, (Color*)encoded, nElements);
     }
     else if (!coder.compare("Split"))
     {
         StreamCoder<Split> coder(quantization, enlarge, 8, useTables);
-        coder.Encode(originalData, (Color*)encoded, nElements);
+        coder.Encode(depthData, (Color*)encoded, nElements);
     }
     else if (!coder.compare("Phase"))
     {
         StreamCoder<Phase> coder(quantization, enlarge, 8, useTables);
-        coder.Encode(originalData, (Color*)encoded, nElements);
+        coder.Encode(depthData, (Color*)encoded, nElements);
     }
     else
     {
         StreamCoder<Triangle> coder(quantization, enlarge, 8, useTables);
-        coder.Encode(originalData, (Color*)encoded, nElements);
+        coder.Encode(depthData, (Color*)encoded, nElements);
     }
-    */
-    // Save encoded texture here
+
+    delete[] depthData;
+    delete[] encoded;
 }
 
 void Decode(const std::filesystem::path& filePath, const std::string& outputDirectory, const std::string& coder, uint8_t quantization, uint8_t jpeg, uint8_t algoBits)
@@ -313,7 +332,6 @@ int main(int argc, char** argv)
             Encode(file, outDir, algorithm, quantization, jpeg, algoBits);
         else
             Decode(file, outDir, algorithm, quantization, 100, algoBits);
-
     }
 
 	return 0;
