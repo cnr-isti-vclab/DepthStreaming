@@ -1,0 +1,12 @@
+[submodule "lib/vendor/libwebp"]
+	path = lib/vendor/libwebp
+	url = https://github.com/webmproject/libwebp
+[submodule "lib/vendor/libtiff"]
+	path = lib/vendor/libtiff
+	url = https://gitlab.com/libtiff/libtiff
+[submodule "lib/vendor/libpng"]
+	path = lib/vendor/libpng
+	url = https://github.com/glennrp/libpng
+[submodule "lib/vendor/zlib"]
+	path = lib/vendor/zlib
+	url = https://github.com/madler/zlib

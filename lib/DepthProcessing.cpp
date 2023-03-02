@@ -42,6 +42,8 @@ namespace DStream
     void DepthProcessing::Quantize(uint16_t* source, uint16_t* dest, uint8_t q, uint32_t nElements)
     {
         for (uint32_t i = 0; i < nElements; i++)
-            dest[i] = std::round((float)source[i] / (1 << (16 - q)));
+        {
+            dest[i] = std::floor((float)source[i] / ((1 << (16 - q))));
+        }
     }
 }

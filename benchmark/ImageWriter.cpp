@@ -1,11 +1,24 @@
 #include <ImageWriter.h>
 #include <DataStructs/Vec3.h>
 #include <JpegEncoder.h>
-#include <png.h>
+#ifdef DSTREAM_ENABLE_PNG
+    #include <png.h>
+#else
+    #define STB_IMAGE_WRITE_IMPLEMENTATION
+    extern "C"
+    {
+        #include <stb_image_write.h>
+    }
+#endif
+
+#ifdef DSTREAM_ENABLE_WEBP
 #include <webp/encode.h>
+#endif
 
 #include <fstream>
 #include <algorithm>
+
+// TODO: add back stbi_image
 
 namespace DStream
 {
@@ -40,12 +53,17 @@ namespace DStream
             colorData[i].y = quantizedVal;
             colorData[i].z = quantizedVal;
         }
+#ifdef DSTREAM_ENABLE_PNG
         ImageWriter::WritePNG(path, (uint8_t*)colorData, width, height);
+#else
+        WritePNG(path, (uint8_t*)colorData, width, height);
+#endif
         delete[] colorData;
     }
 
     void ImageWriter::WritePNG(const std::string& path, uint8_t* data, uint32_t width, uint32_t height)
     {
+#ifdef DSTREAM_ENABLE_PNG
         FILE* fp = fopen(path.c_str(), "wb");
 
         png_image image;
@@ -64,12 +82,19 @@ namespace DStream
         png_write_info(s, pi);
         png_write_image(s, rows);
         png_write_end(s, NULL);
+
+        png_destroy_write_struct(&s, &pi);
         
         fclose(fp);
+#else
+        stbi_write_png(path.c_str(), width, height, 3, data, width * 3);
+#endif
     }
 
+#ifdef DSTREAM_ENABLE_WEBP
     void ImageWriter::WriteWEBP(const std::string& path, uint8_t* data, uint32_t width, uint32_t height, uint32_t quality /*= 0*/)
     {
+        /*
         WebPConfig config;
         WebPConfigInit(&config);
 
@@ -108,8 +133,8 @@ namespace DStream
         outFile.write((const char*)writer.mem, writer.size);
         outFile.close();
 
-        WebPPictureFree(&pic);
-        /*
+        WebPPictureFree(&pic);*/
+
         uint8_t* buf;
         size_t wrote;
 
@@ -122,7 +147,6 @@ namespace DStream
         outFile.open(path, std::ios::out | std::ios::binary);
         outFile.write((const char*)buf, wrote);
         outFile.close();
-        */
     }
 
 
@@ -202,4 +226,5 @@ namespace DStream
         delete[] redData;
         delete[] greenData;
     }
+#endif
 }

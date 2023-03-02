@@ -238,7 +238,10 @@ void Encode(const std::filesystem::path& filePath, const std::string& outputDire
     DepthmapReader reader;
     uint16_t* depthData;
     uint8_t* encoded;
-    uint32_t nElements;
+    uint32_t nElement;
+
+    bool enlarge = true, useTables = true;
+    uint32_t nElements = 0;
 
     if (extension == ".asc")
         reader = DepthmapReader(filePath.string(), DepthmapFormat::ASC, dmData, true);

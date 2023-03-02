@@ -4,9 +4,15 @@
 #include <string>
 #include <memory>
 
+// TODO: quantize in the generic function, parse in the specific ones
+
 namespace DStream
 {
-    enum DepthmapFormat { NONE = 0, ASC, TIF, DEM, XYZ };
+    enum DepthmapFormat { NONE = 0, ASC, 
+#ifdef DSTREAM_ENABLE_TIFF 
+        TIF,
+#endif 
+        DEM, XYZ, PGM };
 
     struct DepthmapData
     {
@@ -33,7 +39,10 @@ namespace DStream
 
     private:
         void ParseASC(const std::string& path, DepthmapData& dmData, bool quantize);
+#ifdef DSTREAM_ENABLE_TIFF
         void ParseTIFF(const std::string& path, DepthmapData& dmData, bool quantize);
+#endif
+        void ParsePGM(const std::string& path, DepthmapData& dmData, bool quantize);
         void ParseDEM(const std::string& path, DepthmapData& dmData, bool quantize);
         void ParseXYZ(const std::string& path, DepthmapData& dmData, bool quantize);
 

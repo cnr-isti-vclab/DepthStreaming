@@ -94,12 +94,16 @@ namespace DStream
 		if (m_UseTables)
 		{
 			for (uint32_t i = 0; i < nElements; i++)
-				dest[i] = m_EncodingTable[(source[i] >> (16 - m_Implementation.GetQuantization())) << (16 - m_Implementation.GetQuantization())];
+				dest[i] = m_EncodingTable[source[i]];
 		}
 		else
 		{
 			for (uint32_t i = 0; i < nElements; i++)
+			{
+				if (i == 33217)
+					std::cout << "E";
 				dest[i] = m_Implementation.EncodeValue(source[i]);
+			}
 		}
 
 		
@@ -137,7 +141,11 @@ namespace DStream
 		else
 		{
 			for (uint32_t i = 0; i < nElements; i++)
+			{
+				if (i == 33217)
+					std::cout << "E";
 				dest[i] = m_Implementation.DecodeValue(inCols[i]);
+			}
 		}
 
 		if (m_Enlarge)

@@ -1,8 +1,19 @@
 #include <ImageReader.h>
 #include <JpegDecoder.h>
 
-#include <png.h>
-#include <webp/decode.h>
+#ifdef DSTREAM_ENABLE_PNG
+	#include <png.h>
+#else
+	#define STB_IMAGE_IMPLEMENTATION
+	extern "C"
+	{
+		#include <stb_image.h>
+	}
+#endif
+
+#ifdef DSTREAM_ENABLE_WEBP
+	#include <webp/decode.h>
+#endif
 
 #include <fstream>
 #include <sstream>
@@ -19,6 +30,7 @@ namespace DStream
 
 	void ImageReader::ReadPNG(const std::string& path, uint8_t* dest)
 	{
+#ifdef DSTREAM_ENABLE_PNG
 		FILE* fp = fopen(path.c_str(), "rb");
 		png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 		png_infop info_ptr = png_create_info_struct(png_ptr);
@@ -35,8 +47,15 @@ namespace DStream
 
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		fclose(fp);
+#else
+		int w, h, comp;
+		uint8_t* data = stbi_load(path.c_str(), &w, &h, &comp, 3);
+		memcpy(dest, data, w * h * 3);
+		stbi_image_free(data);
+#endif
 	}
 
+#ifdef DSTREAM_ENABLE_WEBP
 	void ImageReader::ReadWEBP(const std::string& path, uint8_t* dest, int nElements)
 	{
 		FILE* fp = fopen(path.c_str(), "rb");
@@ -85,4 +104,5 @@ namespace DStream
 		delete[] redDest;
 		delete[] greenDest;
 	}
+#endif
 }

@@ -1,20 +1,27 @@
 cmake_minimum_required(VERSION 3.19.1)
 cmake_policy(SET CMP0002 NEW)
+cmake_policy(SET CMP0077 NEW)
 include(ExternalProject)
 project(DStream)
 
 option(BUILD_DSTREAM_BENCHMARK	"Build the benchmark that compares different depth encoding algorithms" ON)
 option(BUILD_DSTREAM_CMD		"Build the command line executable that encodes or decodes depthmaps" ON)
+option(ENABLE_PNG				"Build the project with libpng support. When enabled, zlib will also be linked. When disabled, \
+									stb_image will be used to handle PNGs instead and zlib won't be linked" OFF)
+option(ENABLE_WEBP				"Build the project with libwebp support. When enabled, libpng will also be linked" OFF)
+option(ENABLE_TIFF				"Build the project with libtiff support" ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_DEBUG_POSTFIX d)
 set (EXTERNAL_DEPS	${CMAKE_BINARY_DIR}/../ext)
 
-# Configure dependencies
+# General dependency configuration
 set(BUILD_EXAMPLES OFF CACHE INTERNAL "" FORCE)
 set(ENABLED_SHARED OFF CACHE INTERNAL "" FORCE)
+set(SKIP_INSTALL_ALL ON CACHE INTERNAL "" FORCE)
 
 if(MSVC)
+	# Build libjpeg
 	ExternalProject_Add(libjpeg-turbo
 		PREFIX libjpeg-turbo
 		BINARY_DIR ${EXTERNAL_DEPS}/libjpeg-turbo
@@ -22,74 +29,70 @@ if(MSVC)
 		URL_HASH SHA256=426d097a29bd67ab7ef8584673ba2e0da5fe65dcddd0c8daa123bdcb7a5e871f
 	)
 	
-#	ExternalProject_Add(libwebp
-#		PREFIX libwebp
-#		BINARY_DIR ${EXTERNAL_DEPS}/libwebp
-#		URL https://github.com/webmproject/libwebp/archive/refs/tags/v1.3.0.tar.gz
-#		URL_HASH SHA256=dc9860d3fe06013266c237959e1416b71c63b36f343aae1d65ea9c94832630e1
-#		CMAKE_ARGS
-#			-DWEBP_BUILD_ANIM_UTILS=FALSE
-#			-DWEBP_BUILD_ANIM_UTILS=FALSE
-#			-DWEBP_BUILD_DWEBP=FALSE
-#			-DWEBP_BUILD_GIF2WEBP=FALSE
-#			-DWEBP_BUILD_IMG2WEBP=FALSE
-#			-DWEBP_BUILD_VWEBP=FALSE
-#			-DWEBP_BUILD_WEBPINFO=FALSE
-#			-DWEBP_BUILD_LIBWEBPMUX=FALSE
-#			-DWEBP_BUILD_WEBPMUX=FALSE
-#			-DWEBP_BUILD_EXTRAS=FALSE
-#			-DWEBP_BUILD_EXTRAS=FALSE
-#	)
-			
-#
-	# Build zlib
-#	ExternalProject_Add(zlib
-#		PREFIX zlib
-#		BINARY_DIR ${EXTERNAL_DEPS}/zlib
-#		URL https://github.com/madler/zlib/releases/download/v1.2.13/zlib-1.2.13.tar.gz
-#		URL_HASH SHA256=b3a24de97a8fdbc835b9833169501030b8977031bcb54b3b3ac13740f846ab30
-#		CMAKE_ARGS
-#			-DBUILD_SHARED_LIBS=FALSE
-#			-DSKIP_INSTALL_ALL=TRUE
-#	)
+	if (${ENABLE_WEBP} OR ${ENABLE_PNG} OR ${ENABLE_TIFF})
+		add_subdirectory(lib/vendor/zlib)
+		configure_file("${PROJECT_SOURCE_DIR}/lib/vendor/zlib/zconf.h.in" "${PROJECT_SOURCE_DIR}/lib/vendor/zlib/zconf.h")
+	endif()
 
 	# Build libpng
-#	ExternalProject_Add(libpng
-#		PREFIX libpng
-#		BINARY_DIR ${EXTERNAL_DEPS}/libpng
-#		URL https://github.com/glennrp/libpng/archive/refs/tags/v1.6.39.tar.gz
-#		URL_HASH SHA256=a00e9d2f2f664186e4202db9299397f851aea71b36a35e74910b8820e380d441
-#		CMAKE_ARGS
-#			-DPNG_SHARED=FALSE
-#			-DPNG_STATIC=TRUE
-#			-DPNG_HARDWARE_OPTIMIZATIONS=TRUE
-#			-DPNG_EXECUTABLES=FALSE
-#			-DPNG_TESTS=FALSE
-#			-DSKIP_INSTALL_ALL=TRUE
-#)
-
-# Build libtiff
-#	ExternalProject_Add(libtiff
-#		PREFIX libtiff
-#		BINARY_DIR ${EXTERNAL_DEPS}/libtiff
-#		URL https://gitlab.com/libtiff/libtiff/-/archive/v4.5.0/libtiff-v4.5.0.tar.gz
-#		URL_HASH SHA256=9c89263dc6b12d89ea0f0af3f36020797f17a6d3d247bf06d66fdbbef98609af
-#		CMAKE_ARGS
-#			-Dtiff-tools=FALSE
-#			-Dtiff-tests=FALSE
-#			-Dtiff-contrib=FALSE
-#			-Dtiff-install=FALSE
-#			-DBUILD_SHARED_LIBS=FALSE
-#)
+	if (${ENABLE_WEBP} OR ${ENABLE_PNG})
+		set(PNG_BUILD_ZLIB ON CACHE INTERNAL "" FORCE)
+		set(PNG_SHARED OFF CACHE INTERNAL "" FORCE)
+		set(PNG_EXECUTABLES OFF CACHE INTERNAL "" FORCE)
+		set(PNG_TESTS OFF CACHE INTERNAL "" FORCE)
 	
+		add_subdirectory(lib/vendor/libpng)
+		
+		target_include_directories(png_static PRIVATE lib/vendor/zlib)
+		target_link_libraries(png_static PRIVATE zlibstatic)
+		
+		configure_file("${PROJECT_SOURCE_DIR}/lib/vendor/libpng/scripts/pnglibconf.h.prebuilt" "${PROJECT_SOURCE_DIR}/lib/vendor/libpng/pnglibconf.h")
+	endif()
 	
+	# Build libwebp
+	if (${ENABLE_WEBP})
+		set(WEBP_BUILD_CWEBP OFF CACHE INTERNAL "" FORCE)
+		set(WEBP_BUILD_DWEBP OFF CACHE INTERNAL "" FORCE)
+		set(WEBP_BUILD_GIF2WEBP OFF CACHE INTERNAL "" FORCE)
+		set(WEBP_BUILD_IMG2WEBP OFF CACHE INTERNAL "" FORCE)
+		set(WEBP_BUILD_VWEBP OFF CACHE INTERNAL "" FORCE)
+		set(WEBP_BUILD_WEBPINFO OFF CACHE INTERNAL "" FORCE)
+		set(WEBP_BUILD_LIBWEBPMUX OFF CACHE INTERNAL "" FORCE)
+		set(WEBP_BUILD_EXTRAS OFF CACHE INTERNAL "" FORCE)
+		
+		add_subdirectory(lib/vendor/libwebp)
+	endif()
 	
+	# Build libtiff
+	if (${ENABLE_TIFF})
+		set(tiff-tools OFF CACHE INTERNAL "" FORCE)
+		set(tiff-tests OFF CACHE INTERNAL "" FORCE)
+		set(tiff-docs OFF CACHE INTERNAL "" FORCE)
+		set(tiff-install OFF CACHE INTERNAL "" FORCE)
+	
+		add_subdirectory(lib/vendor/libtiff)
+		
+		target_link_libraries(tiff PRIVATE zlibstatic)
+	endif()
 else()
 	find_package (JPEG REQUIRED)
-	find_package (PNG REQUIRED)
-	find_package (WEBP REQUIRED)
-	find_package (TIFF REQUIRED)
-	find_package (ZLIB REQUIRED)
+	
+	if (${ENABLE_WEBP} OR ${ENABLE_PNG} OR ${ENABLE_TIFF})
+		find_package (ZLIB REQUIRED)
+	endif()
+	
+	if (${ENABLE_WEBP} OR ${ENABLE_PNG})
+		find_package (PNG REQUIRED)
+	endif()
+	
+	if (${ENABLE_WEBP})
+		find_package (WEBP REQUIRED)
+	endif()
+	
+	if (${ENABLE_TIFF})
+		find_package (TIFF REQUIRED)
+	endif()
+	
 endif()
 
 # LIB SOURCE
@@ -124,55 +127,146 @@ set (DSTREAM_LIB_SRC
 # Add library
 link_directories(
 	${EXTERNAL_DEPS}/libjpeg-turbo
-	${EXTERNAL_DEPS}/libpng
-	${EXTERNAL_DEPS}/zlib
-	${EXTERNAL_DEPS}/libwebp
-	${EXTERNAL_DEPS}/libtiff/libtiff
 )
 
+# Compile defs
+if (${ENABLE_WEBP} OR ${ENABLE_PNG} OR ${ENABLE_TIFF})
+	add_compile_definitions(
+		DSTREAM_ENABLE_ZIP
+	)
+endif()
+
+if (${ENABLE_WEBP} OR ${ENABLE_PNG})
+	add_compile_definitions(
+		DSTREAM_ENABLE_PNG
+	)
+endif()
+if (${ENABLE_TIFF})
+	add_compile_definitions(DSTREAM_ENABLE_TIFF)
+endif()
+if (${ENABLE_WEBP})
+	add_compile_definitions(DSTREAM_ENABLE_WEBP)
+endif()
+
 add_library(dstream-static STATIC ${DSTREAM_LIB_SRC})
+
+
 if(MSVC)
 	target_link_libraries(dstream-static
 		PUBLIC turbojpeg-static
-		PUBLIC libpng16_static
-		PUBLIC zlibstatic
-		PUBLIC libwebp
 	)
-	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-		target_link_libraries(dstream-static PUBLIC ${EXTERNAL_DEPS}/libtiff/libtiff/Debug/tiffd.lib)
-	else()
-		target_link_libraries(dstream-static PUBLIC ${EXTERNAL_DEPS}/libtiff/libtiff/Release/tiff.lib)
+	
+	if (${ENABLE_WEBP} OR ${ENABLE_PNG} OR ${ENABLE_TIFF})
+		target_link_libraries(dstream-static
+			PUBLIC zlibstatic
+		)
+	endif()
+	
+	if (${ENABLE_WEBP} OR ${ENABLE_PNG})
+		target_link_libraries(dstream-static
+			PUBLIC png_static
+		)
+	endif()
+	
+	if (${ENABLE_WEBP})
+		target_link_libraries(dstream-static PUBLIC webp)
+	endif()
+	
+	if (${ENABLE_TIFF})
+		target_link_libraries(dstream-static PUBLIC tiff)
 	endif()
 
+# TODO: selectively add include directories, do the same for Unix
 	target_include_directories (dstream-static
 		PUBLIC lib
-		PUBLIC ${CMAKE_BINARY_DIR}/libjpeg-turbo/src/libjpeg-turbo/
+	)
+	
+	if (${ENABLE_WEBP} OR ${ENABLE_PNG} OR ${ENABLE_TIFF})
+		target_include_directories(dstream-static
+			PUBLIC lib/vendor/zlib
+		)
+	endif()
+	
+	if (${ENABLE_WEBP} OR ${ENABLE_PNG})
+		target_include_directories(dstream-static
+			PUBLIC lib/vendor/libpng
+		)
+	endif()
+	
+	if (${ENABLE_TIFF})
+		target_include_directories(dstream-static
+			PUBLIC lib/vendor/libtiff
+		)
+	endif()
+	
+	if (${ENABLE_WEBP})
+		target_include_directories(dstream-static
+			PUBLIC lib/vendor/libwebp
+		)
+	endif()
+	
+	target_include_directories(dstream-static 
+		PUBLIC ${CMAKE_BINARY_DIR}/libjpeg-turbo/src/libjpeg-turbo
 		PUBLIC ${EXTERNAL_DEPS}/libjpeg-turbo
-		PUBLIC ${CMAKE_BINARY_DIR}/libpng/src/libpng
-		PUBLIC ${EXTERNAL_DEPS}/libpng
-		PUBLIC ${CMAKE_BINARY_DIR}/zlib/src/zlib
-		PUBLIC ${EXTERNAL_DEPS}/zlib
-		PUBLIC ${CMAKE_BINARY_DIR}/libwebp/src/libwebp/src
-		PUBLIC ${EXTERNAL_DEPS}/libwebp/src
-		PUBLIC ${CMAKE_BINARY_DIR}/libtiff/src/libtiff
-		PUBLIC ${EXTERNAL_DEPS}/libtiff/libtiff
 	)
 else()
 	target_link_libraries(dstream-static
 		PUBLIC ${JPEG_LIBRARIES}
-		PUBLIC ${PNG_LIBRARIES}
-		PUBLIC ${ZLIB_LIBRARIES}
-		PUBLIC ${WEBP_LIBRARIES}
-		PUBLIC ${TIFF_LIBRARIES}
 	)
+	
+	if (${ENABLE_PNG} OR ${ENABLE_WEBP} OR ${ENABLE_TIFF})
+		target_link_libraries(dstream-static
+			PUBLIC ${ZLIB_LIBRARIES}
+		)
+	endif()
+	
+	if (${ENABLE_PNG} OR ${ENABLE_WEBP})
+		target_link_libraries(dstream-static
+			PUBLIC ${PNG_LIBRARIES}
+		)
+	endif()
+	
+	if (${ENABLE_WEBP})
+		target_link_libraries(dstream-static
+			PUBLIC ${WEBP_LIBRARIES}
+		)
+	endif()
+	
+	if (${ENABLE_TIFF})
+		target_link_libraries(dstream-static
+			PUBLIC ${TIFF_LIBRARIES}
+		)
+	endif()
+	
+	
 	target_include_directories (dstream-static
 		PUBLIC lib
 		${JPEG_INCLUDE_DIR}
-		${PNG_INCLUDE_DIR}
-		${ZLIB_INCLUDE_DIR}
-		${WEBP_INCLUDE_DIR}
-		${TIFF_INCLUDE_DIR}
 	)
+	
+	if (${ENABLE_PNG} OR ${ENABLE_WEBP} OR ${ENABLE_TIFF})
+		target_include_directories(dstream-static
+			PUBLIC ${ZLIB_INCLUDE_DIR}
+		)
+	endif()
+	
+	if (${ENABLE_PNG} OR ${ENABLE_WEBP})
+		target_include_directories(dstream-static
+			PUBLIC ${PNG_INCLUDE_DIR}
+		)
+	endif()
+	
+	if (${ENABLE_WEBP})
+		target_include_directories(dstream-static
+			PUBLIC ${WEBP_INCLUDE_DIR}
+		)
+	endif()
+	
+	if (${ENABLE_WEBP})
+		target_include_directories(dstream-static
+			PUBLIC ${TIFF_INCLUDE_DIR}
+		)
+	endif()
 endif()
 
 # Add benchmark
@@ -193,11 +287,14 @@ if (BUILD_DSTREAM_BENCHMARK)
 		
 		benchmark/JpegEncoder.h
 		benchmark/JpegDecoder.h
+		benchmark/stb_image.h
+		benchmark/stb_image_write.h
 	)
 	
 	add_executable(dstream-benchmark ${DSTREAM_BENCHMARK_SRC})
 	target_include_directories (dstream-benchmark
 		PRIVATE benchmark
+		PRIVATE lib
 	)
 	target_link_libraries(dstream-benchmark
 		PUBLIC dstream-static
@@ -211,14 +308,21 @@ if (BUILD_DSTREAM_CMD)
 		benchmark/DepthmapReader.cpp
 		benchmark/ImageReader.cpp
 		benchmark/ImageWriter.cpp
+		benchmark/JpegDecoder.cpp
+		benchmark/JpegEncoder.cpp
 		
 		benchmark/DepthmapReader.h
 		benchmark/ImageWriter.h
 		benchmark/ImageReader.h
+		benchmark/JpegEncoder.h
+		benchmark/JpegDecoder.h
+		benchmark/stb_image.h
+		benchmark/stb_image_write.h
 	)
 	
 	add_executable(dstream-cmd ${DSTREAM_CMD_SRC})
 	target_include_directories (dstream-cmd
+		PRIVATE lib
 		PRIVATE cmd
 		PRIVATE benchmark
 	)

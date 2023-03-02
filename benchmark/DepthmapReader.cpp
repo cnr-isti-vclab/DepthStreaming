@@ -4,6 +4,7 @@
 #include <libtiff/tiffio.h>
 
 #include <iostream>
+#include <fstream>
 #include <filesystem>
 
 namespace DStream
@@ -17,6 +18,9 @@ namespace DStream
             break;
         case DepthmapFormat::TIF:
             ParseTIFF(path, dmData, quantize);
+            break;
+        case DepthmapFormat::PGM:
+            ParsePGM(path, dmData, quantize);
             break;
         default:
             std::cerr << "Unsupported depthmap input format" << std::endl;
@@ -124,6 +128,47 @@ namespace DStream
         TIFFClose(inFile);
 
         delete[] tmpBuffer;
+        dmData.Valid = true;
+    }
+
+    void DepthmapReader::ParsePGM(const std::string& path, DepthmapData& dmData, bool quantize)
+    {
+        int width, height;
+        std::string dummy;
+        std::ifstream file(path, std::ios::in | std::ios::binary);
+        uint16_t min = 65535, max = 0;
+        
+        std::getline(file, dummy);
+        std::getline(file, dummy);
+
+        int spaceIdx = dummy.find_first_of(" ");
+        width = atoi(dummy.substr(0, spaceIdx).c_str());
+        height = atoi(dummy.substr(spaceIdx + 1, dummy.length() - spaceIdx).c_str());
+
+        std::getline(file, dummy);
+
+        dmData.Width = width;
+        dmData.Height = height;
+
+        m_Data = new uint16_t[dmData.Width * dmData.Height];
+        file.read(reinterpret_cast<char*>(m_Data), width * height * sizeof(uint16_t));
+
+        // Invert endianess
+        for (uint32_t i = 0; i < width * height; i++)
+            m_Data[i] = (m_Data[i] >> 8) | (m_Data[i] << 8);
+
+        if (quantize)
+        {
+            for (uint32_t i = 0; i < width * height; i++)
+            {
+                min = std::min(min, m_Data[i]);
+                max = std::max(max, m_Data[i]);
+            }
+
+            for (uint32_t i = 0; i < width * height; i++)
+                m_Data[i] = ((float)(m_Data[i] - min) / (max - min)) * 65535.0f;
+        }
+
         dmData.Valid = true;
     }
 }
