@@ -4,11 +4,28 @@
 #include <libtiff/tiffio.h>
 
 #include <iostream>
+#include <cstring>
 #include <fstream>
 #include <filesystem>
 
 namespace DStream
 {
+    DepthmapReader::DepthmapReader(const std::string& path, DepthmapData& dmData, bool quantize /* = true*/)
+    {
+        uint32_t extStart = path.find_last_of(".") + 1;
+        std::string extension = path.substr(extStart, path.length() - extStart);
+
+        for (uint32_t i = 0; i < extension.length(); i++)
+            extension[i] = tolower(extension[i]);
+
+        if (extension == "tif" || extension == ".tiff")
+            ParseTIFF(path, dmData, quantize);
+        else if (extension == "asc")
+            ParseASC(path, dmData, quantize);
+        else if (extension == "pgm")
+            ParsePGM(path, dmData, quantize);
+    }
+
     DepthmapReader::DepthmapReader(const std::string& path, DepthmapFormat format, DepthmapData& dmData, bool quantize /* = true*/)
     {
         switch (format)

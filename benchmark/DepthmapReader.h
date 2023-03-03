@@ -33,6 +33,7 @@ namespace DStream
 	{
     public:
         DepthmapReader() = default;
+        DepthmapReader(const std::string& path, DepthmapData& dmData, bool quantize = true);
         DepthmapReader(const std::string& path, DepthmapFormat format, DepthmapData& dmData, bool quantize = true);
         ~DepthmapReader();
         inline uint16_t* GetData() { return m_Data; }

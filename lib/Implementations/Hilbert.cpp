@@ -16,7 +16,7 @@ namespace DStream
 	Hilbert::Hilbert(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits)
 	{
 #ifdef _WIN32
-		assert(algoBits * 3 < quantization, "Bits reserved for the algorithm (%ud) are too many for the selected quantization level (%ud)", algoBits, quantization);
+		assert(algoBits * 3 < quantization);
 #else
 		assert(algoBits * 3 < quantization);
 #endif
@@ -25,7 +25,7 @@ namespace DStream
 		m_SegmentBits = quantization - 3 * m_AlgoBits;
 
 #ifdef _WIN32
-		assert(m_AlgoBits + m_SegmentBits <= 8, "Bits reserved for the algorithm (%ud) aren't enough for the selected quantization level (%ud", algoBits, quantization);
+		assert(m_AlgoBits + m_SegmentBits <= 8);
 #else
 		assert(m_AlgoBits + m_SegmentBits <= 8);
 #endif
@@ -35,6 +35,9 @@ namespace DStream
 
 	Color Hilbert::EncodeValue(uint16_t val)
 	{
+        if (val > ((1 << m_Quantization) - (1 << m_SegmentBits)))
+            val = (1 << m_Quantization) - (1 << m_SegmentBits);
+
 		int frac = val & ((1 << m_SegmentBits) - 1);
 		val >>= m_SegmentBits;
 

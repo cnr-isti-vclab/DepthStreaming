@@ -14,5 +14,7 @@ namespace DStream
 		static void ReadWEBP(const std::string& path, uint8_t* dest, int nElements);
 		static void ReadSplitWEBP(const std::string& path, uint8_t* dest, int nElements);
 #endif
+
+		static void GetImageSize(const std::string& path, int* width, int* height, int* comp, const std::string& extesion = "");
 	};
 }
