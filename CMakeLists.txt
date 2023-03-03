@@ -8,7 +8,7 @@ option(BUILD_DSTREAM_BENCHMARK	"Build the benchmark that compares different dept
 option(BUILD_DSTREAM_CMD		"Build the command line executable that encodes or decodes depthmaps" ON)
 option(ENABLE_PNG				"Build the project with libpng support. When enabled, zlib will also be linked. When disabled, \
 									stb_image will be used to handle PNGs instead and zlib won't be linked" OFF)
-option(ENABLE_WEBP				"Build the project with libwebp support. When enabled, libpng will also be linked" OFF)
+option(ENABLE_WEBP				"Build the project with libwebp support. When enabled, libpng will also be linked" ON)
 option(ENABLE_TIFF				"Build the project with libtiff support" ON)
 
 set(CMAKE_CXX_STANDARD 17)

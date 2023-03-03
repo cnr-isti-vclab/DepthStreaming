@@ -170,14 +170,6 @@ namespace DStream
         WebPConfigInit(&config);
 
         int ret = WebPConfigPreset(&config, WebPPreset::WEBP_PRESET_DEFAULT, quality);
-        config.filter_strength = 0;
-        config.filter_type = 0;
-        config.method = 4;
-        config.exact = true;
-        config.filter_sharpness = 0;
-        config.near_lossless = 100;
-        config.sns_strength = 0;
-        config.use_sharp_yuv = true;
         int config_error = WebPValidateConfig(&config);
 
         WebPPicture redPic;

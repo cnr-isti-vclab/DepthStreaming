@@ -99,11 +99,7 @@ namespace DStream
 		else
 		{
 			for (uint32_t i = 0; i < nElements; i++)
-			{
-				if (i == 33217)
-					std::cout << "E";
 				dest[i] = m_Implementation.EncodeValue(source[i]);
-			}
 		}
 
 		
