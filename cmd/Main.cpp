@@ -169,6 +169,9 @@ int ParseOptions(int argc, char** argv, std::string& inDir, std::string& outDir,
         case 'p':
             printTexture = true;
             break;
+        case 'r':
+            recursive = true;
+            break;
         case 'h':
         case '?': Usage(); return -5;
         default:
@@ -292,7 +295,7 @@ void Decode(uint8_t* input, uint16_t* output, uint32_t nElements, const std::str
     else triangleCoder.Decode((Color*)input, output, nElements);
 }
 
-std::vector<std::filesystem::path> GetFiles(const std::filesystem::path& path, bool recursive)
+std::vector<std::filesystem::path> GetFiles(const std::filesystem::path& path, bool recursive, const std::string inputPrefix, const std::string outDir, char codingMode)
 {
     std::vector<std::filesystem::path> ret;
 
@@ -301,12 +304,21 @@ std::vector<std::filesystem::path> GetFiles(const std::filesystem::path& path, b
         if (file.is_directory() && recursive)
         {
             // Create mirror directory in the output folder
-            std::filesystem::create_directory(file);
-            std::vector<std::filesystem::path> toAppend = GetFiles(file, recursive);
+            std::filesystem::create_directory(outDir + file.path().string().substr(inputPrefix.length(), file.path().string().length() - inputPrefix.length()));
+            std::vector<std::filesystem::path> toAppend = GetFiles(file, recursive, inputPrefix, outDir, codingMode);
             ret.insert(ret.end(), toAppend.begin(), toAppend.end());
         }
         else if (!file.is_directory())
-            ret.push_back(file);
+        {
+            std::string ext = file.path().extension().string();
+            for (uint32_t i = 0; i < ext.length(); i++)
+                ext[i] = std::tolower(ext[i]);
+
+            if ((codingMode == 'E') && (ext == ".tif" || ext == ".tiff" || ext == ".asc" || ext == ".pgm"))
+                ret.push_back(file);
+            else if(ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".webp")
+                ret.push_back(file);
+        }
     }
 
     return ret;
@@ -325,7 +337,8 @@ int main(int argc, char** argv)
         return -2;
 
     std::filesystem::path inputDir = std::filesystem::path(inDir);
-    std::vector<std::filesystem::path> files = GetFiles(inputDir, recursive);
+    // If encoding, add all files supported by the DepthmapReader. If decoding, add all formats supported by the ImageReader
+    std::vector<std::filesystem::path> files = GetFiles(inputDir, recursive, inDir, outDir, mode[0]);
 
     if (algorithm == "HILBERT") hilbertCoder = StreamCoder<Hilbert>(quantization, enlarge, algoBits, true);
     if (algorithm == "PACKED") packedCoder = StreamCoder<Packed>(quantization, enlarge, algoBits, true);

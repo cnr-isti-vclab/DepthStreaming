@@ -48,9 +48,9 @@ namespace DStream
 			png_infop info_ptr = png_create_info_struct(png_ptr);
 
 			png_init_io(png_ptr, fp);
+			png_read_info(png_ptr, info_ptr);
 			*width = png_get_image_width(png_ptr, info_ptr);
 			*height = png_get_image_height(png_ptr, info_ptr);
-			*comp = png_get_channels(png_ptr, info_ptr);
 
 			png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 			fclose(fp);
