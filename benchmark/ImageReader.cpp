@@ -25,7 +25,7 @@ namespace DStream
 		std::string extension;
 		if (ext == "")
 		{
-			uint32_t extStart = path.find_last_of(".") + 1;
+			uint32_t extStart = path.find_last_of(".");
 			extension = path.substr(extStart, path.length() - extStart);
 		}
 		else
@@ -34,11 +34,13 @@ namespace DStream
 		for (uint32_t i = 0; i < extension.length(); i++)
 			extension[i] = tolower(extension[i]);
 
-		if (extension == "jpg")
+		if (extension == ".jpg")
 		{
-
+			JpegDecoder jd;
+			jd.init(path.c_str(), *width, *height);
+			*comp = 3;
 		}
-		else if (extension == "png")
+		else if (extension == ".png")
 		{
 #ifdef DSTREAM_ENABLE_PNG
 			FILE* fp = fopen(path.c_str(), "rb");
@@ -57,7 +59,7 @@ namespace DStream
 #endif
 		}
 #ifdef DSTREAM_ENABLE_WEBP
-		else if (extension == "webp")
+		else if (extension == ".webp")
 		{
 			FILE* fp = fopen(path.c_str(), "rb");
 			int maxWebpHeaderSize = 30;
@@ -70,6 +72,23 @@ namespace DStream
 			fclose(fp);
 			delete[] headerData;
 		}
+#endif
+	}
+
+	void ImageReader::Read(const std::string& path, uint8_t* dest, uint32_t dataSize)
+	{
+		uint32_t extStart = path.find_last_of(".") + 1;
+		std::string extension = path.substr(extStart, path.length() - extStart);
+		for (uint32_t i = 0; i < extension.length(); i++)
+			extension[i] = tolower(extension[i]);
+
+		if (extension == "jpg")
+			ReadJPEG(path, dest);
+		else if (extension == "png")
+			ReadPNG(path, dest);
+#ifdef DSTREAM_ENABLE_WEBP
+		else if (extension == "webp")
+			ReadWEBP(path, dest, dataSize);
 #endif
 	}
 

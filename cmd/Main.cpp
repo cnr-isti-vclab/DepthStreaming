@@ -1,8 +1,11 @@
 #include <cstdio>
 #include <cstring>
-#include <iostream>
 #include <string>
 #include <filesystem>
+
+#include <iostream>
+#include <sstream>
+#include <fstream>
 
 #include <DepthmapReader.h>
 #include <ImageReader.h>
@@ -52,6 +55,7 @@ void Usage()
       -e <no enlarge>: don't use the whole 8 bit range of colours if encoded colours end up using less
       -j <quality>: quality to use if encoding, only applies to WEBP and PNG
       -m <mode>: program mode, E for encoding, D for decoding
+      -p <print>: print the decoded texture in PNG format, 8 bit grayscale
       -?: display this message
       -h: display this message
 
@@ -59,14 +63,14 @@ void Usage()
 }
 
 int ParseOptions(int argc, char** argv, std::string& inDir, std::string& outDir, std::string& algo, uint8_t& quantization, uint8_t& jpeg, 
-    uint8_t& algoBits,  bool& recursive, std::string& mode, std::string& outputFormat, bool& enlarge, bool& quantize)
+    uint8_t& algoBits,  bool& recursive, std::string& mode, std::string& outputFormat, bool& enlarge, bool& quantize, bool& printTexture)
 {
     int c;
     recursive = false;
     enlarge = true;
 
 
-    while ((c = getopt(argc, argv, "d:a:q:j::b:m:rfenh::")) != -1) {
+    while ((c = getopt(argc, argv, "d:a:q:j:b:m:f:rpenh::")) != -1) {
         switch (c) {
         case 'd':
         {
@@ -134,8 +138,12 @@ int ParseOptions(int argc, char** argv, std::string& inDir, std::string& outDir,
         case 'f':
         {
             outputFormat = optarg;
-            if (outputFormat != "PNG" && outputFormat != "JPG" && outputFormat != "WEBP" && 
-                outputFormat != "LOSSY_WEBP" && outputFormat != "SPLIT_WEBP")
+            if (outputFormat != "PNG" && outputFormat != "JPG" 
+#ifdef DSTREAM_ENABLE_WEBP
+                && outputFormat != "WEBP" && 
+                outputFormat != "LOSSY_WEBP" && outputFormat != "SPLIT_WEBP"
+#endif
+                )
             {
                 std::cerr << "Unknown format \"" << outputFormat << "\"" << std::endl;
                 Usage();
@@ -157,6 +165,9 @@ int ParseOptions(int argc, char** argv, std::string& inDir, std::string& outDir,
             break;
         case 'n':
             quantize = false;
+            break;
+        case 'p':
+            printTexture = true;
             break;
         case 'h':
         case '?': Usage(); return -5;
@@ -263,16 +274,22 @@ void Encode(uint16_t* input, Color* output, uint32_t nElements, const std::strin
 {
     if (coder == "PACKED") packedCoder.Encode(input, (Color*)output, nElements);
     else if (coder == "HUE") hueCoder.Encode(input, (Color*)output, nElements);
-    else if (!coder.compare("Hilbert")) hilbertCoder.Encode(input, (Color*)output, nElements);
-    else if (!coder.compare("Morton")) mortonCoder.Encode(input, (Color*)output, nElements);
-    else if (!coder.compare("Split")) splitCoder.Encode(input, (Color*)output, nElements);
-    else if (!coder.compare("Phase")) phaseCoder.Encode(input, (Color*)output, nElements);
+    else if (coder == "HILBERT") hilbertCoder.Encode(input, (Color*)output, nElements);
+    else if (coder == "MORTON") mortonCoder.Encode(input, (Color*)output, nElements);
+    else if (coder == "SPLIT") splitCoder.Encode(input, (Color*)output, nElements);
+    else if (coder == "PHASE") phaseCoder.Encode(input, (Color*)output, nElements);
     else triangleCoder.Encode(input, (Color*)output, nElements);
 }
 
-void Decode(const std::filesystem::path& filePath, const std::string& outputDirectory, const std::string& coder, uint8_t quantization, uint8_t jpeg, uint8_t algoBits)
+void Decode(uint8_t* input, uint16_t* output, uint32_t nElements, const std::string& coder)
 {
-
+    if (coder == "PACKED") packedCoder.Decode((Color*)input, output, nElements);
+    else if (coder == "HUE") hueCoder.Decode((Color*)input, output, nElements);
+    else if (coder == "HILBERT") hilbertCoder.Decode((Color*)input, output, nElements);
+    else if (coder == "MORTON") mortonCoder.Decode((Color*)input, output, nElements);
+    else if (coder == "SPLIT") splitCoder.Decode((Color*)input, output, nElements);
+    else if (coder == "PHASE") phaseCoder.Decode((Color*)input, output, nElements);
+    else triangleCoder.Decode((Color*)input, output, nElements);
 }
 
 std::vector<std::filesystem::path> GetFiles(const std::filesystem::path& path, bool recursive)
@@ -283,25 +300,26 @@ std::vector<std::filesystem::path> GetFiles(const std::filesystem::path& path, b
     {
         if (file.is_directory() && recursive)
         {
+            // Create mirror directory in the output folder
+            std::filesystem::create_directory(file);
             std::vector<std::filesystem::path> toAppend = GetFiles(file, recursive);
             ret.insert(ret.end(), toAppend.begin(), toAppend.end());
         }
-        else
+        else if (!file.is_directory())
             ret.push_back(file);
     }
 
     return ret;
 }
 
-
-
 int main(int argc, char** argv)
 {
-    bool saveDecoded, recursive, enlarge, quantize;
+    std::unordered_map<std::string, std::string> inPath2OutPath;
+    bool saveDecoded, recursive, enlarge, quantize, printTexture;
     uint8_t quantization = 9, jpeg = 101, algoBits = 9;
-    std::string inDir, outDir, algorithm, mode, outputFormat = "WEBP";
+    std::string inDir, outDir, algorithm, mode, outputFormat = "PNG";
 
-    if (ParseOptions(argc, argv, inDir, outDir, algorithm, quantization, jpeg, algoBits, recursive, mode, outputFormat, enlarge, quantize) != 0)
+    if (ParseOptions(argc, argv, inDir, outDir, algorithm, quantization, jpeg, algoBits, recursive, mode, outputFormat, enlarge, quantize, saveDecoded) != 0)
         return -1;
     if (ValidateInput(algorithm, quantization, jpeg, algoBits, mode, outputFormat) != 0)
         return -2;
@@ -319,14 +337,14 @@ int main(int argc, char** argv)
 
     for (auto file : files)
     {
-        DepthmapData dmData;
-        DepthmapReader reader(file.string(), dmData, true);
-
-        uint16_t* depthData = reader.GetData();
-        uint32_t nElements = dmData.Width * dmData.Height;
-
         if (mode == "E")
         {
+            DepthmapData dmData;
+            DepthmapReader reader(file.string(), dmData, true);
+
+            uint16_t* depthData = reader.GetData();
+            uint32_t nElements = dmData.Width * dmData.Height;
+
             uint8_t* encoded = new uint8_t[nElements * 3];
             Encode(depthData, (Color*)encoded, nElements, algorithm);
 
@@ -334,19 +352,50 @@ int main(int argc, char** argv)
                 ImageWriter::WriteJPEG(outDir + file.filename().string() + ".jpg", encoded, dmData.Width, dmData.Height, jpeg);
             else if (outputFormat == "PNG") 
                 ImageWriter::WritePNG(outDir + file.filename().string() + ".png", encoded, dmData.Width, dmData.Height);
+#ifdef DSTREAM_ENABLE_WEBP
             else if (outputFormat == "WEBP")
                 ImageWriter::WriteWEBP(outDir + file.filename().string() + ".webp", encoded, dmData.Width, dmData.Height);
             else if (outputFormat == "LOSSY_WEBP")
                 ImageWriter::WriteWEBP(outDir + file.filename().string() + ".jpg", encoded, dmData.Width, dmData.Height, jpeg);
             else if (outputFormat == "SPLIT_WEBP")
                 ImageWriter::WriteSplitWEBP(outDir + file.filename().string() + ".jpg", encoded, dmData.Width, dmData.Height, jpeg);
-
+#endif
             delete[] encoded;
         }
         else
         {
+            int width, height, comp;
+            ImageReader::GetImageSize(file.string(), &width, &height, &comp, file.extension().string());
+            uint32_t nElements = width * height;
 
-            Decode(file, outDir, algorithm);
+            uint16_t* decoded = new uint16_t[nElements];
+            uint8_t* encoded = new uint8_t[nElements * 3];
+
+            std::string outPath;
+            uint32_t inputIdx = file.string().find(inDir);
+            outPath = outDir + file.string().substr(inDir.length(), file.string().length() - inDir.length());
+
+            ImageReader::Read(file.string(), encoded, nElements * 3);
+            Decode(encoded, decoded, nElements, algorithm);
+
+            if (saveDecoded)
+                ImageWriter::WriteDecoded(outPath + "_decoded.png", decoded, width, height);
+
+            std::stringstream ss;
+            std::vector<std::string> values(nElements);
+            for (uint32_t i = 0; i < nElements; i++)
+                values[i] = std::to_string(decoded[i]);
+
+            std::ofstream csv(outPath + "_decoded.csv");
+            for (uint32_t y = 0; y < height; y++)
+            {
+                for (uint32_t x=0; x<width; x++)
+                    ss << std::to_string(decoded[y * width + x]) + ",";
+                ss << '\n';
+            }
+
+            csv << ss.str();
+            delete[] decoded;
         }
     }
 
