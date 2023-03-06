@@ -200,7 +200,7 @@ namespace DStream
         WebPEncode(&config, &redPic);
 
         std::ofstream outFile;
-        outFile.open(path + ".red.webp", std::ios::out | std::ios::binary);
+        outFile.open(path + ".red.splitwebp", std::ios::out | std::ios::binary);
         outFile.write((const char*)redWriter.mem, redWriter.size);
         outFile.close();
         WebPPictureFree(&redPic);
@@ -210,7 +210,7 @@ namespace DStream
         WebPEncode(&config, &greenPic);
 
         std::ofstream greenFile;
-        greenFile.open(path + ".green.webp", std::ios::out | std::ios::binary);
+        greenFile.open(path + ".green.splitwebp", std::ios::out | std::ios::binary);
         greenFile.write((const char*)greenWriter.mem, greenWriter.size);
         greenFile.close();
         WebPPictureFree(&greenPic);

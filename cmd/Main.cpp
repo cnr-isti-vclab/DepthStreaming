@@ -8,6 +8,7 @@
 #include <fstream>
 
 #include <DepthmapReader.h>
+#include <DepthProcessing.h>
 #include <ImageReader.h>
 #include <ImageWriter.h>
 
@@ -45,8 +46,9 @@ void Usage()
         R"use(Usage: dstream-cmd [OPTIONS] <DIRECTORY>
 
     DIRECTORY is the path to the folder containing the depth data
-      -d <output>: output folder in which final data will be saved+
-      -f <format>: file format to which data will be encoded or from which it will be decoded. Choose one between JPG, PNG, WEBP, LOSSY_WEBP, SPLIT_WEBP, defaults to WEBP
+      -d <output>: output folder in which final data will be saved
+      -f <format>: file format to which data will be encoded or from which it will be decoded. Choose one between JPG, PNG, WEBP, LOSSY_WEBP, SPLIT_WEBP, defaults to WEBP. 
+                    When decoding, the format is deduced from the file extension. Specify the format if you only want to decode a given format
       -r <recursive>: navigate the input directory recursively and process all the files contained in it
       -a <algorithm>: algorithm to be used (algorithm names: PACKED, TRIANGLE, MORTON, HILBERT, PHASE, SPLIT, HUE)
       -q <quantization>: quantization level
@@ -68,6 +70,7 @@ int ParseOptions(int argc, char** argv, std::string& inDir, std::string& outDir,
     int c;
     recursive = false;
     enlarge = true;
+    quantize = true;
 
 
     while ((c = getopt(argc, argv, "d:a:q:j:b:m:f:rpenh::")) != -1) {
@@ -207,6 +210,18 @@ int ParseOptions(int argc, char** argv, std::string& inDir, std::string& outDir,
 
 int ValidateInput(const std::string& algorithm, uint8_t quantization, uint8_t jpeg, uint8_t algoBits, const std::string& mode, const std::string& format)
 {
+    if (algorithm == "")
+    {
+        std::cout << "Unspecified coding algorithm." << std::endl;
+        return -1;
+    }
+
+    if (mode == "")
+    {
+        std::cout << "Unspecified program mode." << std::endl;
+        return -1;
+    }
+
     if (mode == "D" && jpeg <= 100)
         std::cout << "Image quality specified, but DECODING mode is set. The quality parameter will be ignored." << std::endl;
     if (jpeg <= 100 && (format == "WEBP" || format == "PNG"))
@@ -314,10 +329,37 @@ std::vector<std::filesystem::path> GetFiles(const std::filesystem::path& path, b
             for (uint32_t i = 0; i < ext.length(); i++)
                 ext[i] = std::tolower(ext[i]);
 
-            if ((codingMode == 'E') && (ext == ".tif" || ext == ".tiff" || ext == ".asc" || ext == ".pgm"))
+            if ((codingMode == 'E') && (ext == ".asc" || ext == ".pgm"
+#ifdef DSTREAM_ENABLE_TIFF
+                || ext == ".tif" || ext == ".tiff")
+#endif
+                )
                 ret.push_back(file);
-            else if(ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".webp")
+            else if ((codingMode == 'D') && (ext == ".png" || ext == ".jpg" || ext == ".jpeg"
+#ifdef DSTREAM_ENABLE_WEBP
+                || ext == ".webp" || ext == ".splitwebp")
+#endif
+                )
+            {
+#ifdef DSTREAM_ENABLE_WEBP
+                if (ext == ".splitwebp")
+                {
+                    // Remove .green / .red, add .splitwebp extension to filename
+                    // Parent/file.green or Parent/file.red
+                    std::string fileString = file.path().string();
+                    std::string mainPart = fileString.substr(0, fileString.find_last_of("."));
+                    // Parent/file
+                    std::string parentName = mainPart.substr(0, mainPart.find_last_of(".")) + ".splitwebp";
+
+                    if (std::find(ret.begin(), ret.end(), parentName) == ret.end())
+                        ret.push_back(parentName);
+                }
+                else
+                    ret.push_back(file);
+#else
                 ret.push_back(file);
+#endif
+            }
         }
     }
 
@@ -327,14 +369,23 @@ std::vector<std::filesystem::path> GetFiles(const std::filesystem::path& path, b
 int main(int argc, char** argv)
 {
     std::unordered_map<std::string, std::string> inPath2OutPath;
-    bool saveDecoded, recursive, enlarge, quantize, printTexture;
-    uint8_t quantization = 9, jpeg = 101, algoBits = 9;
-    std::string inDir, outDir, algorithm, mode, outputFormat = "PNG";
+    bool saveDecoded = true, recursive = false, enlarge = true, quantize;
+    uint8_t quantization = 14, jpeg = 100, algoBits = 8;
+    std::string inDir, outDir = "", algorithm = "-", mode = "-", outputFormat = "JPG";
 
     if (ParseOptions(argc, argv, inDir, outDir, algorithm, quantization, jpeg, algoBits, recursive, mode, outputFormat, enlarge, quantize, saveDecoded) != 0)
         return -1;
     if (ValidateInput(algorithm, quantization, jpeg, algoBits, mode, outputFormat) != 0)
+    {
+        Usage();
         return -2;
+    }
+
+    if (outDir == "")
+    {
+        std::cout << "Unspecified output directory, will save data in the input directory. Files won't be overwritten." << std::endl;
+        outDir = inDir;
+    }
 
     std::filesystem::path inputDir = std::filesystem::path(inDir);
     // If encoding, add all files supported by the DepthmapReader. If decoding, add all formats supported by the ImageReader
@@ -350,6 +401,10 @@ int main(int argc, char** argv)
 
     for (auto file : files)
     {
+        std::string outPath;
+        uint32_t inputIdx = file.string().find(inDir);
+        outPath = outDir + "/" + file.string().substr(inDir.length(), file.string().length() - inDir.length());
+
         if (mode == "E")
         {
             DepthmapData dmData;
@@ -359,19 +414,21 @@ int main(int argc, char** argv)
             uint32_t nElements = dmData.Width * dmData.Height;
 
             uint8_t* encoded = new uint8_t[nElements * 3];
+            if (quantize)
+                DepthProcessing::Quantize(depthData, depthData, quantization, nElements);
             Encode(depthData, (Color*)encoded, nElements, algorithm);
 
             if (outputFormat == "JPG") 
-                ImageWriter::WriteJPEG(outDir + file.filename().string() + ".jpg", encoded, dmData.Width, dmData.Height, jpeg);
+                ImageWriter::WriteJPEG(outPath + "_encoded.jpg", encoded, dmData.Width, dmData.Height, jpeg);
             else if (outputFormat == "PNG") 
-                ImageWriter::WritePNG(outDir + file.filename().string() + ".png", encoded, dmData.Width, dmData.Height);
+                ImageWriter::WritePNG(outPath + "_encoded.png", encoded, dmData.Width, dmData.Height);
 #ifdef DSTREAM_ENABLE_WEBP
             else if (outputFormat == "WEBP")
-                ImageWriter::WriteWEBP(outDir + file.filename().string() + ".webp", encoded, dmData.Width, dmData.Height);
+                ImageWriter::WriteWEBP(outPath + "_encoded.webp", encoded, dmData.Width, dmData.Height);
             else if (outputFormat == "LOSSY_WEBP")
-                ImageWriter::WriteWEBP(outDir + file.filename().string() + ".jpg", encoded, dmData.Width, dmData.Height, jpeg);
+                ImageWriter::WriteWEBP(outPath + "_encoded.webp", encoded, dmData.Width, dmData.Height, jpeg);
             else if (outputFormat == "SPLIT_WEBP")
-                ImageWriter::WriteSplitWEBP(outDir + file.filename().string() + ".jpg", encoded, dmData.Width, dmData.Height, jpeg);
+                ImageWriter::WriteSplitWEBP(outPath + "_encoded", encoded, dmData.Width, dmData.Height, jpeg);
 #endif
             delete[] encoded;
         }
@@ -383,10 +440,6 @@ int main(int argc, char** argv)
 
             uint16_t* decoded = new uint16_t[nElements];
             uint8_t* encoded = new uint8_t[nElements * 3];
-
-            std::string outPath;
-            uint32_t inputIdx = file.string().find(inDir);
-            outPath = outDir + file.string().substr(inDir.length(), file.string().length() - inDir.length());
 
             ImageReader::Read(file.string(), encoded, nElements * 3);
             Decode(encoded, decoded, nElements, algorithm);

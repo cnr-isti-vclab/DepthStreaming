@@ -72,23 +72,38 @@ namespace DStream
 			fclose(fp);
 			delete[] headerData;
 		}
+		else if (extension == ".splitwebp")
+		{
+			FILE* fp = fopen((path.substr(0, path.find_last_of(".")) + ".green.splitwebp").c_str(), "rb");
+			int maxWebpHeaderSize = 30;
+
+			uint8_t* headerData = new uint8_t[maxWebpHeaderSize];
+			uint32_t read = fread(headerData, 1, maxWebpHeaderSize, fp);
+
+			WebPGetInfo(headerData, read, width, height);
+
+			fclose(fp);
+			delete[] headerData;
+		}
 #endif
 	}
 
 	void ImageReader::Read(const std::string& path, uint8_t* dest, uint32_t dataSize)
 	{
-		uint32_t extStart = path.find_last_of(".") + 1;
+		uint32_t extStart = path.find_last_of(".");
 		std::string extension = path.substr(extStart, path.length() - extStart);
 		for (uint32_t i = 0; i < extension.length(); i++)
 			extension[i] = tolower(extension[i]);
 
-		if (extension == "jpg")
+		if (extension == ".jpg")
 			ReadJPEG(path, dest);
-		else if (extension == "png")
+		else if (extension == ".png")
 			ReadPNG(path, dest);
 #ifdef DSTREAM_ENABLE_WEBP
-		else if (extension == "webp")
+		else if (extension == ".webp")
 			ReadWEBP(path, dest, dataSize);
+		else if (extension == ".splitwebp")
+			ReadSplitWEBP(path, dest, dataSize);
 #endif
 	}
 
@@ -143,8 +158,11 @@ namespace DStream
 
 	void ImageReader::ReadSplitWEBP(const std::string& path, uint8_t* dest, int nElements)
 	{
-		FILE* redFp = fopen((path + ".red.webp").c_str(), "rb");
-		FILE* greenFp = fopen((path + ".green.webp").c_str(), "rb");
+		// Remove extension
+		std::string parentPath = path.substr(0, path.find_last_of("."));
+		// Load green and red files
+		FILE* redFp = fopen((parentPath + ".red.splitwebp").c_str(), "rb");
+		FILE* greenFp = fopen((parentPath + ".green.splitwebp").c_str(), "rb");
 
 		uint8_t* redData = new uint8_t[nElements];
 		uint8_t* greenData = new uint8_t[nElements];

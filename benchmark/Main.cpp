@@ -332,7 +332,7 @@ void BenchmarkCoder(BenchmarkConfig& config)
 			case ImageFormat::PNG: ImageWriter::WritePNG(currPath + ss.str() + ".png", config.Encoded, width, height); break;
 #ifdef DSTREAM_ENABLE_WEBP
 			case ImageFormat::WEBP: ImageWriter::WriteWEBP(currPath + ss.str() + ".webp", config.Encoded, width, height, jpegLevels[j]); break;
-			case ImageFormat::SPLIT_WEBP: ImageWriter::WriteSplitWEBP(currPath + ss.str() + ".webp", config.Encoded, width, height, jpegLevels[j]); break;
+			case ImageFormat::SPLIT_WEBP: ImageWriter::WriteSplitWEBP(currPath + ss.str(), config.Encoded, width, height, jpegLevels[j]); break;
 #endif
 			}
 		}
@@ -345,7 +345,7 @@ void BenchmarkCoder(BenchmarkConfig& config)
 			case ImageFormat::PNG: ImageReader::ReadPNG(currPath + ss.str() + ".png", config.ColorBuffer); break;
 #ifdef DSTREAM_ENABLE_WEBP
 			case ImageFormat::WEBP: ImageReader::ReadWEBP(currPath + ss.str() + ".webp", config.ColorBuffer, nElements * 3); break;
-			case ImageFormat::SPLIT_WEBP: ImageReader::ReadSplitWEBP(currPath + ss.str() + ".webp", config.ColorBuffer, nElements * 3); break;
+			case ImageFormat::SPLIT_WEBP: ImageReader::ReadSplitWEBP(currPath + ss.str(), config.ColorBuffer, nElements * 3); break;
 #endif
 			}
 		}
