@@ -20,6 +20,7 @@
 #include <Implementations/Split.h>
 #include <Implementations/Morton.h>
 #include <Implementations/Triangle.h>
+
 using namespace DStream;
 
 #ifndef _WIN32
@@ -38,7 +39,6 @@ StreamCoder<Triangle> triangleCoder;
 StreamCoder<Phase> phaseCoder;
 StreamCoder<Hue> hueCoder;
 StreamCoder<Morton> mortonCoder;
-
 
 void Usage()
 {

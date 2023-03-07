@@ -1,0 +1,37 @@
+body, html {
+    width:100%;
+}
+
+img.encoded-texture {
+    display:none;
+}
+
+div#algo-buttons {
+    display:inline-block;
+    position:relative;
+    text-align:center;
+    width:50%;
+    left:25%;
+}
+
+button {
+    padding: 5px;
+}
+
+button.algo-button{
+    size: 10%;
+}
+
+button#decode {
+    position:relative;
+    width:6%;
+    left:46%;
+    font-size:14pt;
+}
+
+div#canvas-container {
+    padding:5px;
+    width:100%;
+    position:relative;
+    text-align:center;
+}

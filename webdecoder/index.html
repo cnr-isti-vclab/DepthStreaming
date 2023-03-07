@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="style.css"/>
+        <script src="decode.js"></script>
+    </head>
+    
+    <body>
+        <img class="encoded-texture" src="textures/hilbert.jpg"/>
+        <img class="encoded-texture" src="textures/triangle.jpg"/>
+        <img class="encoded-texture" src="textures/morton.jpg"/>
+        <img class="encoded-texture" src="textures/packed.jpg"/>
+        <img class="encoded-texture" src="textures/split.jpg"/>
+        <img class="encoded-texture" src="textures/phase.jpg"/>
+        <img class="encoded-texture" src="textures/hue.jpg"/>
+
+        <div id="algo-buttons">
+            <button class="algo-button">Hilbert</button>
+            <button class="algo-button">Triangle</button>
+            <button class="algo-button">Morton</button>
+            <button class="algo-button">Packed</button>
+            <button class="algo-button">Split</button>
+            <button class="algo-button">Phase</button>
+            <button class="algo-button">Hue</button>
+        </div>
+        
+        <div id="canvas-container">
+            <canvas id="gl-canvas" width="550px" height="550px"></canvas>
+        </div>
+
+        <div id="decode-button">
+            <button id="decode">Decode</button>
+        </div>
+    </body>
+</html>

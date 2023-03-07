@@ -70,7 +70,7 @@ struct BenchmarkConfig
 	std::string CurrentPath;
 };
 
-std::string outputFolder = "Final/JPG";
+std::string outputFolder = "PGMOUT";
 
 std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 {
@@ -411,7 +411,7 @@ int main(int argc, char** argv)
 
 	// Read raw data
 	DepthmapData dmData;
-	DepthmapReader reader("Input/2.tif", DepthmapFormat::TIF, dmData, true);
+	DepthmapReader reader("frame000.pgm", DepthmapFormat::PGM, dmData, true);
 	uint32_t nElements = dmData.Width * dmData.Height;
 
 	// Prepare auxiliary buffers
