@@ -30,7 +30,7 @@ namespace DStream
 		assert(m_AlgoBits + m_SegmentBits <= 8);
 #endif
 
-        m_Morton = Morton(quantization, algoBits);
+        m_Morton = Morton(quantization, algoBits, true);
 	}
 
 	Color Hilbert::EncodeValue(uint16_t val)
@@ -97,16 +97,6 @@ namespace DStream
         for (int i = 0; i < 3; i++)
             v1 += fract[i] * sgn(nextCol[i] - prevCol[i]);
         return v1 << (16 - m_Quantization);
-	}
-
-	void Hilbert::SubdivideValue(Color& value, Color& nextValue, uint8_t fract)
-	{
-
-	}
-
-	uint16_t Hilbert::UnsubdivideValue(Color& value, Color& nextValue)
-	{
-        return 0;
 	}
 
     void Hilbert::TransposeFromHilbertCoords(Color& col)

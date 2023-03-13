@@ -20,11 +20,13 @@ namespace DStream
 		ret.y <<= (8 - right);
 		ret.z = 0;
 
+		std::swap(ret.x, ret.y);
 		return ret;
 	}
 
 	uint16_t Split::DecodeValue(Color col)
 	{
+		std::swap(col.x, col.y);
 		uint16_t highPart, lowPart;
 		uint32_t right = m_Quantization - m_AlgoBits;
 
@@ -37,6 +39,6 @@ namespace DStream
 		highPart = col.x << right;
 		lowPart = col.y;
 
-		return (highPart + lowPart) << (16 - m_Quantization);
+		return (highPart + lowPart);
 	}
 }

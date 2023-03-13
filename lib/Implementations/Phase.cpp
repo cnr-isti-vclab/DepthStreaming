@@ -22,8 +22,8 @@ namespace DStream
 
 	uint16_t Phase::DecodeValue(Color col)
 	{
-		const float w = 65535.0f;
-		const float P = 16384.0f;
+		const float w = 1 << m_Quantization;
+		const float P = w / 4;
 		const float beta = P / 2.0f;
 		float gamma, phi, PHI, K, Z;
 		float i1 = col.x / 255.0f, i2 = col.y / 255.0f;
@@ -38,6 +38,6 @@ namespace DStream
 		PHI = phi + 2 * M_PI * K;
 
 		Z = PHI * (P / (M_PI * 2.0f));
-		return std::min(std::max(0, static_cast<int>(Z)), 65535);
+		return std::min(std::max(0, static_cast<int>(Z)), 1 << m_Quantization);
 	}
 }

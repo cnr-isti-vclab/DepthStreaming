@@ -28,7 +28,8 @@ namespace DStream
 
 	uint16_t Triangle::DecodeValue(Color col)
 	{
-        const int w = 65536;
+        const int w = 1 << 16;
+        const int maxVal = 1 << m_Quantization;
         // Function data
         int np = 512;
         float p = (float)np / w;
@@ -54,6 +55,6 @@ namespace DStream
             break;
         }
 
-        return (L0 + delta) * w;
+        return (L0 + delta) * maxVal;
 	}
 }

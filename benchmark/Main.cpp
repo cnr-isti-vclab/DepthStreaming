@@ -70,7 +70,7 @@ struct BenchmarkConfig
 	std::string CurrentPath;
 };
 
-std::string outputFolder = "PGMOUT";
+std::string outputFolder = "Test";
 
 std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 {
@@ -108,6 +108,35 @@ std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 		return ret;
 	else
 		return ret;
+}
+
+std::vector<uint8_t> GetMinAlgoBitsToTest(const std::string& algo, uint8_t q)
+{
+	std::vector<uint8_t> ret = { 8 };
+
+	if (!algo.compare("Morton"))
+		return { 6 };
+	else if (!algo.compare("Hilbert"))
+	{
+		ret.pop_back();
+		for (uint8_t i = 2; i <= 8; i++)
+		{
+			uint8_t algoBits = i;
+			uint8_t segmentBits = q - 3 * algoBits;
+
+			if (algoBits * 3 < q && algoBits + segmentBits <= 8)
+				return { algoBits };
+		}
+
+		return ret;
+	}
+	else if (!algo.compare("Packed") || (!algo.compare("Split")))
+	{
+		uint8_t ret = q >> 1;
+		return { ret };
+	}
+	
+	return { 8 };
 }
 
 std::string GetPathFromComponents(std::vector<std::string> path)
@@ -237,14 +266,14 @@ void SaveError(uint16_t* original, uint16_t* processed, uint8_t* colorBuffer, ui
 }
 
 template <typename Coder>
-void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 0)
+void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 1)
 {
 	Coder c(q, algo);
 	float avg = 0;
 	float max = 0;
 	StreamCoder<Coder> sc(q, true, algo);
 
-	for (uint32_t i = 65535; i <= 65535; i+=advance)
+	for (uint32_t i = 0; i <= 65535; i+=advance)
 	{
 		uint32_t quantized = (i >> (16 - q));
 
@@ -301,17 +330,19 @@ void BenchmarkCoder(BenchmarkConfig& config)
 	std::string currPath = config.CurrentPath;
 	std::ofstream csv(outputFolder+"/results.csv", std::ios::out | std::ios::app);
 
-	StreamCoder<T> coder(config.Quantization, config.Enlarge, config.AlgoBits, true);
+	StreamCoder<T> coder(config.Quantization, config.Enlarge, config.AlgoBits, false);
 	coder.Encode(config.QuantizedData, (Color*)config.Encoded, nElements);
 	coder.Decode((Color*)config.Encoded, config.Decoded, nElements);
 	
+	DepthProcessing::Dequantize(config.Decoded, config.Decoded, config.Quantization, nElements);
 	ImageWriter::WriteDecoded(currPath + "_lossless.png", config.Decoded, width, height);
+
 	uint32_t minQuality = 4;
 	uint32_t maxQuality = 4;
 
 	if (config.OutputFormat == ImageFormat::JPG 
 #ifdef DSTREAM_ENABLE_WEBP
-		|| config.OutputFormat == ImageFormat::SPLIT_WEBP
+		|| config.OutputFormat == ImageFormat::SPLIT_WEBP || config.OutputFormat == ImageFormat::WEBP
 #endif
 		)
 		minQuality = 0;
@@ -325,6 +356,7 @@ void BenchmarkCoder(BenchmarkConfig& config)
 		ss << "Quality" << (int)jpegLevels[j];
 		DSTR_PROFILE_SCOPE("Quality");
 		{
+			std::cout << "Encode" << std::endl;
 			DSTR_PROFILE_SCOPE("WriteEncoded");
 			switch (config.OutputFormat)
 			{
@@ -338,6 +370,7 @@ void BenchmarkCoder(BenchmarkConfig& config)
 		}
 
 		{
+			std::cout << "Read" << std::endl;
 			DSTR_PROFILE_SCOPE("ImageDecode");
 			switch (config.OutputFormat)
 			{
@@ -350,14 +383,17 @@ void BenchmarkCoder(BenchmarkConfig& config)
 			}
 		}
 
+		std::cout << "Decode" << std::endl;
 		{
 			DSTR_PROFILE_SCOPE("DStreamDecode");
 			coder.Decode((Color*)config.ColorBuffer, config.Decoded, nElements);
 		}
 
+		std::cout << "Write Decoded" << std::endl;
 		{
 			{
 				DSTR_PROFILE_SCOPE("WriteDecoded");
+				DepthProcessing::Dequantize(config.Decoded, config.Decoded, config.Quantization, nElements);
 				ImageWriter::WriteDecoded(currPath + ss.str() + "_decoded.png", config.Decoded, width, height);
 			}
 			SaveError(config.OriginalData, config.Decoded, config.ColorBuffer, width, height, currPath + ss.str() + "_decoded", err);
@@ -382,14 +418,15 @@ void BenchmarkCoder(BenchmarkConfig& config)
 		case ImageFormat::JPG: extension = ".jpg"; break;
 		case ImageFormat::PNG: extension = ".png"; break;
 #ifdef DSTREAM_ENABLE_WEBP
-		case ImageFormat::WEBP:
-		case ImageFormat::SPLIT_WEBP: extension = ".webp"; break;
+		case ImageFormat::WEBP: extension = ".webp"; break;
+		case ImageFormat::SPLIT_WEBP: extension = ""; break;
 #endif
 		}
 		
+		std::cout << "File size" << std::endl;
 		if (config.OutputFormat == ImageFormat::SPLIT_WEBP)
-			err.EncodedTextureSize = std::filesystem::file_size(currPath + ss.str() + extension + ".red.webp") +
-			std::filesystem::file_size(currPath + ss.str() + extension + ".green.webp");
+			err.EncodedTextureSize = std::filesystem::file_size(currPath + ss.str() + extension + ".red.splitwebp") +
+			std::filesystem::file_size(currPath + ss.str() + extension + ".green.splitwebp");
 		else
 			err.EncodedTextureSize = std::filesystem::file_size(currPath + ss.str() + extension);
 
@@ -405,13 +442,13 @@ int main(int argc, char** argv)
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 
 	// Parameters to test
-	std::string coders[7] = { "Hilbert", "Packed", "Split", "Phase", "Hue", "Morton", "Triangle" };
+	std::string coders[7] = { "Phase", "Hue", "Split", "Packed", "Hilbert", "Triangle", "Morton" };
 	uint8_t quantizations[4] = {10, 12, 14, 16};
 	std::vector<uint8_t> algoBits;
 
 	// Read raw data
 	DepthmapData dmData;
-	DepthmapReader reader("frame000.pgm", DepthmapFormat::PGM, dmData, true);
+	DepthmapReader reader("Input/2.tif", DepthmapFormat::TIF, dmData, true);
 	uint32_t nElements = dmData.Width * dmData.Height;
 
 	// Prepare auxiliary buffers
@@ -431,7 +468,7 @@ int main(int argc, char** argv)
 	csv << "Configuration, Max Error, Avg Error, Despeckle Max Error, Despeckle Avg Error, Compressed Size\n";
 	csv.close();
 
-	for (uint32_t c = 0; c < 7; c++)
+	for (uint32_t c = 0; c < 1; c++)
 	{
 		std::cout << "CODER: " << coders[c] << std::endl;
 		AddFolderLevel(coders[c], -1, folders);
@@ -440,8 +477,8 @@ int main(int argc, char** argv)
 		{
 			std::cout << "QUANTIZATION: " << (int)quantizations[q] << std::endl;
 			AddFolderLevel("Quantization", quantizations[q], folders);
-
-			DepthProcessing::Quantize(originalData, quantizedData, quantizations[q], nElements);
+			
+			DepthProcessing::Quantize(quantizedData, originalData, quantizations[q], nElements);
 			algoBits = GetAlgoBitsToTest(coders[c], quantizations[q]);
 
 			for (uint32_t p = 0; p < algoBits.size(); p++)

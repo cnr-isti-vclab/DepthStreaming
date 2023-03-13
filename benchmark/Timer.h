@@ -123,9 +123,9 @@ namespace DStream
     };
 }
 
-#define DSTR_PROFILE    1
+#define DSTR_PROFILE    0
 
-#ifdef DSTR_PROFILE
+#if DSTR_PROFILE
 #define DSTR_PROFILE_BEGIN_SESSION(name, filepath) ::DStream::TimerManager::Get().BeginSession(name,filepath)
 #define DSTR_PROFILE_END_SESSION() ::DStream::TimerManager::Get().EndSession()
 #define DSTR_PROFILE_SCOPE(name) ::DStream::Timer timer##__LINE__(name);

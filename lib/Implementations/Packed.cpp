@@ -27,6 +27,6 @@ namespace DStream
 		highPart = col.x << right; 
 		lowPart = col.y;
 
-		return (highPart + lowPart) << (16 - m_Quantization);
+		return (highPart + lowPart);
 	}
 }

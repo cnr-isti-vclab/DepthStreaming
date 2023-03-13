@@ -55,7 +55,7 @@ namespace DStream
 		bool m_Enlarge;
 		SpacingTable m_SpacingTable;
 
-		std::unordered_map<uint16_t, Color> m_EncodingTable;
+		std::vector<Color> m_EncodingTable;
 		std::vector<uint16_t> m_DecodingTable;
 	};
 

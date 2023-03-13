@@ -100,15 +100,14 @@ namespace DStream
 		{
 			for (uint32_t i = 0; i < nElements; i++)
 				dest[i] = m_Implementation.EncodeValue(source[i]);
-		}
 
-		
-		if (m_Enlarge)
-		{
-			Color* enlarged = new Color[nElements];
-			Enlarge(dest, enlarged, nElements);
-			memcpy(dest, enlarged, nElements * 3);
-			delete[] enlarged;
+			if (m_Enlarge)
+			{
+				Color* enlarged = new Color[nElements];
+				Enlarge(dest, enlarged, nElements);
+				memcpy(dest, enlarged, nElements * 3);
+				delete[] enlarged;
+			}
 		}
 	}
 
@@ -132,16 +131,12 @@ namespace DStream
 			uint32_t usedBits = 1 << m_Implementation.GetUsedBits();
 			uint32_t usedBits2 = usedBits * usedBits;
 			for (uint32_t i = 0; i < nElements; i++)
-				dest[i] = m_DecodingTable[inCols[i].x* usedBits2 + inCols[i].y*usedBits + inCols[i].z];
+				dest[i] = m_DecodingTable[inCols[i].x * usedBits2 + inCols[i].y*usedBits + inCols[i].z];
 		}
 		else
 		{
 			for (uint32_t i = 0; i < nElements; i++)
-			{
-				if (i == 33217)
-					std::cout << "E";
 				dest[i] = m_Implementation.DecodeValue(inCols[i]);
-			}
 		}
 
 		if (m_Enlarge)
@@ -161,14 +156,21 @@ namespace DStream
 			{
 				for (uint32_t k = 0; k < maxAlgoBitsValue; k++)
 				{
+					Color c = { (uint8_t)i, (uint8_t)j, (uint8_t)k };
 					m_DecodingTable[i * maxAlgoBitsValue * maxAlgoBitsValue + j * maxAlgoBitsValue + k] =
-						m_Implementation.DecodeValue({ (uint8_t)i, (uint8_t)j, (uint8_t)k });
+						m_Implementation.DecodeValue(c);
 				}
 			}
 		}
 
+		m_EncodingTable.resize(maxQuantizationValue);
 		for (uint32_t i = 0; i < maxQuantizationValue; i++)
-			m_EncodingTable[i] = m_Implementation.EncodeValue(i);
+		{
+			Color c = m_Implementation.EncodeValue(i);
+			if (m_Enlarge)
+				Enlarge(&c, &c, 1);
+			m_EncodingTable[i] = c;
+		}
 	}
 
 	template<class CoderImplementation>
