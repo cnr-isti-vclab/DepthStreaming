@@ -3,7 +3,8 @@
 
 namespace DStream
 {
-	Split::Split(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits, "Split") {}
+	Split::Split(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution)
+		: Coder(quantization, algoBits, channelDistribution) {}
 
 
 	Color Split::EncodeValue(uint16_t val)
@@ -30,8 +31,8 @@ namespace DStream
 		uint16_t highPart, lowPart;
 		uint32_t right = m_Quantization - m_AlgoBits;
 
-		col.x >>= (8 - m_AlgoBits);
-		col.y >>= (8 - right);
+		col.x = std::round((float)col.x / ((1 << (8 - m_AlgoBits))-1));
+		col.y = std::round((float)col.x / ((1 << (8 - right)) - 1));
 
 		if((col.x & 0x1) == 1)
 			col.y = (1<<right) - col.y - 1;

@@ -16,7 +16,7 @@ namespace DStream
 	{
 		static_assert(std::is_base_of_v<Coder, CoderImplementation>, "Template parameter of class StreamCoder must derive from Coder.");
 	public:
-		StreamCoder(uint8_t quantization, bool enlarge, uint8_t algoBits, bool useTables = true);
+		StreamCoder(uint8_t quantization, bool enlarge, uint8_t algoBits, std::vector<uint8_t> channelDistribution, bool useTables = true);
 		StreamCoder() = default;
 		~StreamCoder() = default;
 

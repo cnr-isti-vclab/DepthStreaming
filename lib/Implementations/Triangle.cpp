@@ -3,7 +3,7 @@
 
 namespace DStream
 {
-	Triangle::Triangle(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits, "Triangle") {}
+	Triangle::Triangle(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution) : Coder(quantization, algoBits, channelDistribution) {}
 
 	Color Triangle::EncodeValue(uint16_t val)
 	{

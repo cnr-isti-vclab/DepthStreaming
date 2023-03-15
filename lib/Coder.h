@@ -9,7 +9,7 @@ namespace DStream
 	{
 	public:
 		Coder() = default;
-		Coder(uint8_t quantization, uint8_t algoBits, const std::string& coderName) : m_Quantization(quantization), m_AlgoBits(algoBits), m_Name(coderName) {}
+		Coder(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution);
 
 		virtual Color EncodeValue(uint16_t value, bool simple) { return { 0,0,0 }; }
 		virtual uint16_t DecodeValue(Color value, bool simple) { return 0; };
@@ -23,6 +23,7 @@ namespace DStream
 	protected:
 		uint8_t m_Quantization;
 		uint8_t m_AlgoBits;
+		std::vector<uint8_t> m_ChannelDistribution;
 		std::string m_Name;
 	};
 }

@@ -15,7 +15,8 @@
 #include <StreamCoder.h>
 #include <Implementations/Hilbert.h>
 #include <Implementations/Hue.h>
-#include <Implementations/Packed.h>
+#include <Implementations/Packed2.h>
+#include <Implementations/Packed3.h>
 #include <Implementations/Phase.h>
 #include <Implementations/Split.h>
 #include <Implementations/Morton.h>

@@ -101,7 +101,8 @@ set (DSTREAM_LIB_SRC
 	lib/Coder.cpp
 	lib/DepthProcessing.cpp
 	
-	lib/Implementations/Packed.cpp
+	lib/Implementations/Packed2.cpp
+	lib/Implementations/Packed3.cpp
 	lib/Implementations/Hilbert.cpp
 	lib/Implementations/Morton.cpp
 	lib/Implementations/Hue.cpp
@@ -115,7 +116,8 @@ set (DSTREAM_LIB_SRC
 	lib/DataStructs/Table.h
 	lib/DepthProcessing.h
 	lib/Coder.h
-	lib/Implementations/Packed.h
+	lib/Implementations/Packed2.h
+	lib/Implementations/Packed3.h
 	lib/Implementations/Hilbert.h
 	lib/Implementations/Morton.h
 	lib/Implementations/Hue.h

@@ -9,7 +9,7 @@ namespace DStream
 	{
 	public:
 		Morton() = default;
-		Morton(uint8_t quantization, uint8_t algoBits, bool hilbert = false);
+		Morton(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution, bool hilbert = false);
 
 		inline uint8_t GetEnlargeBits() { return std::min<uint8_t>(6, m_AlgoBits); }
 

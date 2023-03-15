@@ -13,7 +13,7 @@ namespace DStream
         return (T(0) < val) - (val < T(0));
     }
 
-	Hilbert::Hilbert(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits, "Hilbert")
+    Hilbert::Hilbert(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistributions) : Coder(quantization, algoBits, channelDistributions)
 	{
 #ifdef _WIN32
 		assert(algoBits * 3 < quantization);
@@ -29,8 +29,8 @@ namespace DStream
 #else
 		assert(m_AlgoBits + m_SegmentBits <= 8);
 #endif
-
-        m_Morton = Morton(quantization, algoBits, true);
+        
+        m_Morton = Morton(quantization, algoBits, { 8,8,8 }, true);
 	}
 
 	Color Hilbert::EncodeValue(uint16_t val)
@@ -88,7 +88,6 @@ namespace DStream
         TransposeFromHilbertCoords(nextCol);
 
         uint16_t v3 = std::max(v1 - 1, 0);
-
         Color prevCol = m_Morton.EncodeValue(v3);
         std::swap(prevCol[0], prevCol[2]);
         TransposeFromHilbertCoords(prevCol);

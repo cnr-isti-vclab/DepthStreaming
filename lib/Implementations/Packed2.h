@@ -4,11 +4,11 @@
 
 namespace DStream
 {
-	class Packed : public Coder
+	class Packed2 : public Coder
 	{
 	public:
-		Packed() = default;
-		Packed(uint8_t quantization, uint8_t algoBits);
+		Packed2() = default;
+		Packed2(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution);
 
 		Color EncodeValue(uint16_t value);
 		uint16_t DecodeValue(Color value);

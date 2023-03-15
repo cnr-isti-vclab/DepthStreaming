@@ -1,7 +1,8 @@
 #include <StreamCoder.h>
 #include <Implementations/Hilbert.h>
 #include <Implementations/Hue.h>
-#include <Implementations/Packed.h>
+#include <Implementations/Packed2.h>
+#include <Implementations/Packed3.h>
 #include <Implementations/Split.h>
 #include <Implementations/Phase.h>
 #include <Implementations/Triangle.h>
@@ -71,17 +72,18 @@ namespace DStream
 	template class StreamCoder<Hilbert>;
 	template class StreamCoder<Morton>;
 	template class StreamCoder<Split>;
-	template class StreamCoder<Packed>;
+	template class StreamCoder<Packed2>;
+	template class StreamCoder<Packed3>;
 	template class StreamCoder<Phase>;
 	template class StreamCoder<Hue>;
 	template class StreamCoder<Triangle>;
 
 	template <typename CoderImplementation>
-	StreamCoder<CoderImplementation>::StreamCoder(uint8_t quantization, bool enlarge, uint8_t algoBits, bool useTables /* = true*/)
+	StreamCoder<CoderImplementation>::StreamCoder(uint8_t quantization, bool enlarge, uint8_t algoBits, std::vector<uint8_t> channelDistribution, bool useTables /* = true*/)
 	{
 		m_UseTables = useTables;
 		m_Enlarge = enlarge;
-		m_Implementation = CoderImplementation(quantization, algoBits);
+		m_Implementation = CoderImplementation(quantization, algoBits, channelDistribution);
 		
 		GenerateSpacingTables();
 		if (useTables)
