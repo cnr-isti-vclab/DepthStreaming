@@ -5,7 +5,7 @@
 
 namespace DStream
 {
-	Phase::Phase(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits) {}
+	Phase::Phase(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits, "Phase") {}
 
 	Color Phase::EncodeValue(uint16_t val)
 	{

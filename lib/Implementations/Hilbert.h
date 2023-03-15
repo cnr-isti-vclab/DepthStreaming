@@ -18,9 +18,6 @@ namespace DStream
 		inline uint8_t GetUsedBits() { return m_AlgoBits + m_SegmentBits; }
 
 	private:
-		void SubdivideValue(Color& value, Color& nextValue, uint8_t fract);
-		uint16_t UnsubdivideValue(Color& value, Color& nextValue);
-
 		void TransposeToHilbertCoords(Color& col);
 		void TransposeFromHilbertCoords(Color& col);
 

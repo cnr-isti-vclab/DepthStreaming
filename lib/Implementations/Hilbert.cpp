@@ -13,7 +13,7 @@ namespace DStream
         return (T(0) < val) - (val < T(0));
     }
 
-	Hilbert::Hilbert(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits)
+	Hilbert::Hilbert(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits, "Hilbert")
 	{
 #ifdef _WIN32
 		assert(algoBits * 3 < quantization);
@@ -96,7 +96,7 @@ namespace DStream
         v1 <<= m_SegmentBits;
         for (int i = 0; i < 3; i++)
             v1 += fract[i] * sgn(nextCol[i] - prevCol[i]);
-        return v1 << (16 - m_Quantization);
+        return v1;
 	}
 
     void Hilbert::TransposeFromHilbertCoords(Color& col)

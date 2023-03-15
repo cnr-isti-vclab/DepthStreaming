@@ -4,7 +4,7 @@
 
 namespace DStream
 {
-	Morton::Morton(uint8_t quantization, uint8_t algoBits, bool hilbert) : Coder(quantization, algoBits), m_ForHilbert(hilbert) {}
+	Morton::Morton(uint8_t quantization, uint8_t algoBits, bool hilbert) : Coder(quantization, algoBits, "Hilbert"), m_ForHilbert(hilbert) {}
 
 	Color Morton::EncodeValue(uint16_t val)
 	{

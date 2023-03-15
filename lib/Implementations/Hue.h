@@ -12,5 +12,6 @@ namespace DStream
 
 		Color EncodeValue(uint16_t value);
 		uint16_t DecodeValue(Color value);
+
 	};
 }

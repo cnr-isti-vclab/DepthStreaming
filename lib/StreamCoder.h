@@ -33,6 +33,14 @@ namespace DStream
 
 		inline void Enlarge(const Color* source, Color* dest, uint32_t nElements)
 		{
+			uint8_t bits = 8 - m_Implementation.GetEnlargeBits();
+			/*
+
+			for (uint32_t i = 0; i < nElements; i++)
+				for (int k = 0; k < 3; k++)
+					dest[i][k] = source[i][k] << (8 - m_Implementation.GetEnlargeBits());
+			*/
+
 			for (uint32_t i=0; i<nElements; i++)
 				for (int k = 0; k < 3; k++)
 					dest[i][k] = m_SpacingTable.Enlarge[k][source[i][k]];
@@ -40,6 +48,12 @@ namespace DStream
 
 		inline void Shrink(const Color* source, Color* dest, uint32_t nElements)
 		{
+			/*
+			for (uint32_t i = 0; i < nElements; i++)
+				for (int k = 0; k < 3; k++)
+					dest[i][k]  = source[i][k] >> (8 - m_Implementation.GetEnlargeBits());
+				*/
+
 			for (uint32_t i = 0; i < nElements; i++)
 				for (int k = 0; k < 3; k++)
 					dest[i][k] = m_SpacingTable.Shrink[k][source[i][k]];

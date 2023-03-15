@@ -3,7 +3,7 @@
 
 namespace DStream
 {
-	Split::Split(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits) {}
+	Split::Split(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits, "Split") {}
 
 
 	Color Split::EncodeValue(uint16_t val)

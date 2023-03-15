@@ -21,9 +21,9 @@ static void TransposeAdvanceToRange(std::vector<uint16_t>& vec, uint16_t rangeMa
 		vec[i] = std::round(((float)vec[i] / errorSum) * rangeMax);
 }
 
-static void NormalizeAdvance(std::vector<uint16_t>& advances)
+static void NormalizeAdvance(std::vector<uint16_t>& advances, uint32_t range)
 {
-	TransposeAdvanceToRange(advances, 255);
+	TransposeAdvanceToRange(advances, range);
 
 	// Count zeros, store non zeros
 	std::vector<uint16_t> nonZeros;
@@ -37,7 +37,7 @@ static void NormalizeAdvance(std::vector<uint16_t>& advances)
 	}
 
 	// Make sure the sum of the non zero elements is 256 - nZeros (we'll set the zeros to ones)
-	TransposeAdvanceToRange(nonZeros, 255 - zeroes);
+	TransposeAdvanceToRange(nonZeros, range - zeroes);
 
 	// Update the non zero elements, turn the zeros into ones
 	uint32_t nonzeroIdx = 0;
@@ -62,8 +62,8 @@ static void NormalizeAdvance(std::vector<uint16_t>& advances)
 	}
 
 	// Remove from the max in case the sum still isn't 256
-	if (sum != 255)
-		advances[maxIdx] -= (sum - 255);
+	if (sum != range)
+		advances[maxIdx] -= (sum - range);
 }
 
 namespace DStream
@@ -131,7 +131,7 @@ namespace DStream
 			uint32_t usedBits = 1 << m_Implementation.GetUsedBits();
 			uint32_t usedBits2 = usedBits * usedBits;
 			for (uint32_t i = 0; i < nElements; i++)
-				dest[i] = m_DecodingTable[inCols[i].x * usedBits2 + inCols[i].y*usedBits + inCols[i].z];
+				dest[i] = m_DecodingTable[inCols[i].x * usedBits2 + inCols[i].y * usedBits + inCols[i].z];
 		}
 		else
 		{
@@ -192,10 +192,11 @@ namespace DStream
 		{
 			// Init error vector
 			std::vector<uint16_t> errors = GetErrorVector(table, side, e);
-			if (errors.size() < 255)
-				NormalizeAdvance(errors);
+			uint32_t maxSide = (1 << 8) - 1;
+			if (errors.size() < maxSide)
+				NormalizeAdvance(errors, maxSide);
 			else
-				for (uint32_t i = 0; i < 255; i++)
+				for (uint32_t i = 0; i < maxSide; i++)
 					errors[i] = 1;
 
 			// Create spacings based on that vector

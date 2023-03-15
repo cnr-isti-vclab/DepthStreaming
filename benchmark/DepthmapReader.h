@@ -18,12 +18,15 @@ namespace DStream
     {
         bool Valid = false;
 
-        uint32_t Width;
-        uint32_t Height;
+        uint32_t Width = 0;
+        uint32_t Height = 0;
 
-        float CenterX;
-        float CenterY;
-        float CellSize;
+        float CenterX = 0;
+        float CenterY = 0;
+        float CellSize = 0;
+
+        float MinDepth = std::numeric_limits<float>().max();
+        float MaxDepth = std::numeric_limits<float>().min();
 
         DepthmapData() = default;
         DepthmapData(const DepthmapData& data) = default;
@@ -33,21 +36,21 @@ namespace DStream
 	{
     public:
         DepthmapReader() = default;
-        DepthmapReader(const std::string& path, DepthmapData& dmData, bool quantize = true);
-        DepthmapReader(const std::string& path, DepthmapFormat format, DepthmapData& dmData, bool quantize = true);
+        DepthmapReader(const std::string& path, DepthmapData& dmData);
+        DepthmapReader(const std::string& path, DepthmapFormat format, DepthmapData& dmData);
         ~DepthmapReader();
-        inline uint16_t* GetData() { return m_Data; }
+        inline float* GetRawData() { return m_Data; }
 
     private:
-        void ParseASC(const std::string& path, DepthmapData& dmData, bool quantize);
+        void ParseASC(const std::string& path, DepthmapData& dmData);
 #ifdef DSTREAM_ENABLE_TIFF
-        void ParseTIFF(const std::string& path, DepthmapData& dmData, bool quantize);
+        void ParseTIFF(const std::string& path, DepthmapData& dmData);
 #endif
-        void ParsePGM(const std::string& path, DepthmapData& dmData, bool quantize);
-        void ParseDEM(const std::string& path, DepthmapData& dmData, bool quantize);
-        void ParseXYZ(const std::string& path, DepthmapData& dmData, bool quantize);
+        void ParsePGM(const std::string& path, DepthmapData& dmData);
+        void ParseDEM(const std::string& path, DepthmapData& dmData);
+        void ParseXYZ(const std::string& path, DepthmapData& dmData);
 
     private:
-        uint16_t* m_Data;
+        float* m_Data;
     };
 }

@@ -10,7 +10,7 @@
 
 namespace DStream
 {
-    DepthmapReader::DepthmapReader(const std::string& path, DepthmapData& dmData, bool quantize /* = true*/)
+    DepthmapReader::DepthmapReader(const std::string& path, DepthmapData& dmData)
     {
         uint32_t extStart = path.find_last_of(".") + 1;
         std::string extension = path.substr(extStart, path.length() - extStart);
@@ -19,25 +19,25 @@ namespace DStream
             extension[i] = tolower(extension[i]);
 
         if (extension == "tif" || extension == ".tiff")
-            ParseTIFF(path, dmData, quantize);
+            ParseTIFF(path, dmData);
         else if (extension == "asc")
-            ParseASC(path, dmData, quantize);
+            ParseASC(path, dmData);
         else if (extension == "pgm")
-            ParsePGM(path, dmData, quantize);
+            ParsePGM(path, dmData);
     }
 
-    DepthmapReader::DepthmapReader(const std::string& path, DepthmapFormat format, DepthmapData& dmData, bool quantize /* = true*/)
+    DepthmapReader::DepthmapReader(const std::string& path, DepthmapFormat format, DepthmapData& dmData)
     {
         switch (format)
         {
         case DepthmapFormat::ASC:
-            ParseASC(path, dmData, quantize);
+            ParseASC(path, dmData);
             break;
         case DepthmapFormat::TIF:
-            ParseTIFF(path, dmData, quantize);
+            ParseTIFF(path, dmData);
             break;
         case DepthmapFormat::PGM:
-            ParsePGM(path, dmData, quantize);
+            ParsePGM(path, dmData);
             break;
         default:
             std::cerr << "Unsupported depthmap input format" << std::endl;
@@ -50,7 +50,7 @@ namespace DStream
         delete[] m_Data;
     }
 
-    void DepthmapReader::ParseASC(const std::string& path, DepthmapData& dmData, bool quantize)
+    void DepthmapReader::ParseASC(const std::string& path, DepthmapData& dmData)
     {
         if (!std::filesystem::exists(path))
         {
@@ -76,8 +76,7 @@ namespace DStream
         fscanf(fp, "nodata_value %f\n", &nodata);
 
         // Load depth data
-        m_Data = new uint16_t[dmData.Width * dmData.Height];
-        float* tmp = new float[dmData.Width * dmData.Height];
+        m_Data = new float[dmData.Width * dmData.Height];
         float min = 1e20;
         float max = -1e20;
 
@@ -85,22 +84,16 @@ namespace DStream
         {
             float h;
             fscanf(fp, "%f", &h);
-            min = std::min(min, h);
-            max = std::max(max, h);
-            tmp[i] = h;
+            dmData.MinDepth = std::min(min, h);
+            dmData.MaxDepth = std::max(max, h);
+            m_Data[i] = h;
         }
-
-        // Quantize
-        if (quantize)
-            for (uint32_t i = 0; i < dmData.Width * dmData.Height; i++)
-                m_Data[i] = ((tmp[i] - min) / (float)(max - min)) * 65535.0f;
 
         dmData.Valid = true;
         fclose(fp);
-        delete[] tmp;
     }
 
-    void DepthmapReader::ParseTIFF(const std::string& path, DepthmapData& dmData, bool quantize)
+    void DepthmapReader::ParseTIFF(const std::string& path, DepthmapData& dmData)
     {
         TIFF* inFile = TIFFOpen(path.c_str(), "r");
         int width, height, stripSize, nStrips;
@@ -114,7 +107,7 @@ namespace DStream
         dmData.Width = width;
         dmData.Height = height;
         int16_t* tmpBuffer = new int16_t[width * height];
-        m_Data = new uint16_t[width * height];
+        m_Data = new float[width * height];
         
         tdata_t buf = _TIFFmalloc(stripSize);
         tstrip_t strip;
@@ -129,17 +122,8 @@ namespace DStream
             read += stripSize / sizeof(int16_t);
         }
 
-        if (quantize)
-        {
-            for (uint32_t i = 0; i < width * height; i++)
-            {
-                min = std::min(min, tmpBuffer[i]);
-                max = std::max(max, tmpBuffer[i]);
-            }
-
-            for (uint32_t i=0; i<width * height; i++)
-                m_Data[i] = ((float)(tmpBuffer[i] - min) / (max - min)) * 65535.0f;
-        }
+        for (uint32_t i = 0; i < width * height; i++)
+            m_Data[i] = (float)(tmpBuffer[i]);
 
         _TIFFfree(buf);
         TIFFClose(inFile);
@@ -148,7 +132,7 @@ namespace DStream
         dmData.Valid = true;
     }
 
-    void DepthmapReader::ParsePGM(const std::string& path, DepthmapData& dmData, bool quantize)
+    void DepthmapReader::ParsePGM(const std::string& path, DepthmapData& dmData)
     {
         int width, height;
         std::string dummy;
@@ -167,23 +151,15 @@ namespace DStream
         dmData.Width = width;
         dmData.Height = height;
 
-        m_Data = new uint16_t[dmData.Width * dmData.Height];
-        file.read(reinterpret_cast<char*>(m_Data), width * height * sizeof(uint16_t));
+        uint16_t* tmp = new uint16_t[dmData.Width * dmData.Height];
+        m_Data = new float[dmData.Width * dmData.Height];
+        file.read(reinterpret_cast<char*>(tmp), width * height * sizeof(uint16_t));
 
         // Invert endianess
         for (uint32_t i = 0; i < width * height; i++)
-            m_Data[i] = (m_Data[i] >> 8) | (m_Data[i] << 8);
-
-        if (quantize)
         {
-            for (uint32_t i = 0; i < width * height; i++)
-            {
-                min = std::min(min, m_Data[i]);
-                max = std::max(max, m_Data[i]);
-            }
-
-            for (uint32_t i = 0; i < width * height; i++)
-                m_Data[i] = ((float)(m_Data[i] - min) / (max - min)) * 65535.0f;
+            tmp[i] = (tmp[i] >> 8) | (tmp[i] << 8);
+            m_Data[i] = tmp[i];
         }
 
         dmData.Valid = true;

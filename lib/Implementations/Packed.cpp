@@ -2,7 +2,7 @@
 
 namespace DStream
 {
-	Packed::Packed(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits) {}
+	Packed::Packed(uint8_t quantization, uint8_t algoBits) : Coder(quantization, algoBits, "Packed") {}
 
 	Color Packed::EncodeValue(uint16_t val)
 	{

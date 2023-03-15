@@ -7,7 +7,7 @@ namespace DStream
 {
 	struct SpacingTable
 	{
-		std::vector<uint16_t> Enlarge[3];
-		std::vector<uint16_t> Shrink[3];
+		std::vector<uint8_t> Enlarge[3];
+		std::vector<uint8_t> Shrink[3];
 	};
 }
