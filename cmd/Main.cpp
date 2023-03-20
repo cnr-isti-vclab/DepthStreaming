@@ -18,7 +18,7 @@
 #include <Implementations/Packed2.h>
 #include <Implementations/Packed3.h>
 #include <Implementations/Phase.h>
-#include <Implementations/Split.h>
+#include <Implementations/Split2.h>
 #include <Implementations/Morton.h>
 #include <Implementations/Triangle.h>
 

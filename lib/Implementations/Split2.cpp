@@ -1,13 +1,13 @@
-#include "Split.h"
+#include "Split2.h"
 #include <math.h>
 
 namespace DStream
 {
-	Split::Split(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution)
+	Split2::Split2(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution)
 		: Coder(quantization, algoBits, channelDistribution) {}
 
 
-	Color Split::EncodeValue(uint16_t val)
+	Color Split2::EncodeValue(uint16_t val)
 	{
 		Color ret;
 		uint32_t right = m_Quantization - m_AlgoBits;
@@ -25,14 +25,14 @@ namespace DStream
 		return ret;
 	}
 
-	uint16_t Split::DecodeValue(Color col)
+	uint16_t Split2::DecodeValue(Color col)
 	{
 		std::swap(col.x, col.y);
 		uint16_t highPart, lowPart;
 		uint32_t right = m_Quantization - m_AlgoBits;
 
-		col.x = std::round((float)col.x / ((1 << (8 - m_AlgoBits))-1));
-		col.y = std::round((float)col.x / ((1 << (8 - right)) - 1));
+		col.x = std::round((float)col.x / (1 << (8 - m_AlgoBits)));
+		col.y = std::round((float)col.y / (1 << (8 - right)));
 
 		if((col.x & 0x1) == 1)
 			col.y = (1<<right) - col.y - 1;

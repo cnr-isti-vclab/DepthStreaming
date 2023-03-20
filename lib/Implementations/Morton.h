@@ -15,6 +15,7 @@ namespace DStream
 
 		Color EncodeValue(uint16_t value);
 		uint16_t DecodeValue(Color value);
+		virtual uint16_t DecodeValue(Color value, bool simple) override { return 0; }
 
 	private:
 		bool m_ForHilbert;

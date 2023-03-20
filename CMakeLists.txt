@@ -106,11 +106,11 @@ set (DSTREAM_LIB_SRC
 	lib/Implementations/Hilbert.cpp
 	lib/Implementations/Morton.cpp
 	lib/Implementations/Hue.cpp
-	lib/Implementations/Split.cpp
+	lib/Implementations/Split2.cpp
+	lib/Implementations/Split3.cpp
 	lib/Implementations/Triangle.cpp
 	lib/Implementations/Phase.cpp
 
-	
 	lib/StreamCoder.h
 	lib/DataStructs/Vec3.h
 	lib/DataStructs/Table.h
@@ -121,7 +121,8 @@ set (DSTREAM_LIB_SRC
 	lib/Implementations/Hilbert.h
 	lib/Implementations/Morton.h
 	lib/Implementations/Hue.h
-	lib/Implementations/Split.h
+	lib/Implementations/Split2.h
+	lib/Implementations/Split3.h
 	lib/Implementations/Triangle.h
 	lib/Implementations/Phase.h
 )

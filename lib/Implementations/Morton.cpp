@@ -26,9 +26,9 @@ namespace DStream
 			unsigned int shift_selector = 3 * i;
 			unsigned int shiftback = 2 * i;
 
-			ret[0] |= (val & (selector << shift_selector)) >> (shiftback);
-			ret[1] |= (val & (selector << (shift_selector + 1))) >> (shiftback + 1);
-			ret[2] |= (val & (selector << (shift_selector + 2))) >> (shiftback + 2);
+			ret[0] |= (uint8_t)std::round((float)(val & (selector << shift_selector)) / (1 << shiftback));
+			ret[1] |= (uint8_t)std::round((float)(val & (selector << (shift_selector + 1))) / (1 << (shiftback+1)));
+			ret[2] |= (uint8_t)std::round((float)(val & (selector << (shift_selector + 2))) / (1 << (shiftback+2)));
 		}
 		return ret;
 	}

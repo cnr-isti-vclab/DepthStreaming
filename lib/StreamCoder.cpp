@@ -3,7 +3,8 @@
 #include <Implementations/Hue.h>
 #include <Implementations/Packed2.h>
 #include <Implementations/Packed3.h>
-#include <Implementations/Split.h>
+#include <Implementations/Split2.h>
+#include <Implementations/Split3.h>
 #include <Implementations/Phase.h>
 #include <Implementations/Triangle.h>
 
@@ -71,7 +72,8 @@ namespace DStream
 {
 	template class StreamCoder<Hilbert>;
 	template class StreamCoder<Morton>;
-	template class StreamCoder<Split>;
+	template class StreamCoder<Split2>;
+	template class StreamCoder<Split3>;
 	template class StreamCoder<Packed2>;
 	template class StreamCoder<Packed3>;
 	template class StreamCoder<Phase>;
@@ -159,8 +161,7 @@ namespace DStream
 				for (uint32_t k = 0; k < maxAlgoBitsValue; k++)
 				{
 					Color c = { (uint8_t)i, (uint8_t)j, (uint8_t)k };
-					m_DecodingTable[i * maxAlgoBitsValue * maxAlgoBitsValue + j * maxAlgoBitsValue + k] =
-						m_Implementation.DecodeValue(c);
+					m_DecodingTable[i * maxAlgoBitsValue * maxAlgoBitsValue + j * maxAlgoBitsValue + k] = m_Implementation.DecodeValue(c);
 				}
 			}
 		}
@@ -180,14 +181,24 @@ namespace DStream
 	{
 		// Init tables
 		uint32_t side = 1 << m_Implementation.GetEnlargeBits();
+		uint32_t seg = m_Implementation.GetEnlargeBits() - m_Implementation.GetAlgoBits();
+		uint32_t warn = side - (1 << seg) / 2;
 		// Init table memory
+		// CHECK SIDE
 		uint16_t* table = new uint16_t[side * side * side];
 
 		// [OPTIMIZABLE] Compute decoding table
 		for (uint16_t i = 0; i < side; i++)
 			for (uint16_t j = 0; j < side; j++)
 				for (uint16_t k = 0; k < side; k++)
-					table[i*side*side + j*side + k] = m_Implementation.DecodeValue(Color((uint8_t)i, (uint8_t)j, (uint8_t)k));
+				{
+					uint16_t val = m_Implementation.DecodeValue(Color((uint8_t)i, (uint8_t)j, (uint8_t)k));
+					Color col = m_Implementation.EncodeValue(val);
+
+					if (val > (1 << m_Implementation.GetQuantization()))
+						std::cout << "Rip" << std::endl;
+					table[i * side * side + j * side + k] = val;
+				}
 
 		// Compute spacing tables
 		for (uint32_t e = 0; e < 3; e++)
@@ -196,7 +207,9 @@ namespace DStream
 			std::vector<uint16_t> errors = GetErrorVector(table, side, e);
 			uint32_t maxSide = (1 << 8) - 1;
 			if (errors.size() < maxSide)
-				NormalizeAdvance(errors, maxSide);
+			{
+				NormalizeAdvance(errors, maxSide+1);
+			}
 			else
 				for (uint32_t i = 0; i < maxSide; i++)
 					errors[i] = 1;
@@ -268,29 +281,30 @@ namespace DStream
 			{
 				for (uint32_t j = 0; j < tableSide; j++)
 				{
+					int tableLeft, tableRight;
 
 					switch (axis)
 					{
 					case 0:
-						max = std::max<uint16_t>(max, abs(table[k * tableSide * tableSide + i * tableSide + j] - 
-							table[(k + 1) * tableSide * tableSide + i * tableSide + j]));
+						tableLeft = table[k * tableSide * tableSide + i * tableSide + j];
+						tableRight = table[(k + 1) * tableSide * tableSide + i * tableSide + j];
 						break;
 					case 1:
-						max = std::max<uint16_t>(max, abs(table[i * tableSide * tableSide + k * tableSide + j] - 
-							table[i * tableSide * tableSide + (k+1) * tableSide + j]));
+						tableLeft = table[i * tableSide * tableSide + k * tableSide + j];
+						tableRight = table[i * tableSide * tableSide + (k + 1) * tableSide + j];
 						break;
 					case 2:
-						max = std::max<uint16_t>(max, abs(table[i * tableSide * tableSide + j * tableSide + k] - 
-							table[i * tableSide * tableSide + j * tableSide + k + 1]));
+						tableLeft = table[i * tableSide * tableSide + j * tableSide + k];
+						tableRight = table[i * tableSide * tableSide + j * tableSide + k + 1];
 						break;
 					}
+					
+					max = std::max<int>(max, std::abs(tableLeft - tableRight));
 				}
 			}
 			
 			ret[k] = max;
-
-			/*if (ret[k] > 40000)
-				ret[k] /= 128;*/
+			std::cout << "Max: " << max << std::endl;
 		}
 
 		return ret;

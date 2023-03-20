@@ -10,7 +10,8 @@
 #include <Implementations/Hue.h>
 #include <Implementations/Packed2.h>
 #include <Implementations/Packed3.h>
-#include <Implementations/Split.h>
+#include <Implementations/Split2.h>
+#include <Implementations/Split3.h>
 #include <Implementations/Morton.h>
 #include <Implementations/Phase.h>
 #include <Implementations/Triangle.h>
@@ -20,8 +21,6 @@
 #include <sstream>
 #include <filesystem>
 #include <map>
-
-#include <math.h>
 
 using namespace DStream;
 
@@ -68,7 +67,7 @@ struct BenchmarkConfig
 	std::string CurrentPath;
 };
 
-std::string outputFolder = "Packed3";
+std::string outputFolder = "HilbertNaiveEnlarge";
 std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 {
 	std::vector<uint8_t> ret = { 8 };
@@ -267,31 +266,28 @@ void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, in
 {
 	float avg = 0;
 	float max = 0;
+	int j = 0;
 
-	uint16_t* decoded = new uint16_t[65535];
-	uint8_t* cols = new uint8_t[65535 * 3];
+	Coder c(q, algo, { 8,8,8 });
+	
+	for (uint32_t i = 0; i < 65535; i++)
+	{
+		int depth = i >> (16 - q);
 
-	std::vector<uint8_t> channels = { 8,8,8 };
-	StreamCoder<Coder> sc(q, true, algo, channels);
-	std::vector<uint16_t> vals;
-	std::vector<uint16_t> quantizedVals;
+		Color col = c.EncodeValue(depth);
+		int val = c.DecodeValue(col);
+		int err = std::abs((int)(val << (16 - q)) - (int)i);
 
-	for (uint32_t i = 0; i <= 65535; i++)
-		vals.push_back(i);
+		if (err > (1 << (16 - q)) - 1)
+			std::cout << "a";
+		avg += err;
+		j++;
+	}
 
-	quantizedVals.resize(vals.size());
 
-	DepthProcessing::Quantize(quantizedVals.data(), vals.data(), q, vals.size());
-	sc.Encode(quantizedVals.data(), (Color*)cols, 65535);
-	sc.Decode((Color*)cols, decoded, 65535);
-	DepthProcessing::Dequantize(decoded, decoded, q, vals.size());
-	float err = 0;
+	avg /= j;
 
-	for (uint32_t i=0; i<quantizedVals.size(); i++)
-		err += std::abs(decoded[i] - vals[i]);
-	err /= quantizedVals.size();
-
-	std::cout << "Err: " << err << std::endl;
+	std::cout << "Err: " << avg << std::endl;
 
 	/*
 	for (uint32_t i = 0; i <= 10; i+=advance)
@@ -461,7 +457,7 @@ void BenchmarkCoder(BenchmarkConfig& config)
 		else
 			err.EncodedTextureSize = std::filesystem::file_size(currPath + ss.str() + extension);
 
-		if (config.CoderName == "Packed3")
+		if (config.CoderName == "Packed3" || config.CoderName == "Split3")
 		{
 			std::stringstream ss;
 			ss << (int)config.ChannelDistribution[0] << (int)config.ChannelDistribution[1] << (int)config.ChannelDistribution[2];
@@ -475,10 +471,11 @@ void BenchmarkCoder(BenchmarkConfig& config)
 
 int main(int argc, char** argv)
 {
+	TestCoder<Hilbert>(14, 3);
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 
 	// Parameters to test
-	std::string coders[7] = { "Packed3", "Hilbert", "Hue", "Split", "Packed2", "Phase", "Triangle" };
+	std::string coders[7] = { "Hilbert", "Split2", "Hue", "Packed2", "Phase", "Triangle" };
 	uint8_t quantizations[4] = {10, 12, 14, 16};
 	std::vector<uint8_t> algoBits;
 
@@ -514,12 +511,15 @@ int main(int argc, char** argv)
 		std::cout << "CODER: " << coders[c] << std::endl;
 		AddFolderLevel(coders[c], -1, folders);
 
-		for (uint32_t q = 3; q < 4; q++)
+		for (uint32_t q = 0; q < 4; q++)
 		{
 			std::cout << "QUANTIZATION: " << (int)quantizations[q] << std::endl;
 			AddFolderLevel("Quantization", quantizations[q], folders);
 			
-			algoBits = { 8 };// GetAlgoBitsToTest(coders[c], quantizations[q]);
+			if (coders[c] == "Hilbert")
+				algoBits = GetAlgoBitsToTest(coders[c], quantizations[q]);
+			else
+				algoBits = GetMinAlgoBitsToTest(coders[c], quantizations[q]);
 
 			BenchmarkConfig config;
 			config.Quantization = quantizations[q];
@@ -535,7 +535,7 @@ int main(int argc, char** argv)
 			config.OutputFormat = ImageFormat::JPG;
 			config.CoderName = coders[c];
 
-			if (coders[c] == "Packed3")
+			if (coders[c] == "Packed3" || coders[c] == "Split3")
 			{
 				for (uint32_t d = 0; d < distributions.size(); d++)
 				{
@@ -545,7 +545,9 @@ int main(int argc, char** argv)
 					
 					config.ChannelDistribution = distributions[d];
 					config.CurrentPath = GetPathFromComponents(folders);
-					BenchmarkCoder<Packed3>(config);
+
+					if (coders[c] == "Packed3")		BenchmarkCoder<Packed3>(config);
+					if (coders[c] == "Split3")		BenchmarkCoder<Split3>(config);
 
 					folders.pop_back();
 				}
@@ -564,7 +566,7 @@ int main(int argc, char** argv)
 					if (!coders[c].compare("Morton")) BenchmarkCoder<Morton>(config);
 					if (!coders[c].compare("Hue")) BenchmarkCoder<Hue>(config);
 					if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(config);
-					if (!coders[c].compare("Split")) BenchmarkCoder<Split>(config);
+					if (!coders[c].compare("Split2")) BenchmarkCoder<Split2>(config);
 					if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(config);
 					if (!coders[c].compare("Packed2")) BenchmarkCoder<Packed2>(config);
 
