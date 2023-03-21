@@ -43,7 +43,8 @@ namespace DStream
 		std::swap(v[0], v[2]);
 		TransposeFromHilbertCoords(v);
 
-        // Assert che sia <=
+        assert(val < (1 << (m_AlgoBits * 3)));
+
         if (val + 1 != (1 << (m_AlgoBits * 3)))
         {
             // SUBDIVISION

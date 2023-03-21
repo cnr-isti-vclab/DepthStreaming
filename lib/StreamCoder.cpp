@@ -199,17 +199,27 @@ namespace DStream
 		{
 			// Init error vector
 			std::vector<uint16_t> errors = GetErrorVector(table, side, e);
+			/*
 			uint32_t j = 0;
 			for (uint32_t i = errors.size() / 2; i < errors.size(); i++)
 			{
 				errors[i] = errors[i - j];
 				j += 2;
 			}
+			*/
+
+			uint32_t sum = 0;
+			for (uint32_t i = 0; i < errors.size(); i++)
+				sum += errors[i];
 
 			if (side == 256)
 				errors.assign(errors.size(), 1);
 			else
 				NormalizeAdvance(errors, (1 << 8) - 1);
+
+			sum = 0;
+			for (uint32_t i = 0; i < errors.size(); i++)
+				sum += errors[i];
 
 			// Create spacings based on that vector
 			uint32_t nextNumber = 0;

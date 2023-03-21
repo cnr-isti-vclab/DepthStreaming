@@ -270,29 +270,73 @@ void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, in
 
 	Coder c(q, algo, { 8,8,8 });
 	StreamCoder<Hilbert> sc(q, true, algo, { 8,8,8 }, false);
+
+	std::vector<uint16_t> problematic;
+	std::vector<float> errs;
+	float problematicErr = 0;
 	
-	for (uint32_t i = 16; i < 65535; i++)
+	for (uint32_t i = 0; i < 65025; i++)
 	{
 		uint16_t depth = i >> (16 - q);
 
 		Color col;
 		sc.Encode(&depth, &col, 1);
 
+		int noiseSize = 8;
+		float noiseErr = 0;
+		int nDivisor = 0;
+
+		for (int n1 = -noiseSize; n1 <= noiseSize; n1+=noiseSize/2)
+		{
+			if (n1 + col.x < 0)
+				continue;
+
+			for (int n2 = -noiseSize; n2 <= noiseSize; n2+= noiseSize/2)
+			{
+				if (n2 + col.y < 0)
+					continue;
+
+				for (int n3 = -noiseSize; n3 <= noiseSize; n3+= noiseSize/2)
+				{
+					if (n3 + col.z < 0)
+						continue;
+					Color dequantized = col;
+					Color noised = { (uint8_t)(col.x + n1), (uint8_t)(col.y + n2), (uint8_t)(col.z + n3) };
+					uint16_t noisedVal;
+					sc.Decode(&noised, &noisedVal, 1);
+
+					int err = std::abs((int)(noisedVal << (16 - q)) - (int)i);
+					noiseErr += err;
+
+					nDivisor++;
+				}
+			}
+		}
+
+		noiseErr /= nDivisor;
+		if (noiseErr > (1 << 14))
+		{
+			problematic.push_back(i);
+			errs.push_back(noiseErr);
+			problematicErr += noiseErr;
+		}
+
 		uint16_t val;
 		sc.Decode(&col, &val, 1);
 
 		int err = std::abs((int)(val << (16 - q)) - (int)i);
 
-		if (err > (1 << (16 - q)) - 1)
+		if (err > (1 << (16 - q)) * 2)
 			std::cout << "a";
 		avg += err;
 		j++;
 	}
 
-
+	problematicErr /= problematic.size();
 	avg /= j;
 
 	std::cout << "Err: " << avg << std::endl;
+	std::cout << "Noise err: " << problematicErr << std::endl;
 
 	/*
 	for (uint32_t i = 0; i <= 10; i+=advance)
@@ -476,7 +520,7 @@ void BenchmarkCoder(BenchmarkConfig& config)
 
 int main(int argc, char** argv)
 {
-	TestCoder<Hilbert>(10, 2);
+	TestCoder<Hilbert>(12, 2);
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 	
 	// Parameters to test
