@@ -43,6 +43,7 @@ namespace DStream
 		std::swap(v[0], v[2]);
 		TransposeFromHilbertCoords(v);
 
+        // Assert che sia <=
         if (val + 1 != (1 << (m_AlgoBits * 3)))
         {
             // SUBDIVISION
@@ -60,7 +61,7 @@ namespace DStream
                 v[i] <<= m_SegmentBits;
 
                 if (overflown < mult)
-                    v[i] = (v2[i] << m_SegmentBits) + (side - overflown);
+                    v[i] -= side - overflown;
                 else
                     v[i] += mult;
             }
@@ -83,19 +84,11 @@ namespace DStream
         int fract[3];
         uint32_t maxVal = (1 << (m_AlgoBits + m_SegmentBits)) - 1;
 
-        for (uint32_t i = 0; i < 3; i++) 
+        for (uint32_t i = 0; i < 3; i++)
         {
             fract[i] = col1[i] & ((1 << m_SegmentBits) - 1);
-
-            if (col1[i] >= maxVal)
-            {
-                fract[i] += col1[i] - maxVal;
-                col1[i] = maxVal;
-            }
-        }
-
-        for (uint32_t i = 0; i < 3; i++)
             col1[i] >>= m_SegmentBits;
+        }
 
         currColor = col1;
         TransposeToHilbertCoords(col1);
@@ -118,14 +111,12 @@ namespace DStream
             for (uint32_t i = 0; i < 3 && sign == 1; i++)
                 if (nextCol[i] != prevCol[i] && fract[i] != 0)
                     sign *= nextCol[i] - prevCol[i];
+
             if (sign < 0)
             {
                 nextCol = prevCol;
                 prevCol = currColor;
-
-                for (uint32_t i = 0; i < 3; i++)
-                    if (fract[i] != 0)
-                        fract[i] = fract[i] - side;
+                std::swap(nextCol, prevCol);
             }
 
             v1 <<= m_SegmentBits;
@@ -134,7 +125,7 @@ namespace DStream
         }
         else
         {
-            uint16_t v3 = std::max<int>((int)v1 - 1, 0);
+            uint16_t v3 = v1 - 1;
             Color prevCol = m_Morton.EncodeValue(v3);
             std::swap(prevCol[0], prevCol[2]);
             TransposeFromHilbertCoords(prevCol);
@@ -142,7 +133,10 @@ namespace DStream
             int sign = 1;
             for (uint32_t i = 0; i < 3 && sign == 1; i++)
                 if (currColor[i] != prevCol[i] && fract[i] != 0)
+                {
                     sign *= currColor[i] - prevCol[i];
+                    fract[i] = side - fract[i];
+                }
 
             if (sign < 0)
             {

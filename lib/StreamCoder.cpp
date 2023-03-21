@@ -181,8 +181,6 @@ namespace DStream
 	{
 		// Init tables
 		uint32_t side = 1 << m_Implementation.GetEnlargeBits();
-		uint32_t seg = m_Implementation.GetEnlargeBits() - m_Implementation.GetAlgoBits();
-		uint32_t warn = side - (1 << seg) / 2;
 		// Init table memory
 		// CHECK SIDE
 		uint16_t* table = new uint16_t[side * side * side];
@@ -193,10 +191,6 @@ namespace DStream
 				for (uint16_t k = 0; k < side; k++)
 				{
 					uint16_t val = m_Implementation.DecodeValue(Color((uint8_t)i, (uint8_t)j, (uint8_t)k));
-					Color col = m_Implementation.EncodeValue(val);
-
-					if (val > (1 << m_Implementation.GetQuantization()))
-						std::cout << "Rip" << std::endl;
 					table[i * side * side + j * side + k] = val;
 				}
 
@@ -205,14 +199,17 @@ namespace DStream
 		{
 			// Init error vector
 			std::vector<uint16_t> errors = GetErrorVector(table, side, e);
-			uint32_t maxSide = (1 << 8) - 1;
-			if (errors.size() < maxSide)
+			uint32_t j = 0;
+			for (uint32_t i = errors.size() / 2; i < errors.size(); i++)
 			{
-				NormalizeAdvance(errors, maxSide+1);
+				errors[i] = errors[i - j];
+				j += 2;
 			}
+
+			if (side == 256)
+				errors.assign(errors.size(), 1);
 			else
-				for (uint32_t i = 0; i < maxSide; i++)
-					errors[i] = 1;
+				NormalizeAdvance(errors, (1 << 8) - 1);
 
 			// Create spacings based on that vector
 			uint32_t nextNumber = 0;
@@ -242,69 +239,86 @@ namespace DStream
 			}
 		}
 
-		if (m_SpacingTable.Shrink[0].size() != 256 || m_SpacingTable.Shrink[1].size() != 256 || m_SpacingTable.Shrink[2].size() != 256)
-		{
-			std::cout << "Q: " << (int)m_Implementation.GetQuantization() << ", algo: " << (int)m_Implementation.GetAlgoBits() << std::endl;
-			std::cout << "Table size: " << m_SpacingTable.Shrink[0].size() << "," << m_SpacingTable.Shrink[1].size() << "," << m_SpacingTable.Shrink[2].size() << std::endl;
-		}
-
 		delete[] table;
 	}
 
 	template<class CoderImplementation>
 	void StreamCoder<CoderImplementation>::SetSpacingTables(SpacingTable tables)
 	{
-
+		m_SpacingTable = tables;
 	}
 
 	template<class CoderImplementation>
 	void StreamCoder<CoderImplementation>::SetEncodingTable(const std::vector<Color>& table)
 	{
-
+		m_EncodingTable = table;
 	}
 
 	template<class CoderImplementation>
 	void StreamCoder<CoderImplementation>::SetDecodingTable(const std::vector<uint16_t>& table, uint32_t tableSideX, uint32_t tableSideY, uint32_t tableSideZ)
 	{
-
+		m_DecodingTable = table;
 	}
 
 	template<class CoderImplementation>
 	std::vector<uint16_t> StreamCoder<CoderImplementation>::GetErrorVector(uint16_t* table, uint32_t tableSide, uint8_t axis)
 	{
-		std::vector<uint16_t> ret(tableSide - 1);
+		std::vector<uint16_t> ret(tableSide - 1, 0);
 
-		for (uint32_t k = 0; k < tableSide - 1; k++)
+		/*
+		tableSide = 2;
+		for (uint32_t i = 0; i < 2; i++)
+			for (uint32_t j = 0; j < 2; j++)
+				for (uint32_t k = 0; k < 2; k++)
+					table[i * 4 + j * 2 + k] = k + (i+1) * (j+1);
+
+		std::cout << "First square" << std::endl;
+		for (uint32_t i = 0; i < 2; i++)
 		{
-			uint16_t max = 0;
-			for (uint32_t i = 0; i < tableSide; i++)
+			for (uint32_t j = 0; j < 2; j++)
 			{
-				for (uint32_t j = 0; j < tableSide; j++)
+				std::cout << table[0 + i * 2 + j] << "\t";
+			}
+			std::cout << std::endl;
+		}
+
+		std::cout << "First square" << std::endl;
+		for (uint32_t i = 0; i < 2; i++)
+		{
+			for (uint32_t j = 0; j < 2; j++)
+			{
+				std::cout << table[4 + i * 2 + j] << "\t";
+			}
+			std::cout << std::endl;
+		}
+		*/
+		for (uint32_t i = 0; i < tableSide; i++)
+		{
+			for (uint32_t j = 0; j < tableSide; j++)
+			{
+				for (uint32_t k = 0; k < tableSide - 1; k++)
 				{
 					int tableLeft, tableRight;
 
 					switch (axis)
 					{
 					case 0:
-						tableLeft = table[k * tableSide * tableSide + i * tableSide + j];
-						tableRight = table[(k + 1) * tableSide * tableSide + i * tableSide + j];
+						tableLeft = table[ i* tableSide * tableSide + j*tableSide + k];
+						tableRight = table[i* tableSide * tableSide + j*tableSide + (k + 1)];
 						break;
 					case 1:
-						tableLeft = table[i * tableSide * tableSide + k * tableSide + j];
-						tableRight = table[i * tableSide * tableSide + (k + 1) * tableSide + j];
+						tableLeft = table[i* tableSide * tableSide + k * tableSide + j];
+						tableRight = table[i* tableSide * tableSide + (k + 1) * tableSide + j];
 						break;
 					case 2:
-						tableLeft = table[i * tableSide * tableSide + j * tableSide + k];
-						tableRight = table[i * tableSide * tableSide + j * tableSide + k + 1];
+						tableLeft = table[k* tableSide * tableSide + i * tableSide + j];
+						tableRight = table[(k+1)* tableSide * tableSide + i * tableSide + j];
 						break;
 					}
-					
-					max = std::max<int>(max, std::abs(tableLeft - tableRight));
+
+					ret[k] = std::max<int>(ret[k], std::abs(tableLeft - tableRight));
 				}
 			}
-			
-			ret[k] = max;
-			std::cout << "Max: " << max << std::endl;
 		}
 
 		return ret;

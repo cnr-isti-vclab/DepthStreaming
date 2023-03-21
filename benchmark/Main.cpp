@@ -269,13 +269,18 @@ void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, in
 	int j = 0;
 
 	Coder c(q, algo, { 8,8,8 });
+	StreamCoder<Hilbert> sc(q, true, algo, { 8,8,8 }, false);
 	
-	for (uint32_t i = 0; i < 65535; i++)
+	for (uint32_t i = 16; i < 65535; i++)
 	{
-		int depth = i >> (16 - q);
+		uint16_t depth = i >> (16 - q);
 
-		Color col = c.EncodeValue(depth);
-		int val = c.DecodeValue(col);
+		Color col;
+		sc.Encode(&depth, &col, 1);
+
+		uint16_t val;
+		sc.Decode(&col, &val, 1);
+
 		int err = std::abs((int)(val << (16 - q)) - (int)i);
 
 		if (err > (1 << (16 - q)) - 1)
@@ -471,9 +476,9 @@ void BenchmarkCoder(BenchmarkConfig& config)
 
 int main(int argc, char** argv)
 {
-	TestCoder<Hilbert>(14, 3);
+	TestCoder<Hilbert>(10, 2);
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
-
+	
 	// Parameters to test
 	std::string coders[7] = { "Hilbert", "Split2", "Hue", "Packed2", "Phase", "Triangle" };
 	uint8_t quantizations[4] = {10, 12, 14, 16};
