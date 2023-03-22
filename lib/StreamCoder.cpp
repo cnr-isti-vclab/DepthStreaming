@@ -1,5 +1,6 @@
 #include <StreamCoder.h>
-#include <Implementations/Hilbert.h>
+#include <Implementations/Hilbert2.h>
+#include <Implementations/Hilbert3.h>
 #include <Implementations/Hue.h>
 #include <Implementations/Packed2.h>
 #include <Implementations/Packed3.h>
@@ -70,7 +71,8 @@ static void NormalizeAdvance(std::vector<uint16_t>& advances, uint32_t range)
 
 namespace DStream
 {
-	template class StreamCoder<Hilbert>;
+	template class StreamCoder<Hilbert2>;
+	template class StreamCoder<Hilbert3>;
 	template class StreamCoder<Morton>;
 	template class StreamCoder<Split2>;
 	template class StreamCoder<Split3>;

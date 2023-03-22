@@ -6,7 +6,8 @@
 #include <JpegDecoder.h>
 #include <Timer.h>
 
-#include <Implementations/Hilbert.h>
+#include <Implementations/Hilbert3.h>
+#include <Implementations/Hilbert2.h>
 #include <Implementations/Hue.h>
 #include <Implementations/Packed2.h>
 #include <Implementations/Packed3.h>
@@ -67,14 +68,14 @@ struct BenchmarkConfig
 	std::string CurrentPath;
 };
 
-std::string outputFolder = "HilbertNaiveEnlarge";
+std::string outputFolder = "Hilbert2";
 std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 {
 	std::vector<uint8_t> ret = { 8 };
 
 	if (!algo.compare("Morton"))
 		return { 6 };
-	else if (!algo.compare("Hilbert"))
+	else if (!algo.compare("Hilbert3"))
 	{
 		ret.pop_back();
 		for (uint8_t i = 2; i <= 8; i++)
@@ -83,6 +84,20 @@ std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 			uint8_t segmentBits = q - 3 * algoBits;
 
 			if (algoBits * 3 < q && algoBits + segmentBits <= 8)
+				ret.push_back(algoBits);
+		}
+
+		return ret;
+	}
+	else if (!algo.compare("Hilbert2"))
+	{
+		ret.pop_back();
+		for (uint8_t i = 2; i <= 8; i++)
+		{
+			uint8_t algoBits = i;
+			uint8_t segmentBits = q - 2 * algoBits;
+
+			if (algoBits * 2 < q && algoBits + segmentBits <= 8)
 				ret.push_back(algoBits);
 		}
 
@@ -112,7 +127,7 @@ std::vector<uint8_t> GetMinAlgoBitsToTest(const std::string& algo, uint8_t q)
 
 	if (!algo.compare("Morton"))
 		return { 6 };
-	else if (!algo.compare("Hilbert"))
+	else if (!algo.compare("Hilbert3"))
 	{
 		ret.pop_back();
 		for (uint8_t i = 2; i <= 8; i++)
@@ -125,6 +140,18 @@ std::vector<uint8_t> GetMinAlgoBitsToTest(const std::string& algo, uint8_t q)
 		}
 
 		return ret;
+	}
+	else if (!algo.compare("Hilbert2"))
+	{
+		ret.pop_back();
+		for (uint32_t i = 2; i <= 8; i++)
+		{
+			uint8_t algoBits = i;
+			uint8_t segmentBits = q - 2 * algoBits;
+
+			if (algoBits * 2 < q && algoBits + segmentBits <= 8)
+				return { algoBits };
+		}
 	}
 	else if (!algo.compare("Packed") || (!algo.compare("Split")))
 	{
@@ -269,19 +296,22 @@ void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, in
 	int j = 0;
 
 	Coder c(q, algo, { 8,8,8 });
-	StreamCoder<Hilbert> sc(q, true, algo, { 8,8,8 }, false);
+	StreamCoder<Hilbert2> sc(q, true, algo, { 8,8,8 }, false);
 
 	std::vector<uint16_t> problematic;
 	std::vector<float> errs;
 	float problematicErr = 0;
 	
-	for (uint32_t i = 0; i < 65025; i++)
+	for (uint32_t i = 61504; i < 65025; i++)
 	{
 		uint16_t depth = i >> (16 - q);
 
-		Color col;
+		Color col = c.EncodeValue(depth);
+		uint16_t val = c.DecodeValue(col);
+		
+		/*
+		
 		sc.Encode(&depth, &col, 1);
-
 		int noiseSize = 8;
 		float noiseErr = 0;
 		int nDivisor = 0;
@@ -323,7 +353,7 @@ void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, in
 
 		uint16_t val;
 		sc.Decode(&col, &val, 1);
-
+		*/
 		int err = std::abs((int)(val << (16 - q)) - (int)i);
 
 		if (err > (1 << (16 - q)) * 2)
@@ -365,7 +395,7 @@ void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, in
 void QuantizationError(uint16_t* data, uint8_t q, uint32_t nElements)
 {
 	std::vector<uint8_t> channels = { 8,8,8 };
-	StreamCoder<Hilbert> coder(10, true, 2, channels, false);
+	StreamCoder<Hilbert3> coder(10, true, 2, channels, false);
 	uint8_t* encoded = new uint8_t[nElements * 3];
 	uint16_t* decoded = new uint16_t[nElements];
 
@@ -478,16 +508,15 @@ void BenchmarkCoder(BenchmarkConfig& config)
 		/*
 		{
 			DSTR_PROFILE_SCOPE("Denoise");
-			DepthProcessing::DenoiseMedian(decoded, width, height, 750);
+			DepthProcessing::DenoiseMedian(config.Decoded, width, height, 750);
 		}
 
 		{
 			DSTR_PROFILE_SCOPE("WriteErrorDenoised");
-			ImageWriter::WriteDecoded(currPath + ss.str() + "_decoded_denoised.png", decoded, width, height);
-			SaveError(original, decoded, colorBuffer, width, height, currPath + ss.str() + "_decoded_denoised", err);
+			ImageWriter::WriteDecoded(currPath + ss.str() + "_decoded_denoised.png", config.Decoded, width, height);
+			SaveError(config.OriginalData, config.Decoded, config.ColorBuffer, width, height, currPath + ss.str() + "_decoded_denoised", err);
 		}
 		*/
-
 		std::string extension;
 		switch (config.OutputFormat)
 		{
@@ -520,11 +549,22 @@ void BenchmarkCoder(BenchmarkConfig& config)
 
 int main(int argc, char** argv)
 {
-	TestCoder<Hilbert>(12, 2);
+	for (uint32_t i = 10; i <= 16; i += 2)
+	{
+		std::cout << "Testing quantization " << i << std::endl;
+		auto bits = GetAlgoBitsToTest("Hilbert2", i);
+		for (auto bit : bits)
+		{
+			std::cout << "Param: " << (int)bit << std::endl;
+			TestCoder<Hilbert2>(10, bit);
+		}
+	}
+	
+
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 	
 	// Parameters to test
-	std::string coders[7] = { "Hilbert", "Split2", "Hue", "Packed2", "Phase", "Triangle" };
+	std::string coders[7] = { "Hilbert2", "Hilbert3", "Split2", "Hue", "Packed2", "Phase", "Triangle" };
 	uint8_t quantizations[4] = {10, 12, 14, 16};
 	std::vector<uint8_t> algoBits;
 
@@ -551,8 +591,14 @@ int main(int argc, char** argv)
 	csv << "Configuration, Max Error, Avg Error, Despeckle Max Error, Despeckle Avg Error, Compressed Size\n";
 	csv.close();
 
-	std::vector<std::vector<uint8_t>> distributions = {
+	std::vector<std::vector<uint8_t>> packedSplitDistributions = {
 		{2,6,8},{2,7,7},{3,5,8},{3,6,7},{4,4,8},{4,5,7},{4,6,6},{5,5,6}
+	};
+	std::vector<std::vector<uint8_t>> hilbertDistributions10 = {
+		{8,8,0}
+	};
+	std::vector<std::vector<uint8_t>> hilbertDistributions16 = {
+		{8,8,0}
 	};
 
 	for (uint32_t c = 0; c < 1; c++)
@@ -565,7 +611,7 @@ int main(int argc, char** argv)
 			std::cout << "QUANTIZATION: " << (int)quantizations[q] << std::endl;
 			AddFolderLevel("Quantization", quantizations[q], folders);
 			
-			if (coders[c] == "Hilbert")
+			if (coders[c] == "Hilbert3")
 				algoBits = GetAlgoBitsToTest(coders[c], quantizations[q]);
 			else
 				algoBits = GetMinAlgoBitsToTest(coders[c], quantizations[q]);
@@ -586,13 +632,17 @@ int main(int argc, char** argv)
 
 			if (coders[c] == "Packed3" || coders[c] == "Split3")
 			{
-				for (uint32_t d = 0; d < distributions.size(); d++)
+				std::vector<std::vector<uint8_t>> distribution;
+				if (coders[c] == "Packed3" || coders[c] == "Split3")
+					distribution = packedSplitDistributions;
+
+				for (uint32_t d = 0; d < distribution.size(); d++)
 				{
 					std::stringstream ss;
-					ss << (int)distributions[d][0] << (int)distributions[d][1] << (int)distributions[d][2];
+					ss << (int)distribution[d][0] << (int)distribution[d][1] << (int)distribution[d][2];
 					AddFolderLevel("Distribution" + ss.str(), -1, folders);
 					
-					config.ChannelDistribution = distributions[d];
+					config.ChannelDistribution = distribution[d];
 					config.CurrentPath = GetPathFromComponents(folders);
 
 					if (coders[c] == "Packed3")		BenchmarkCoder<Packed3>(config);
@@ -611,7 +661,8 @@ int main(int argc, char** argv)
 					config.AlgoBits = algoBits[p];
 					config.CurrentPath = GetPathFromComponents(folders);
 
-					if (!coders[c].compare("Hilbert"))BenchmarkCoder<Hilbert>(config);
+					if (!coders[c].compare("Hilbert3")) BenchmarkCoder<Hilbert3>(config);
+					if (!coders[c].compare("Hilbert2")) BenchmarkCoder<Hilbert2>(config);
 					if (!coders[c].compare("Morton")) BenchmarkCoder<Morton>(config);
 					if (!coders[c].compare("Hue")) BenchmarkCoder<Hue>(config);
 					if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(config);
@@ -623,8 +674,6 @@ int main(int argc, char** argv)
 						folders.pop_back();
 				}
 			}
-
-			
 
 			folders.pop_back();
 		}

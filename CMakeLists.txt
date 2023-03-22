@@ -103,7 +103,8 @@ set (DSTREAM_LIB_SRC
 	
 	lib/Implementations/Packed2.cpp
 	lib/Implementations/Packed3.cpp
-	lib/Implementations/Hilbert.cpp
+	lib/Implementations/Hilbert2.cpp
+	lib/Implementations/Hilbert3.cpp
 	lib/Implementations/Morton.cpp
 	lib/Implementations/Hue.cpp
 	lib/Implementations/Split2.cpp
@@ -118,7 +119,8 @@ set (DSTREAM_LIB_SRC
 	lib/Coder.h
 	lib/Implementations/Packed2.h
 	lib/Implementations/Packed3.h
-	lib/Implementations/Hilbert.h
+	lib/Implementations/Hilbert2.h
+	lib/Implementations/Hilbert3.h
 	lib/Implementations/Morton.h
 	lib/Implementations/Hue.h
 	lib/Implementations/Split2.h
