@@ -13,12 +13,13 @@
 #include <ImageWriter.h>
 
 #include <StreamCoder.h>
-#include <Implementations/Hilbert.h>
+#include <Implementations/Hilbert3.h>
 #include <Implementations/Hue.h>
 #include <Implementations/Packed2.h>
 #include <Implementations/Packed3.h>
 #include <Implementations/Phase.h>
 #include <Implementations/Split2.h>
+#include <Implementations/Split3.h>
 #include <Implementations/Morton.h>
 #include <Implementations/Triangle.h>
 
@@ -33,9 +34,9 @@ const char* optarg;
 int getopt(int nargc, char* const nargv[], const char* ostr);
 #endif
 
-StreamCoder<Hilbert> hilbertCoder;
-StreamCoder<Packed> packedCoder;
-StreamCoder<Split> splitCoder;
+StreamCoder<Hilbert3> hilbertCoder;
+StreamCoder<Packed3> packedCoder;
+StreamCoder<Split3> splitCoder;
 StreamCoder<Triangle> triangleCoder;
 StreamCoder<Phase> phaseCoder;
 StreamCoder<Hue> hueCoder;
@@ -242,53 +243,6 @@ int ValidateInput(const std::string& algorithm, uint8_t quantization, uint8_t jp
     return 0;
 }
 
-void EncodeDecode(const std::string& coder, uint16_t* originalData, uint8_t* encoded, uint16_t* decoded, uint32_t nElements,
-    uint8_t quantization, bool enlarge, bool useTables)
-{
-    if (!coder.compare("Packed"))
-    {
-        StreamCoder<Packed> coder(quantization, enlarge, 8, useTables);
-        coder.Encode(originalData, (Color*)encoded, nElements);
-        coder.Decode((Color*)encoded, decoded, nElements);
-    }
-    else if (!coder.compare("Hue"))
-    {
-        StreamCoder<Hue> coder(quantization, enlarge, 8, useTables);
-        coder.Encode(originalData, (Color*)encoded, nElements);
-        coder.Decode((Color*)encoded, decoded, nElements);
-    }
-    else if (!coder.compare("Hilbert"))
-    {
-        StreamCoder<Hilbert> coder(quantization, enlarge, 3, useTables);
-        coder.Encode(originalData, (Color*)encoded, nElements);
-        coder.Decode((Color*)encoded, decoded, nElements);
-    }
-    else if (!coder.compare("Morton"))
-    {
-        StreamCoder<Morton> coder(quantization, enlarge, 8, useTables);
-        coder.Encode(originalData, (Color*)encoded, nElements);
-        coder.Decode((Color*)encoded, decoded, nElements);
-    }
-    else if (!coder.compare("Split"))
-    {
-        StreamCoder<Split> coder(quantization, enlarge, 8, useTables);
-        coder.Encode(originalData, (Color*)encoded, nElements);
-        coder.Decode((Color*)encoded, decoded, nElements);
-    }
-    else if (!coder.compare("Phase"))
-    {
-        StreamCoder<Phase> coder(quantization, enlarge, 8, useTables);
-        coder.Encode(originalData, (Color*)encoded, nElements);
-        coder.Decode((Color*)encoded, decoded, nElements);
-    }
-    else
-    {
-        StreamCoder<Triangle> coder(quantization, enlarge, 8, useTables);
-        coder.Encode(originalData, (Color*)encoded, nElements);
-        coder.Decode((Color*)encoded, decoded, nElements);
-    }
-}
-
 void Encode(uint16_t* input, Color* output, uint32_t nElements, const std::string& coder)
 {
     if (coder == "PACKED") packedCoder.Encode(input, (Color*)output, nElements);
@@ -392,13 +346,13 @@ int main(int argc, char** argv)
     // If encoding, add all files supported by the DepthmapReader. If decoding, add all formats supported by the ImageReader
     std::vector<std::filesystem::path> files = GetFiles(inputDir, recursive, inDir, outDir, mode[0]);
 
-    if (algorithm == "HILBERT") hilbertCoder = StreamCoder<Hilbert>(quantization, enlarge, algoBits, true);
-    if (algorithm == "PACKED") packedCoder = StreamCoder<Packed>(quantization, enlarge, algoBits, true);
-    if (algorithm == "SPLIT") splitCoder = StreamCoder<Split>(quantization, enlarge, algoBits, true);
-    if (algorithm == "TRIANGLE") triangleCoder = StreamCoder<Triangle>(quantization, enlarge, algoBits, true);
-    if (algorithm == "PHASE") phaseCoder = StreamCoder<Phase>(quantization, enlarge, algoBits, true);
-    if (algorithm == "HUE") hueCoder = StreamCoder<Hue>(quantization, enlarge, algoBits, true);
-    if (algorithm == "MORTON") mortonCoder = StreamCoder<Morton>(quantization, enlarge, algoBits, true);
+    if (algorithm == "HILBERT") hilbertCoder = StreamCoder<Hilbert3>(quantization, enlarge, algoBits, { 8,8,8 },true);
+    if (algorithm == "PACKED") packedCoder = StreamCoder<Packed3>(quantization, enlarge, algoBits, { 8,8,8 }, true);
+    if (algorithm == "SPLIT") splitCoder = StreamCoder<Split3>(quantization, enlarge, algoBits, { 8,8,8 }, true);
+    if (algorithm == "TRIANGLE") triangleCoder = StreamCoder<Triangle>(quantization, enlarge, algoBits, { 8,8,8 }, true);
+    if (algorithm == "PHASE") phaseCoder = StreamCoder<Phase>(quantization, enlarge, algoBits, { 8,8,8 }, true);
+    if (algorithm == "HUE") hueCoder = StreamCoder<Hue>(quantization, enlarge, algoBits, { 8,8,8 }, true);
+    if (algorithm == "MORTON") mortonCoder = StreamCoder<Morton>(quantization, enlarge, algoBits, { 8,8,8 }, true);
 
     for (auto file : files)
     {
@@ -409,10 +363,12 @@ int main(int argc, char** argv)
         if (mode == "E")
         {
             DepthmapData dmData;
-            DepthmapReader reader(file.string(), dmData, true);
-
-            uint16_t* depthData = reader.GetData();
+            DepthmapReader reader(file.string(), dmData);
             uint32_t nElements = dmData.Width * dmData.Height;
+
+            float* rawData = reader.GetRawData();
+            uint16_t* depthData = new uint16_t[dmData.Width * dmData.Height];
+            DepthProcessing::Quantize(depthData, rawData, quantization, nElements);
 
             uint8_t* encoded = new uint8_t[nElements * 3];
             if (quantize)
@@ -432,6 +388,7 @@ int main(int argc, char** argv)
                 ImageWriter::WriteSplitWEBP(outPath + "_encoded", encoded, dmData.Width, dmData.Height, jpeg);
 #endif
             delete[] encoded;
+            delete[] depthData;
         }
         else
         {

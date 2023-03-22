@@ -595,8 +595,8 @@ int main(int argc, char** argv)
 					config.ChannelDistribution = distributions[d];
 					config.CurrentPath = GetPathFromComponents(folders);
 
-					if (coders[c] == "Packed3")		BenchmarkCoder<Packed3>(config);
-					if (coders[c] == "Split3")		BenchmarkCoder<Split3>(config);
+					if (coders[c] == "Packed3")	BenchmarkCoder<Packed3>(config);
+					if (coders[c] == "Split3")	BenchmarkCoder<Split3>(config);
 
 					folders.pop_back();
 				}
