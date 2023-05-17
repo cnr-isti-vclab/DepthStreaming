@@ -12,7 +12,7 @@ namespace DStream
         T y;
         T z;
 
-        _vec3(uint8_t X, uint8_t Y, uint8_t Z) : x(X), y(Y), z(Z) {}
+        _vec3(T X, T Y, T Z) : x(X), y(Y), z(Z) {}
         _vec3() = default;
 
         inline T& operator [](int idx)
@@ -35,15 +35,17 @@ namespace DStream
             }
         }
 
-        inline bool operator==(const _vec3& other) const
-        {
-            return other.x == x && other.y == y && other.z == z;
-        }
+        inline _vec3 operator-(const _vec3& other) const { return { x - other.x, y - other.y, z - other.z }; }
+        inline _vec3 operator+(const _vec3& other) const { return { x + other.x, y + other.y, z + other.z }; }
+        
+        inline _vec3 operator*(const _vec3& other) const { return { x * other.x, y * other.y, z * other.z }; }
+        inline _vec3 operator*(float other) const { return { x * other, y * other, z * other }; }
 
-        inline bool operator!=(const _vec3& other) const
-        {
-            return other.x != x || other.y != y || other.z != z;
-        }
+        inline _vec3 operator/(const _vec3& other) const { return { x / other.x, y / other.y, z / other.z }; }
+        inline _vec3 operator/(float other) const { return { x / other, y / other, z / other }; }
+
+        inline bool operator==(const _vec3& other) const  { return other.x == x && other.y == y && other.z == z; }
+        inline bool operator!=(const _vec3& other) const  { return other.x != x || other.y != y || other.z != z; }
     };
 
     typedef struct _vec3<uint8_t>   Color;

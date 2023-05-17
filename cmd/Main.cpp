@@ -13,7 +13,7 @@
 #include <ImageWriter.h>
 
 #include <StreamCoder.h>
-#include <Implementations/Hilbert3.h>
+#include <Implementations/Hilbert.h>
 #include <Implementations/Hue.h>
 #include <Implementations/Packed2.h>
 #include <Implementations/Packed3.h>
@@ -34,7 +34,7 @@ const char* optarg;
 int getopt(int nargc, char* const nargv[], const char* ostr);
 #endif
 
-StreamCoder<Hilbert3> hilbertCoder;
+StreamCoder<Hilbert> hilbertCoder;
 StreamCoder<Packed3> packedCoder;
 StreamCoder<Split3> splitCoder;
 StreamCoder<Triangle> triangleCoder;
@@ -346,7 +346,7 @@ int main(int argc, char** argv)
     // If encoding, add all files supported by the DepthmapReader. If decoding, add all formats supported by the ImageReader
     std::vector<std::filesystem::path> files = GetFiles(inputDir, recursive, inDir, outDir, mode[0]);
 
-    if (algorithm == "HILBERT") hilbertCoder = StreamCoder<Hilbert3>(quantization, enlarge, algoBits, { 8,8,8 },true);
+    if (algorithm == "HILBERT") hilbertCoder = StreamCoder<Hilbert>(quantization, enlarge, algoBits, { 8,8,8 },false);
     if (algorithm == "PACKED") packedCoder = StreamCoder<Packed3>(quantization, enlarge, algoBits, { 8,8,8 }, true);
     if (algorithm == "SPLIT") splitCoder = StreamCoder<Split3>(quantization, enlarge, algoBits, { 8,8,8 }, true);
     if (algorithm == "TRIANGLE") triangleCoder = StreamCoder<Triangle>(quantization, enlarge, algoBits, { 8,8,8 }, true);
@@ -401,6 +401,7 @@ int main(int argc, char** argv)
 
             ImageReader::Read(file.string(), encoded, nElements * 3);
             Decode(encoded, decoded, nElements, algorithm);
+            DepthProcessing::Dequantize(decoded, decoded, quantization, nElements);
 
             if (saveDecoded)
                 ImageWriter::WriteDecoded(outPath + "_decoded.png", decoded, width, height);

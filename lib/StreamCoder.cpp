@@ -1,5 +1,6 @@
 #include <StreamCoder.h>
 #include <Implementations/Hilbert.h>
+#include <Implementations/HilbertDebug.h>
 #include <Implementations/Hue.h>
 #include <Implementations/Packed2.h>
 #include <Implementations/Packed3.h>
@@ -8,10 +9,15 @@
 #include <Implementations/Phase.h>
 #include <Implementations/Triangle.h>
 
+#include <../benchmark/ImageWriter.h>
+// [TMP]
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include <math.h>
 #include <string.h>
+
 
 static void TransposeAdvanceToRange(std::vector<uint16_t>& vec, uint16_t rangeMax)
 {
@@ -64,13 +70,14 @@ static void NormalizeAdvance(std::vector<uint16_t>& advances, uint32_t range)
 	}
 
 	// Remove from the max in case the sum still isn't 256
-	if (sum != range)
+	if (sum != range && advances[maxIdx] > (sum - range))
 		advances[maxIdx] -= (sum - range);
 }
 
 namespace DStream
 {
 	template class StreamCoder<Hilbert>;
+	template class StreamCoder<HilbertDebug>;
 	template class StreamCoder<Morton>;
 	template class StreamCoder<Split2>;
 	template class StreamCoder<Split3>;
@@ -81,13 +88,19 @@ namespace DStream
 	template class StreamCoder<Triangle>;
 
 	template <typename CoderImplementation>
-	StreamCoder<CoderImplementation>::StreamCoder(uint8_t quantization, bool enlarge, uint8_t algoBits, std::vector<uint8_t> channelDistribution, bool useTables /* = true*/)
+	StreamCoder<CoderImplementation>::StreamCoder(uint8_t quantization, bool enlarge, bool interpolate, uint8_t algoBits, 
+		std::vector<uint8_t> channelDistribution, bool useTables /* = true*/)
 	{
 		m_UseTables = useTables;
 		m_Enlarge = enlarge;
+		m_Interpolate = interpolate;
+
 		m_Implementation = CoderImplementation(quantization, algoBits, channelDistribution);
+		m_AlgoBits = m_Implementation.GetAlgoBits();
+		m_SegmentBits = m_Implementation.GetSegmentBits();
 		
-		GenerateSpacingTables();
+		if (enlarge)
+			GenerateSpacingTables();
 		if (useTables)
 			GenerateCodingTables();
 	}
@@ -102,8 +115,20 @@ namespace DStream
 		}
 		else
 		{
+			Color prev, curr;
 			for (uint32_t i = 0; i < nElements; i++)
-				dest[i] = m_Implementation.EncodeValue(source[i]);
+			{
+				if (m_Interpolate)
+				{
+					uint16_t frac = source[i] & ((1 << m_SegmentBits) - 1);
+					Color prev = m_Implementation.EncodeValue(source[i] >> m_SegmentBits);
+					Color curr = m_Implementation.EncodeValue((source[i] + 1) >> m_SegmentBits);
+
+					dest[i] = InterpolateColor(prev, curr, (float)frac / (1 << m_SegmentBits));
+				}
+				else
+					dest[i] = m_Implementation.EncodeValue(source[i]);
+			}
 
 			if (m_Enlarge)
 			{
@@ -185,7 +210,6 @@ namespace DStream
 		// CHECK SIDE
 		uint16_t* table = new uint16_t[side * side * side];
 
-		// [OPTIMIZABLE] Compute decoding table
 		for (uint16_t i = 0; i < side; i++)
 			for (uint16_t j = 0; j < side; j++)
 				for (uint16_t k = 0; k < side; k++)
@@ -198,26 +222,15 @@ namespace DStream
 		for (uint32_t e = 0; e < 3; e++)
 		{
 			// Init error vector
-			std::vector<uint16_t> errors = GetErrorVector(table, side, e);
-			/*
-			uint32_t j = 0;
-			for (uint32_t i = errors.size() / 2; i < errors.size(); i++)
-			{
-				errors[i] = errors[i - j];
-				j += 2;
-			}
-			*/
-
-			uint32_t sum = 0;
-			for (uint32_t i = 0; i < errors.size(); i++)
-				sum += errors[i];
+			AxisErrors dummy;
+			std::vector<uint16_t> errors = GetErrorVector(table, side, e, dummy);
 
 			if (side == 256)
 				errors.assign(errors.size(), 1);
 			else
 				NormalizeAdvance(errors, (1 << 8) - 1);
 
-			sum = 0;
+			uint32_t sum = 0;
 			for (uint32_t i = 0; i < errors.size(); i++)
 				sum += errors[i];
 
@@ -271,37 +284,11 @@ namespace DStream
 	}
 
 	template<class CoderImplementation>
-	std::vector<uint16_t> StreamCoder<CoderImplementation>::GetErrorVector(uint16_t* table, uint32_t tableSide, uint8_t axis)
+	std::vector<uint16_t> StreamCoder<CoderImplementation>::GetErrorVector(uint16_t* table, uint32_t tableSide, uint8_t axis, AxisErrors& errs, uint8_t amount)
 	{
-		std::vector<uint16_t> ret(tableSide - 1, 0);
+		uint32_t errSize = tableSide - 1;
+		std::vector<uint16_t> ret(tableSide, 0);
 
-		/*
-		tableSide = 2;
-		for (uint32_t i = 0; i < 2; i++)
-			for (uint32_t j = 0; j < 2; j++)
-				for (uint32_t k = 0; k < 2; k++)
-					table[i * 4 + j * 2 + k] = k + (i+1) * (j+1);
-
-		std::cout << "First square" << std::endl;
-		for (uint32_t i = 0; i < 2; i++)
-		{
-			for (uint32_t j = 0; j < 2; j++)
-			{
-				std::cout << table[0 + i * 2 + j] << "\t";
-			}
-			std::cout << std::endl;
-		}
-
-		std::cout << "First square" << std::endl;
-		for (uint32_t i = 0; i < 2; i++)
-		{
-			for (uint32_t j = 0; j < 2; j++)
-			{
-				std::cout << table[4 + i * 2 + j] << "\t";
-			}
-			std::cout << std::endl;
-		}
-		*/
 		for (uint32_t i = 0; i < tableSide; i++)
 		{
 			for (uint32_t j = 0; j < tableSide; j++)
@@ -314,22 +301,33 @@ namespace DStream
 					{
 					case 0:
 						tableLeft = table[ i* tableSide * tableSide + j*tableSide + k];
-						tableRight = table[i* tableSide * tableSide + j*tableSide + (k + 1)];
+						tableRight = table[i* tableSide * tableSide + j*tableSide + (k + amount)];
 						break;
 					case 1:
 						tableLeft = table[i* tableSide * tableSide + k * tableSide + j];
-						tableRight = table[i* tableSide * tableSide + (k + 1) * tableSide + j];
+						tableRight = table[i* tableSide * tableSide + (k + amount) * tableSide + j];
 						break;
 					case 2:
 						tableLeft = table[k* tableSide * tableSide + i * tableSide + j];
-						tableRight = table[(k+1)* tableSide * tableSide + i * tableSide + j];
+						tableRight = table[(k+amount)* tableSide * tableSide + i * tableSide + j];
 						break;
 					}
 
-					ret[k] = std::max<int>(ret[k], std::abs(tableLeft - tableRight));
+					if (std::abs(tableLeft-tableRight)< 60000)
+						ret[k] = std::max<int>(ret[k], std::abs(tableLeft - tableRight));
 				}
 			}
 		}
+
+		for (uint32_t i = 0; i < ret.size(); i++)
+		{
+			errs.AvgErr += ret[i];
+			errs.QuadErr += ret[i] * ret[i];
+			errs.MaxErr = std::max<uint32_t>(ret[i], errs.MaxErr);
+		}
+
+		errs.AvgErr /= ret.size();
+		errs.QuadErr /= ret.size();
 
 		return ret;
 	}

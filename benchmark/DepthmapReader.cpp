@@ -17,10 +17,12 @@ namespace DStream
 
         for (uint32_t i = 0; i < extension.length(); i++)
             extension[i] = tolower(extension[i]);
-
+#ifdef DSTREAM_ENABLE_TIFF 
         if (extension == "tif" || extension == ".tiff")
             ParseTIFF(path, dmData);
-        else if (extension == "asc")
+        else 
+#endif	
+		if (extension == "asc")
             ParseASC(path, dmData);
         else if (extension == "pgm")
             ParsePGM(path, dmData);
@@ -33,9 +35,11 @@ namespace DStream
         case DepthmapFormat::ASC:
             ParseASC(path, dmData);
             break;
+#ifdef DSTREAM_ENABLE_TIFF 
         case DepthmapFormat::TIF:
             ParseTIFF(path, dmData);
             break;
+#endif
         case DepthmapFormat::PGM:
             ParsePGM(path, dmData);
             break;
@@ -92,7 +96,7 @@ namespace DStream
         dmData.Valid = true;
         fclose(fp);
     }
-
+#ifdef DSTREAM_ENABLE_TIFF 
     void DepthmapReader::ParseTIFF(const std::string& path, DepthmapData& dmData)
     {
         TIFF* inFile = TIFFOpen(path.c_str(), "r");
@@ -131,7 +135,7 @@ namespace DStream
         delete[] tmpBuffer;
         dmData.Valid = true;
     }
-
+#endif
     void DepthmapReader::ParsePGM(const std::string& path, DepthmapData& dmData)
     {
         int width, height;

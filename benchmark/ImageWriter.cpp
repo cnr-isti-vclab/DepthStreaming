@@ -16,6 +16,7 @@
 #endif
 
 #include <fstream>
+#include <iostream>
 #include <algorithm>
 
 // TODO: add back stbi_image
@@ -65,6 +66,8 @@ namespace DStream
     {
 #ifdef DSTREAM_ENABLE_PNG
         FILE* fp = fopen(path.c_str(), "wb");
+        if (fp == NULL)
+            std::cout << "Error opening file" << std::endl;
 
         png_image image;
         png_bytep* rows = (png_bytep*)malloc(sizeof(png_bytep) * height);

@@ -7,6 +7,7 @@
 #include <Timer.h>
 
 #include <Implementations/Hilbert.h>
+#include <Implementations/HilbertDebug.h>
 #include <Implementations/Hue.h>
 #include <Implementations/Packed2.h>
 #include <Implementations/Packed3.h>
@@ -21,6 +22,7 @@
 #include <sstream>
 #include <filesystem>
 #include <map>
+#include <unordered_set>
 
 using namespace DStream;
 
@@ -67,7 +69,7 @@ struct BenchmarkConfig
 	std::string CurrentPath;
 };
 
-std::string outputFolder = "HilbertNaiveEnlarge";
+std::string outputFolder = "HilbertDebugSpacing";
 std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 {
 	std::vector<uint8_t> ret = { 8 };
@@ -78,6 +80,7 @@ std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 	{
 		ret.pop_back();
 		for (uint8_t i = 2; i <= 8; i++)
+
 		{
 			uint8_t algoBits = i;
 			uint8_t segmentBits = q - 3 * algoBits;
@@ -269,7 +272,72 @@ void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, in
 	int j = 0;
 
 	Coder c(q, algo, { 8,8,8 });
-	StreamCoder<Hilbert> sc(q, true, algo, { 8,8,8 }, false);
+	StreamCoder<Coder> sc(q, true, algo, { 8,8,8 }, false);
+
+	uint16_t* table = new uint16_t[256 * 256 * 256];
+	for (uint32_t i = 0; i < 256; i++)
+		for (uint32_t j = 0; j < 256; j++)
+			for (uint32_t k = 0; k < 256; k++)
+			{
+				uint16_t val;
+				Color c = { (uint8_t)i, (uint8_t)j, (uint8_t)k };
+				sc.Decode(&c, &val, 1);
+
+				table[i * 256 * 256 + j * 256 + k] = val;
+			}
+	uint32_t tableSide = 256;
+	uint32_t amount = 8;
+
+	for (uint32_t i = 0; i < 256; i++)
+	{
+		uint8_t* imageData = new uint8_t[256 * 256 * 3];
+		float* data = new float[256 * 256];
+		for (uint32_t j = 0; j < 256; j++)
+		{
+			for (uint32_t k = 0; k < 256; k++)
+			{
+				int right = (i + amount) * tableSide * tableSide + j * tableSide + k;
+				int left = (i - amount) * tableSide * tableSide + j * tableSide + k;
+
+				int top = i * tableSide * tableSide + (j + amount) * tableSide + k;
+				int down = i * tableSide * tableSide + (j - amount) * tableSide + k;
+
+				int front = i * tableSide * tableSide + j * tableSide + k + amount;
+				int back = i * tableSide * tableSide + j * tableSide + k - amount;
+
+				int curr = table[i * 256 * 256 + j * 256 + k];
+
+				float maxX = 0, maxY = 0, maxZ = 0;
+
+				if (right < 256) maxX = std::max(maxX, (float)std::abs(curr - table[right]) / amount);
+				if (left >= 0) maxX = std::max(maxX, (float)std::abs(curr - table[left]) / amount);
+
+				if (top < 256) maxY = std::max(maxY, (float)std::abs(curr - table[top]));
+				if (down >= 0) maxY = std::max(maxY, (float)std::abs(curr - table[down]) / amount);
+
+				if (front < 256) maxZ = std::max(maxZ, (float)std::abs(curr - table[front]));
+				if (back >= 0) maxZ = std::max(maxZ, (float)std::abs(curr - table[back]) / amount);
+
+				float maxErr = 0;
+				maxErr = std::max(maxX, maxY);
+				maxErr = std::max(maxErr, maxZ);
+
+				data[j * tableSide + k] = maxErr;
+			}
+		}
+
+		for (uint32_t j = 0; j < 256; j++)
+			for (uint32_t k = 0; k < 256; k++)
+				for (uint32_t c = 0; c < 3; c++)
+					imageData[j * 256 * 3 + k * 3 + c] = table[i * 256 * 256 + j * 256 + k];// (std::log2(data[j * 256 + k]) / 16.0f) * 255.0f;
+		std::stringstream ss;
+		ss << "HilbertEnlargedError"/* << i */<< ".png";
+		ImageWriter::WritePNG(ss.str(), imageData, 256, 256);
+		delete[] imageData;
+		delete[] data;
+	}
+
+	exit(0);
 
 	std::vector<uint16_t> problematic;
 	std::vector<float> errs;
@@ -518,9 +586,88 @@ void BenchmarkCoder(BenchmarkConfig& config)
 	csv.close();
 }
 
+template<typename T>
+void DebugCoder(int quant, int algo, bool interpolate)
+{
+	std::vector<uint8_t> channels = { 8,8,8 };
+	StreamCoder<T> coder(quant, false, algo, channels, false);
+
+	std::filesystem::create_directory("CoderDebugSplit");
+	std::filesystem::create_directory("CoderDebugInterpolate");
+
+	std::unordered_set<int> vals;
+
+	for (uint32_t i = 0; i < 256; i+=16)
+	{
+		std::string basicFile;
+		std::string enlargedFile;
+		std::stringstream ss;
+
+		if (i < 100) ss << "0";
+		if (i < 10) ss << "0";
+		ss << i;
+
+		if (!interpolate)
+		{
+			basicFile = "CoderDebugSplit/Basic" + ss.str() + ".png";
+			enlargedFile = "CoderDebugSplit/Enlarged" + ss.str() + ".png";
+		}
+		else
+		{
+			basicFile = "CoderDebugInterpolate/Interpolated" + ss.str() + ".png";
+			enlargedFile = "CoderDebugInterpolate/InterpolatedEnlarged" + ss.str() + ".png";
+		}
+
+		int dataSize = 256 * 256 * 3;
+		uint8_t* basicData = new uint8_t[dataSize], * enlargedData = new uint8_t[dataSize], * interpData = new uint8_t[dataSize],
+			* interpEnlargedData = new uint8_t[dataSize];
+		memset(basicData, 0, dataSize);
+		memset(enlargedData, 0, dataSize);
+	
+		for (int j = 0; j < 256; j+= 1)
+		{
+			for (int k = 0; k < 256; k+=1)
+			{
+				uint32_t seg = quant - 3 * algo;
+				uint32_t divisor = 1 << quant;
+
+				Color c(i, j, k);
+				uint16_t val;
+
+				static float max = 0.0f;
+				val = coder.m_Implementation.DecodeValue(c);
+				max = std::max<float>(max, val);
+
+				for (uint32_t c = 0; c < 3; c++)
+					basicData[j * 256 * 3 + k * 3 + c] = std::round(((float)val / (1 << quant)) * 255);
+				/*
+				Color c2(k, j, i);
+				coder.Shrink(&c2, &c, 1);
+				for (uint32_t i = 0; i < 3; i++)
+					c[i] <<= 8 - coder.m_Implementation.GetEnlargeBits();
+				val = coder.m_Implementation.DecodeValue(c);
+				vals.insert(val);
+
+				for (uint32_t c=0; c<3; c++)
+					enlargedData[j * 256*3 + k*3 + c] = std::round(((float)val / (1<< (3 * algo))) * 255);
+					*/
+			}
+		}
+
+		ImageWriter::WritePNG(basicFile, basicData, 256, 256);
+		ImageWriter::WritePNG(enlargedFile, enlargedData, 256, 256);
+		delete[] basicData; delete[] enlargedData; delete[] interpData; delete[] interpEnlargedData;
+	}
+
+	for (auto val : vals)
+		std::cout << val << ",";
+}
+
 int main(int argc, char** argv)
 {
-	TestCoder<Hilbert>(12, 2);
+	DebugCoder<Hilbert>(10, 2, true);
+
+	//TestCoder<HilbertDebug>(12, 3);
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 	
 	// Parameters to test
@@ -623,8 +770,6 @@ int main(int argc, char** argv)
 						folders.pop_back();
 				}
 			}
-
-			
 
 			folders.pop_back();
 		}

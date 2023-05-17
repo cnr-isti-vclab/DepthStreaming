@@ -5,11 +5,11 @@
 
 namespace DStream
 {
-	class Hilbert : public Coder
+	class HilbertDebug : public Coder
 	{
 	public:
-		Hilbert() = default;
-		Hilbert(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistributions);
+		HilbertDebug() = default;
+		HilbertDebug(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistributions);
 
 
 		Color EncodeValue(uint16_t value);
@@ -25,9 +25,8 @@ namespace DStream
 		void TransposeToHilbertCoords(Color& col);
 		void TransposeFromHilbertCoords(Color& col);
 
-		uint16_t MortonDecode(Vec3& col);
-
 	private:
+		uint8_t m_SegmentBits;
 		Morton m_Morton;
 	};
 }
