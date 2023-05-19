@@ -7,15 +7,6 @@
 #include <Timer.h>
 
 #include <Implementations/Hilbert.h>
-#include <Implementations/HilbertDebug.h>
-#include <Implementations/Hue.h>
-#include <Implementations/Packed2.h>
-#include <Implementations/Packed3.h>
-#include <Implementations/Split2.h>
-#include <Implementations/Split3.h>
-#include <Implementations/Morton.h>
-#include <Implementations/Phase.h>
-#include <Implementations/Triangle.h>
 
 #include <fstream>
 #include <iostream>
@@ -23,6 +14,12 @@
 #include <filesystem>
 #include <map>
 #include <unordered_set>
+
+/* TODO:
+*	- Remove quantization
+*	- Remove segment bits
+
+*/
 
 using namespace DStream;
 
@@ -53,7 +50,9 @@ struct BenchmarkConfig
 	std::string CoderName;
 	uint8_t Quantization;
 	uint8_t AlgoBits;
+
 	bool Enlarge;
+	bool Interpolate;
 
 	uint8_t* ColorBuffer;
 	uint8_t* Encoded;
@@ -433,7 +432,7 @@ void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, in
 void QuantizationError(uint16_t* data, uint8_t q, uint32_t nElements)
 {
 	std::vector<uint8_t> channels = { 8,8,8 };
-	StreamCoder<Hilbert> coder(10, true, 2, channels, false);
+	StreamCoder<Hilbert> coder(true, true, 2, channels, false);
 	uint8_t* encoded = new uint8_t[nElements * 3];
 	uint16_t* decoded = new uint16_t[nElements];
 
@@ -466,16 +465,16 @@ void BenchmarkCoder(BenchmarkConfig& config)
 	std::string currPath = config.CurrentPath;
 	std::ofstream csv(outputFolder+"/results.csv", std::ios::out | std::ios::app);
 
-	DepthProcessing::Quantize(config.QuantizedData, config.RawData, actualQuantization, nElements);
+	DepthProcessing::Quantize(config.QuantizedData, config.RawData, 16, nElements);
 	DepthProcessing::Quantize(config.OriginalData, config.RawData, 16, nElements);
-	//QuantizationError(config.OriginalData, actualQuantization, nElements);
+
+	std::cout << "ALGO BITS: " << (int)config.AlgoBits << std::endl;
 
 	// TODO: fix tables
-	StreamCoder<T> coder(actualQuantization, config.Enlarge, config.AlgoBits, config.ChannelDistribution, false);
+	StreamCoder<T> coder(config.Enlarge, config.Interpolate, config.AlgoBits, config.ChannelDistribution, false);
 	coder.Encode(config.QuantizedData, (Color*)config.Encoded, nElements);
 	coder.Decode((Color*)config.Encoded, config.Decoded, nElements);
 	
-	DepthProcessing::Dequantize(config.Decoded, config.Decoded, actualQuantization, nElements);
 	ImageWriter::WriteDecoded(currPath + "_lossless.png", config.Decoded, width, height);
 
 	ErrorData dummy;
@@ -537,7 +536,6 @@ void BenchmarkCoder(BenchmarkConfig& config)
 		{
 			{
 				DSTR_PROFILE_SCOPE("WriteDecoded");
-				DepthProcessing::Dequantize(config.Decoded, config.Decoded, actualQuantization, nElements);
 				ImageWriter::WriteDecoded(currPath + ss.str() + "_decoded.png", config.Decoded, width, height);
 			}
 			SaveError(config.OriginalData, config.Decoded, config.ColorBuffer, width, height, currPath + ss.str() + "_decoded", err);
@@ -590,14 +588,14 @@ template<typename T>
 void DebugCoder(int quant, int algo, bool interpolate)
 {
 	std::vector<uint8_t> channels = { 8,8,8 };
-	StreamCoder<T> coder(quant, false, algo, channels, false);
+	StreamCoder<T> coder(quant, false, true, algo, channels, false);
 
 	std::filesystem::create_directory("CoderDebugSplit");
 	std::filesystem::create_directory("CoderDebugInterpolate");
 
 	std::unordered_set<int> vals;
 
-	for (uint32_t i = 0; i < 256; i+=16)
+	for (uint32_t i = 0; i < 256; i+=1)
 	{
 		std::string basicFile;
 		std::string enlargedFile;
@@ -635,7 +633,7 @@ void DebugCoder(int quant, int algo, bool interpolate)
 				uint16_t val;
 
 				static float max = 0.0f;
-				val = coder.m_Implementation.DecodeValue(c);
+				val = coder.InterpolateHeight(c);
 				max = std::max<float>(max, val);
 
 				for (uint32_t c = 0; c < 3; c++)
@@ -665,14 +663,13 @@ void DebugCoder(int quant, int algo, bool interpolate)
 
 int main(int argc, char** argv)
 {
-	DebugCoder<Hilbert>(10, 2, true);
+	//DebugCoder<Hilbert>(10, 2, true);
 
 	//TestCoder<HilbertDebug>(12, 3);
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 	
 	// Parameters to test
 	std::string coders[7] = { "Hilbert", "Split2", "Hue", "Packed2", "Phase", "Triangle" };
-	uint8_t quantizations[4] = {10, 12, 14, 16};
 	std::vector<uint8_t> algoBits;
 
 	// Read raw data
@@ -707,72 +704,62 @@ int main(int argc, char** argv)
 		std::cout << "CODER: " << coders[c] << std::endl;
 		AddFolderLevel(coders[c], -1, folders);
 
-		for (uint32_t q = 0; q < 4; q++)
+		BenchmarkConfig config;
+		config.Width = dmData.Width;
+		config.Height = dmData.Height;
+		config.ColorBuffer = colorBuffer;
+		config.RawData = rawData;
+		config.OriginalData = originalData;
+		config.QuantizedData = quantizedData;
+		config.Encoded = encodedData;
+		config.Decoded = decodedData;
+		config.Enlarge = true;
+		config.Interpolate = true;
+		config.OutputFormat = ImageFormat::JPG;
+		config.CoderName = coders[c];
+
+		if (coders[c] == "Packed3" || coders[c] == "Split3")
 		{
-			std::cout << "QUANTIZATION: " << (int)quantizations[q] << std::endl;
-			AddFolderLevel("Quantization", quantizations[q], folders);
-			
-			if (coders[c] == "Hilbert")
-				algoBits = GetAlgoBitsToTest(coders[c], quantizations[q]);
-			else
-				algoBits = GetMinAlgoBitsToTest(coders[c], quantizations[q]);
-
-			BenchmarkConfig config;
-			config.Quantization = quantizations[q];
-			config.Width = dmData.Width;
-			config.Height = dmData.Height;
-			config.ColorBuffer = colorBuffer;
-			config.RawData = rawData;
-			config.OriginalData = originalData;
-			config.QuantizedData = quantizedData;
-			config.Encoded = encodedData;
-			config.Decoded = decodedData;
-			config.Enlarge = true;
-			config.OutputFormat = ImageFormat::JPG;
-			config.CoderName = coders[c];
-
-			if (coders[c] == "Packed3" || coders[c] == "Split3")
+			for (uint32_t d = 0; d < distributions.size(); d++)
 			{
-				for (uint32_t d = 0; d < distributions.size(); d++)
-				{
-					std::stringstream ss;
-					ss << (int)distributions[d][0] << (int)distributions[d][1] << (int)distributions[d][2];
-					AddFolderLevel("Distribution" + ss.str(), -1, folders);
+				std::stringstream ss;
+				ss << (int)distributions[d][0] << (int)distributions[d][1] << (int)distributions[d][2];
+				AddFolderLevel("Distribution" + ss.str(), -1, folders);
 					
-					config.ChannelDistribution = distributions[d];
-					config.CurrentPath = GetPathFromComponents(folders);
+				config.ChannelDistribution = distributions[d];
+				config.CurrentPath = GetPathFromComponents(folders);
 
-					if (coders[c] == "Packed3")	BenchmarkCoder<Packed3>(config);
-					if (coders[c] == "Split3")	BenchmarkCoder<Split3>(config);
+				//if (coders[c] == "Packed3")	BenchmarkCoder<Packed3>(config);
+				//if (coders[c] == "Split3")	BenchmarkCoder<Split3>(config);
 
-					folders.pop_back();
-				}
+				folders.pop_back();
 			}
-			else
-			{
-				for (uint32_t p = 0; p < algoBits.size(); p++)
-				{
-					if (algoBits.size() > 1)
-						AddFolderLevel("Parameter", algoBits[p], folders);
-
-					config.AlgoBits = algoBits[p];
-					config.CurrentPath = GetPathFromComponents(folders);
-
-					if (!coders[c].compare("Hilbert"))BenchmarkCoder<Hilbert>(config);
-					if (!coders[c].compare("Morton")) BenchmarkCoder<Morton>(config);
-					if (!coders[c].compare("Hue")) BenchmarkCoder<Hue>(config);
-					if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(config);
-					if (!coders[c].compare("Split2")) BenchmarkCoder<Split2>(config);
-					if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(config);
-					if (!coders[c].compare("Packed2")) BenchmarkCoder<Packed2>(config);
-
-					if (algoBits.size() > 1)
-						folders.pop_back();
-				}
-			}
-
-			folders.pop_back();
 		}
+		else
+		{
+			algoBits = { 2, 3, 4, 5 };
+			for (uint32_t p = 0; p < algoBits.size(); p++)
+			{
+				if (algoBits.size() > 1)
+					AddFolderLevel("Parameter", algoBits[p], folders);
+
+				config.AlgoBits = algoBits[p];
+				config.CurrentPath = GetPathFromComponents(folders);
+
+				if (!coders[c].compare("Hilbert"))BenchmarkCoder<Hilbert>(config);
+				/*
+				if (!coders[c].compare("Morton")) BenchmarkCoder<Morton>(config);
+				if (!coders[c].compare("Hue")) BenchmarkCoder<Hue>(config);
+				if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(config);
+				if (!coders[c].compare("Split2")) BenchmarkCoder<Split2>(config);
+				if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(config);
+				if (!coders[c].compare("Packed2")) BenchmarkCoder<Packed2>(config);
+				*/
+				if (algoBits.size() > 1)
+					folders.pop_back();
+			}
+		}
+
 		folders.pop_back();
 	}
 

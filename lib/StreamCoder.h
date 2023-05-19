@@ -25,7 +25,7 @@ namespace DStream
 	{
 		static_assert(std::is_base_of_v<Coder, CoderImplementation>, "Template parameter of class StreamCoder must derive from Coder.");
 	public:
-		StreamCoder(uint8_t quantization, bool enlarge, bool interpolate, uint8_t algoBits, std::vector<uint8_t> channelDistribution, bool useTables = true);
+		StreamCoder(bool enlarge, bool interpolate, uint8_t algoBits, std::vector<uint8_t> channelDistribution, bool useTables = true);
 		StreamCoder() = default;
 		~StreamCoder() = default;
 
@@ -41,36 +41,30 @@ namespace DStream
 		void SetEncodingTable(const std::vector<Color>& table);
 		void SetDecodingTable(const std::vector<uint16_t>& table, uint32_t tableSideX, uint32_t tableSideY, uint32_t tableSideZ);
 
-		Color InterpolateColor(const Color& a, const Color& b, float t)
-		{
-			Color ret;
-			for (uint32_t i=0; i<3; i++)
-				ret[i] = a[i] + (b[i] - a[i]) * t;
-			return ret;
-		}
+		inline Color InterpolateColor(const Color& a, const Color& b, float t);
+		uint16_t InterpolateHeight(const Color& c);
 
 		inline void Enlarge(const Color* source, Color* dest, uint32_t nElements)
 		{
 			uint8_t bits = 8 - m_Implementation.GetEnlargeBits();
-			/*
 			for (uint32_t i = 0; i < nElements; i++)
 				for (int k = 0; k < 3; k++)
 					dest[i][k] = source[i][k] << (8 - m_Implementation.GetEnlargeBits());
-			*/
 
+					/*
 			for (uint32_t i=0; i<nElements; i++)
 				for (int k = 0; k < 3; k++)
-					dest[i][k] = m_SpacingTable.Enlarge[k][source[i][k]];			
+					dest[i][k] = m_SpacingTable.Enlarge[k][source[i][k]];		
+					*/
 		}
 
 		inline void Shrink(const Color* source, Color* dest, uint32_t nElements)
 		{
-			/*
 			for (uint32_t i = 0; i < nElements; i++)
 				for (int k = 0; k < 3; k++)
 					dest[i][k]  = source[i][k] >> (8 - m_Implementation.GetEnlargeBits());
-				*/
 
+					/*
 			for (uint32_t i = 0; i < nElements; i++)
 				for (int k = 0; k < 3; k++)
 				{
@@ -78,6 +72,7 @@ namespace DStream
 					if (std::is_same<CoderImplementation, Hilbert>())
 						dest[i][k] <<= (8 - m_Implementation.GetEnlargeBits());
 				}
+				*/
 		}
 
 	CoderImplementation m_Implementation;
@@ -92,9 +87,9 @@ namespace DStream
 		bool m_Interpolate;
 
 		uint32_t m_AlgoBits;
-		uint32_t m_SegmentBits;
+		uint32_t m_EnlargeBits;
+		
 		SpacingTable m_SpacingTable;
-
 		std::vector<Color> m_EncodingTable;
 		std::vector<uint16_t> m_DecodingTable;
 	};
