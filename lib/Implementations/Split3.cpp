@@ -3,8 +3,8 @@
 
 namespace DStream
 {
-	Split3::Split3(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution)
-		: Coder(quantization, algoBits, channelDistribution) {}
+	Split3::Split3(uint8_t algoBits, std::vector<uint8_t> channelDistribution)
+		: Coder(algoBits, channelDistribution) {}
 
 
 	Color Split3::EncodeValue(uint16_t val)

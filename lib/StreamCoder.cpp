@@ -1,8 +1,8 @@
 #include <StreamCoder.h>
 #include <Implementations/Hilbert.h>
-/*
-#include <Implementations/HilbertDebug.h>
 #include <Implementations/Hue.h>
+
+/*
 #include <Implementations/Packed2.h>
 #include <Implementations/Packed3.h>
 #include <Implementations/Split2.h>
@@ -23,31 +23,47 @@
 
 static void TransposeAdvanceToRange(std::vector<uint16_t>& vec, uint16_t rangeMax)
 {
-	uint32_t errorSum = 0;
+	uint32_t currSum = 0;
 	for (uint32_t i = 0; i < vec.size(); i++)
-errorSum += vec[i];
+		currSum += vec[i];
+		
+	for (uint32_t i = 0; i < vec.size(); i++)
+		vec[i] = std::round(((float)vec[i] / currSum) * rangeMax);
 
-for (uint32_t i = 0; i < vec.size(); i++)
-	vec[i] = std::round(((float)vec[i] / errorSum) * rangeMax);
+	/*
+	uint32_t newSum = 0, minAdv = rangeMax, minIndex = 0;
+	for (uint32_t i = 0; i < vec.size(); i++)
+	{
+		newSum += vec[i];
+		if (vec[i] < minAdv)
+		{
+			minIndex = i;
+			minAdv = vec[i];
+		}
+	}
+
+	if (newSum != rangeMax)
+	*/
+	
 }
 
-static void NormalizeAdvance(std::vector<uint16_t>& advances, uint32_t range)
+static void NormalizeAdvance(std::vector<uint16_t>& advances, uint32_t range, uint32_t minAdvance)
 {
 	TransposeAdvanceToRange(advances, range);
 
 	// Count zeros, store non zeros
-	std::vector<uint16_t> nonZeros;
-	uint16_t zeroes = 0;
+	std::vector<uint16_t> greaters;
+	uint16_t nLessers = 0;
 	for (uint16_t i = 0; i < advances.size(); i++)
 	{
-		if (advances[i] == 0)
-			zeroes++;
+		if (advances[i] < minAdvance)
+			nLessers++;
 		else
-			nonZeros.push_back(advances[i]);
+			greaters.push_back(advances[i]);
 	}
 
-	// Make sure the sum of the non zero elements is 256 - nZeros (we'll set the zeros to ones)
-	TransposeAdvanceToRange(nonZeros, range - zeroes);
+	// Make sure the sum of the non zero elements is 256 - nLessers*minAdvance (we'll set the lessers to be at least minAdvance)
+	TransposeAdvanceToRange(greaters, range - (nLessers * minAdvance));
 
 	// Update the non zero elements, turn the zeros into ones
 	uint32_t nonzeroIdx = 0;
@@ -57,13 +73,13 @@ static void NormalizeAdvance(std::vector<uint16_t>& advances, uint32_t range)
 
 	for (uint32_t i = 0; i < advances.size(); i++)
 	{
-		if (advances[i] != 0)
+		if (advances[i] >= minAdvance)
 		{
-			advances[i] = nonZeros[nonzeroIdx];
+			advances[i] = greaters[nonzeroIdx];
 			nonzeroIdx++;
 		}
 		else
-			advances[i] = 1;
+			advances[i] = minAdvance;
 
 		sum += advances[i];
 		max = std::max<uint32_t>(max, advances[i]);
@@ -71,23 +87,23 @@ static void NormalizeAdvance(std::vector<uint16_t>& advances, uint32_t range)
 			maxIdx = i;
 	}
 
-	// Remove from the max in case the sum still isn't 256
-	if (sum != range && advances[maxIdx] > (sum - range))
-		advances[maxIdx] -= (sum - range);
+	// Remove or add from the max in case the sum still isn't 256
+	if (sum > range)	advances[maxIdx] -= (sum - range);
+	if (sum < range)	advances[maxIdx] += (range - sum);
 }
 
 namespace DStream
 {
 	template class StreamCoder<Hilbert>;
+	template class StreamCoder<Hue>;
+
 	/*
-	template class StreamCoder<HilbertDebug>;
 	template class StreamCoder<Morton>;
 	template class StreamCoder<Split2>;
 	template class StreamCoder<Split3>;
 	template class StreamCoder<Packed2>;
 	template class StreamCoder<Packed3>;
 	template class StreamCoder<Phase>;
-	template class StreamCoder<Hue>;
 	template class StreamCoder<Triangle>;
 	*/
 
@@ -99,13 +115,20 @@ namespace DStream
 		m_Enlarge = enlarge;
 		m_Interpolate = interpolate;
 
-		m_Implementation = CoderImplementation(16, algoBits, channelDistribution);
+		m_Implementation = CoderImplementation(algoBits, channelDistribution);
 		m_AlgoBits = m_Implementation.GetAlgoBits();
 		m_EnlargeBits = 0;
 
-		if (enlarge)
+		int points = 1 << (m_AlgoBits * 3);
+		int seg = 256 / ((1 << m_AlgoBits) - 1);
+		int tot = points * seg;
+
+		if (tot < 65535)
+			m_Enlarge = false;
+
+		if (m_Enlarge)
 			GenerateSpacingTables();
-		if (useTables)
+		if (m_UseTables)
 			GenerateCodingTables();
 	}
 
@@ -150,7 +173,6 @@ namespace DStream
 				dest[i] = InterpolateColor(startColor, endColor, t);
 			}
 
-			/*
 			if (m_Enlarge)
 			{
 				Color* enlarged = new Color[nElements];
@@ -158,7 +180,6 @@ namespace DStream
 				memcpy(dest, enlarged, nElements * 3);
 				delete[] enlarged;
 			}
-			*/
 		}
 	}
 
@@ -169,20 +190,12 @@ namespace DStream
 	{
 		Color* inCols = new Color[nElements];
 		memcpy(inCols, source, 3 * nElements);// (Color*)source;
-		/*
 		if (m_Enlarge)
-		{
-			inCols = new Color[nElements];
 			Shrink(source, inCols, nElements);
-		}
-		*/
 
 		if (m_UseTables)
 		{
-			uint32_t usedBits = 1 << m_Implementation.GetUsedBits();
-			uint32_t usedBits2 = usedBits * usedBits;
-			for (uint32_t i = 0; i < nElements; i++)
-				dest[i] = m_DecodingTable[inCols[i].x * usedBits2 + inCols[i].y * usedBits + inCols[i].z];
+			// TODO: tables
 		}
 		else
 		{
@@ -208,31 +221,28 @@ namespace DStream
 	}
 
 	template<class CoderImplementation>
-	uint16_t StreamCoder<CoderImplementation>::InterpolateHeight(const Color& c)
+	uint16_t StreamCoder<CoderImplementation>::InterpolateHeight(const Color& col)
 	{
-		Color c1 = {c.x, c.y, c.z};
+		Color c1 = { col.x, col.y, col.z};
 		uint32_t gridSide = (1 << m_AlgoBits) - 1;
 		for (uint32_t i = 0; i < 3; i++)
-			c1[i] = std::round(((float)c[i] / 255.0f) * gridSide);
+			c1[i] = std::round(((float)col[i] / 255.0f) * gridSide);
 
 		float Uf, Vf, Wf;
-		float u = modf(((float)c[0] / 255.0f) * gridSide, &Uf);
-		float v = modf(((float)c[1] / 255.0f) * gridSide, &Vf);
-		float w = modf(((float)c[2] / 255.0f) * gridSide, &Wf);
+		float u = modf(((float)col[0] / 255.0f) * gridSide, &Uf);
+		float v = modf(((float)col[1] / 255.0f) * gridSide, &Vf);
+		float w = modf(((float)col[2] / 255.0f) * gridSide, &Wf);
 
 		uint8_t U = (uint8_t)Uf, V = (uint8_t)Vf, W = (uint8_t)Wf;
 
-		// BACK COLORS
-		Color c111(U + 1,    V + 1,  W + 1);
-		Color c011(U,        V + 1,  W + 1);
-		Color c101(U + 1,    V,      W + 1);
-		Color c001(U,        V,      W + 1);
-
-		// FRONT COLORS
-		Color c110(U + 1,    V + 1,  W);
-		Color c010(U,        V + 1,  W);
-		Color c100(U + 1,    V,      W);
-		Color c000(U,        V,      W);
+		Color c000(U, V, W);
+		Color c001(U, V, W + 1);
+		Color c010(U, V + 1, W);
+		Color c011(U, V + 1, W + 1);
+		Color c100(U + 1, V, W);
+		Color c101(U + 1, V, W + 1);
+		Color c110(U + 1, V + 1, W);
+		Color c111(U + 1, V + 1,  W + 1);
 
 		/* Depth values
 			  G---H
@@ -240,38 +250,40 @@ namespace DStream
 			| E-|-F
 			A---B
 		*/
-		uint16_t A = m_Implementation.DecodeValue(c000), E = m_Implementation.DecodeValue(c001), C = m_Implementation.DecodeValue(c010),
-			G = m_Implementation.DecodeValue(c011), B = m_Implementation.DecodeValue(c100), F = m_Implementation.DecodeValue(c101),
-			D = m_Implementation.DecodeValue(c110), H = m_Implementation.DecodeValue(c111);
+		uint16_t A = m_Implementation.DecodeValue(c000), B = m_Implementation.DecodeValue(c100), C = m_Implementation.DecodeValue(c010),
+			D = m_Implementation.DecodeValue(c110), E = m_Implementation.DecodeValue(c001), F = m_Implementation.DecodeValue(c101),
+			G = m_Implementation.DecodeValue(c011), H = m_Implementation.DecodeValue(c111);
 
 		// Interpolation values
 		float threshold = 1 << m_AlgoBits;
 
-		float uAB = std::abs(A - B) > threshold ? std::round(u) : u;
-		float uCD = std::abs(C - D) > threshold ? std::round(u) : u;
-		float uEF = std::abs(E - F) > threshold ? std::round(u) : u;
-		float uGH = std::abs(G - H) > threshold ? std::round(u) : u;
-
-		float vAC = std::abs(A - C) > threshold ? std::round(v) : v;
-		float vBD = std::abs(B - D) > threshold ? std::round(v) : v;
-		float vEG = std::abs(E - G) > threshold ? std::round(v) : v;
-		float vFH = std::abs(F - H) > threshold ? std::round(v) : v;
-
-		float wAE = std::abs(A - E) > threshold ? std::round(w) : w;
-		float wBF = std::abs(B - F) > threshold ? std::round(w) : w;
-		float wCG = std::abs(C - G) > threshold ? std::round(w) : w;
-		float wDH = std::abs(D - H) > threshold ? std::round(w) : w;
+		int a = A, b = B, c = C, d = D, e = E, f = F, g = G, h = H;
+		int subs[] = { B,A,D,C,F,E,H,G,C,A,D,B,G,E,H,F,E,A,F,B,G,C,H,D };
+		int* less[] = { &b,&d,&f,&h,&c,&d,&g,&h,&e,&f,&g,&h };
+		int* more[] = { &a,&c,&e,&g,&a,&b,&e,&f,&a,&b,&c,&d };
+		float ts[] = { u, v, w };
+		
+		for (uint32_t i = 0; i < 24; i+=2)
+		{
+			float t = ts[i / 8];
+			int diff = std::abs(subs[i] - subs[i + 1]);
+			if (diff > threshold)
+			{
+				if (t >= 0.5) *more[i / 2] = subs[i+1];
+				else *less[i / 2] = subs[i];
+			}
+		}
 
 		// Interpolate values
-		float val = A * (1 - uAB) * (1 - vAC) * (1 - wAE) +
-			B * uAB * (1 - vBD) * (1 - wBF) +
-			C * (1 - uCD) * vAC * (1 - wCG) +
-			D * uCD * vBD * (1 - wDH) +
-
-			E * (1 - uEF) * (1 - vEG) * wAE +
-			F * uEF * (1 - vFH) * wBF +
-			G * (1 - uGH) * vEG * wCG +
-			H * uGH * vFH * wDH;
+		float val = 
+			a * (1 - u) * (1 - v) * (1 - w) +
+			b * u * (1 - v) * (1 - w) +
+			c * (1 - u) * v * (1 - w) +
+			d * u * v * (1 - w) +
+			e * (1 - u) * (1 - v) * w +
+			f * u * (1 - v) * w +
+			g * (1 - u) * v * w +
+			h * u * v * w;
 
 		return std::round((val / ((1 << (m_AlgoBits * 3)) - 1)) * 65535);
 	}
@@ -280,7 +292,7 @@ namespace DStream
 	void StreamCoder<CoderImplementation>::GenerateCodingTables()
 	{
 		uint32_t maxQuantizationValue = (1 << 16);
-		uint32_t maxAlgoBitsValue = (1 << m_Implementation.GetUsedBits());
+		uint32_t maxAlgoBitsValue = (1 << 8);
 
 		m_DecodingTable.resize(maxAlgoBitsValue * maxAlgoBitsValue * maxAlgoBitsValue);
 		for (uint32_t i = 0; i < maxAlgoBitsValue; i++)
@@ -309,18 +321,21 @@ namespace DStream
 	void StreamCoder<CoderImplementation>::GenerateSpacingTables()
 	{
 		// Init tables
-		uint32_t side = 1 << m_Implementation.GetEnlargeBits();
+		uint32_t side = 1 << m_AlgoBits;
 		// Init table memory
-		// CHECK SIDE
 		uint16_t* table = new uint16_t[side * side * side];
 
 		for (uint16_t i = 0; i < side; i++)
+		{
 			for (uint16_t j = 0; j < side; j++)
+			{
 				for (uint16_t k = 0; k < side; k++)
 				{
 					uint16_t val = m_Implementation.DecodeValue(Color((uint8_t)i, (uint8_t)j, (uint8_t)k));
 					table[i * side * side + j * side + k] = val;
 				}
+			}
+		}
 
 		// Compute spacing tables
 		for (uint32_t e = 0; e < 3; e++)
@@ -328,41 +343,58 @@ namespace DStream
 			// Init error vector
 			AxisErrors dummy;
 			std::vector<uint16_t> errors = GetErrorVector(table, side, e, dummy);
+			uint32_t minAdvanceSize = 65536 / ((1 << (m_AlgoBits * 3)) - 1);
 
-			if (side == 256)
-				errors.assign(errors.size(), 1);
-			else
-				NormalizeAdvance(errors, (1 << 8) - 1);
-
-			uint32_t sum = 0;
-			for (uint32_t i = 0; i < errors.size(); i++)
-				sum += errors[i];
-
-			// Create spacings based on that vector
-			uint32_t nextNumber = 0;
-
-			m_SpacingTable.Enlarge[e].push_back(0);
-			m_SpacingTable.Shrink[e].push_back(0);
-
-			for (uint32_t i = 1; i < errors.size() + 1; i++)
+			// Apply multiple times
+			bool normalized = false;
+			do
 			{
-				float advance = errors[i - 1];
-				nextNumber += advance;
+				NormalizeAdvance(errors, 256, minAdvanceSize);
+				normalized = true;
+				for (uint32_t i = 0; i < errors.size(); i++)
+					if (errors[i] < minAdvanceSize)
+						normalized = false;
+			} while (!normalized);
 
-				if (advance == 1)
-				{
-					m_SpacingTable.Shrink[e].push_back(i);
-					m_SpacingTable.Enlarge[e].push_back(nextNumber);
-				}
-				else
-				{
-					m_SpacingTable.Enlarge[e].push_back(nextNumber);
+			std::cout << "Error vector: " << std::endl;
+			for (uint32_t i = 0; i < errors.size(); i++)
+				std::cout << errors[i] << ",";
+			
+			float sum = 0;
+			float errSum = 0;
+			float fSegSize = std::ceil((float)255 / ((1 << m_AlgoBits) - 1));
+			int segSize = fSegSize;
+			uint32_t errIndex = 0;
 
-					for (uint32_t j = 0; j < std::floor(advance / 2); j++)
-						m_SpacingTable.Shrink[e].push_back(i - 1);
-					for (uint32_t j = 0; j < std::ceil(advance / 2); j++)
-						m_SpacingTable.Shrink[e].push_back(i);
+			m_SpacingTable.Shrink[e].resize(256);
+			for (uint32_t i = 0; i < 255; i++)
+			{
+				if (errSum >= errors[errIndex])
+				{
+					errSum = 0;
+					errIndex++;
 				}
+
+				uint32_t shrinkIdx = (int)std::round(sum);
+
+				m_SpacingTable.Enlarge[e].push_back(shrinkIdx);
+				if (m_SpacingTable.Shrink[e][shrinkIdx] == 0)
+					m_SpacingTable.Shrink[e][shrinkIdx] = i;
+
+				float increase = (float)errors[errIndex] / fSegSize;
+				sum += increase;
+				errSum += increase;
+			}
+			m_SpacingTable.Enlarge[e].push_back((int)std::round(sum));
+
+			// Fill remaining gaps
+			for (uint32_t i = 1; i < 256; i++)
+			{
+				if (m_SpacingTable.Shrink[e][i] == 0)
+					m_SpacingTable.Shrink[e][i] = m_SpacingTable.Shrink[e][i - 1];
+
+				if (m_SpacingTable.Enlarge[e][i] == 0)
+					m_SpacingTable.Enlarge[e][i] = m_SpacingTable.Enlarge[e][i-1];
 			}
 		}
 
@@ -391,7 +423,7 @@ namespace DStream
 	std::vector<uint16_t> StreamCoder<CoderImplementation>::GetErrorVector(uint16_t* table, uint32_t tableSide, uint8_t axis, AxisErrors& errs, uint8_t amount)
 	{
 		uint32_t errSize = tableSide - 1;
-		std::vector<uint16_t> ret(tableSide, 0);
+		std::vector<uint16_t> ret(tableSide-1, 0);
 
 		for (uint32_t i = 0; i < tableSide; i++)
 		{
@@ -415,10 +447,13 @@ namespace DStream
 						tableLeft = table[k* tableSide * tableSide + i * tableSide + j];
 						tableRight = table[(k+amount)* tableSide * tableSide + i * tableSide + j];
 						break;
+					default:
+						tableLeft = 1;
+						tableRight = 0;
+						break;
 					}
 
-					if (std::abs(tableLeft-tableRight)< 60000)
-						ret[k] = std::max<int>(ret[k], std::abs(tableLeft - tableRight));
+					ret[k] = std::max<int>(ret[k], std::abs(tableLeft - tableRight));
 				}
 			}
 		}

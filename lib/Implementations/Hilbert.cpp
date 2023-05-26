@@ -10,10 +10,10 @@
 namespace DStream
 {
 
-    Hilbert::Hilbert(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistributions) : Coder(quantization, algoBits, channelDistributions)
+    Hilbert::Hilbert(uint8_t algoBits, std::vector<uint8_t> channelDistributions) : Coder(algoBits, channelDistributions)
 	{
 		m_AlgoBits = algoBits;
-        m_Morton = Morton(quantization, algoBits, { 8,8,8 }, true);
+        m_Morton = Morton(algoBits, { 8,8,8 }, true);
 	}
 
 	Color Hilbert::EncodeValue(uint16_t val)

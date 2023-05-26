@@ -3,12 +3,13 @@
 
 namespace DStream
 {
-    Hue::Hue(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution) : Coder(quantization, algoBits, channelDistribution) {}
+    Hue::Hue(uint8_t algoBits, std::vector<uint8_t> channelDistribution) : Coder(algoBits, channelDistribution) {}
 
 	Color Hue::EncodeValue(uint16_t val)
 	{
         Color ret;
-        uint16_t d = std::round(((float)val / ((1 << m_Quantization) - 1)) * 1529.0f);
+        uint16_t quantization = 16 - (m_AlgoBits * 3);
+        uint16_t d = std::round(((float)val / ((1 << quantization) - 1)) * 1529.0f);
 
         if ((d <= 255) || (1275 < d && d <= 1529))
             ret.x = 255;
@@ -59,7 +60,8 @@ namespace DStream
         else if (b >= g && b >= r)
             ret = r - g + 1020;
 
-        float q = std::round(((float)ret / 1529.0f) * (1 << m_Quantization));
+        uint16_t quantization = 16 - (m_AlgoBits * 3);
+        float q = std::round(((float)ret / 1529.0f) * (1 << quantization));
         return q;
 	}
 }

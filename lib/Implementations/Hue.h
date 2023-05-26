@@ -8,11 +8,9 @@ namespace DStream
 	{
 	public:
 		Hue() = default;
-		Hue(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution);
+		Hue(uint8_t algoBits, std::vector<uint8_t> channelDistribution);
 
 		Color EncodeValue(uint16_t value);
 		uint16_t DecodeValue(Color value);
-		virtual uint16_t DecodeValue(Color value, bool simple) override { return 0; }
-
 	};
 }

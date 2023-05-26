@@ -2,8 +2,8 @@
 
 namespace DStream
 {
-	Packed3::Packed3(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution) 
-		: Coder(quantization, algoBits,  channelDistribution) {}
+	Packed3::Packed3(uint8_t algoBits, std::vector<uint8_t> channelDistribution) 
+		: Coder(algoBits,  channelDistribution) {}
 
 	Color Packed3::EncodeValue(uint16_t val)
 	{

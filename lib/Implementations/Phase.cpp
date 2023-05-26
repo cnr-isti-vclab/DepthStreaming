@@ -5,14 +5,14 @@
 
 namespace DStream
 {
-	Phase::Phase(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution)
-		: Coder(quantization, algoBits, channelDistribution) {}
+	Phase::Phase(uint8_t algoBits, std::vector<uint8_t> channelDistribution)
+		: Coder(algoBits, channelDistribution) {}
 
 	Color Phase::EncodeValue(uint16_t val)
 	{
 		Color ret;
-		const float P = 1 << (m_Quantization - 2);
-		const float w = 1 << m_Quantization;
+		const float P = 1 << 14;
+		const float w = 1 << 16;
 
 		ret[0] = 255 * (0.5f + 0.5f * std::cos(M_PI * 2.0f * (val / P)));
 		ret[1] = 255 * (val / w);
@@ -23,7 +23,7 @@ namespace DStream
 
 	uint16_t Phase::DecodeValue(Color col)
 	{
-		const float w = 1 << m_Quantization;
+		const float w = 1 << 16;
 		const float P = w / 4;
 		const float beta = P / 2.0f;
 		float gamma, phi, PHI, K, Z;
@@ -39,6 +39,6 @@ namespace DStream
 		PHI = phi + 2 * M_PI * K;
 
 		Z = PHI * (P / (M_PI * 2.0f));
-		return std::min(std::max(0, static_cast<int>(Z)), 1 << m_Quantization);
+		return std::min(std::max(0, static_cast<int>(Z)), 1 << 16);
 	}
 }

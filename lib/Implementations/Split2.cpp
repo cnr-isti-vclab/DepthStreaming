@@ -3,14 +3,14 @@
 
 namespace DStream
 {
-	Split2::Split2(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution)
-		: Coder(quantization, algoBits, channelDistribution) {}
+	Split2::Split2(uint8_t algoBits, std::vector<uint8_t> channelDistribution)
+		: Coder(algoBits, channelDistribution) {}
 
 
 	Color Split2::EncodeValue(uint16_t val)
 	{
 		Color ret;
-		uint32_t right = m_Quantization - m_AlgoBits;
+		uint32_t right = 16 - m_AlgoBits;
 
 		ret.x = val >> right;
 		ret.y = (val & ((1 << right) - 1));
@@ -29,7 +29,7 @@ namespace DStream
 	{
 		std::swap(col.x, col.y);
 		uint16_t highPart, lowPart;
-		uint32_t right = m_Quantization - m_AlgoBits;
+		uint32_t right = 16 - m_AlgoBits;
 
 		col.x = std::round((float)col.x / (1 << (8 - m_AlgoBits)));
 		col.y = std::round((float)col.y / (1 << (8 - right)));

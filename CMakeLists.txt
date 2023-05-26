@@ -110,7 +110,6 @@ set (DSTREAM_LIB_SRC
 	lib/Implementations/Split3.cpp
 	lib/Implementations/Triangle.cpp
 	lib/Implementations/Phase.cpp
-	lib/Implementations/HilbertDebug.cpp
 
 	lib/StreamCoder.h
 	lib/DataStructs/Vec3.h
@@ -126,7 +125,6 @@ set (DSTREAM_LIB_SRC
 	lib/Implementations/Split3.h
 	lib/Implementations/Triangle.h
 	lib/Implementations/Phase.h
-	lib/Implementations/HilbertDebug.h
 )
 
 # Add library

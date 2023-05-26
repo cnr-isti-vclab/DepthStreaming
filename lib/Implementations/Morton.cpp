@@ -4,8 +4,8 @@
 
 namespace DStream
 {
-	Morton::Morton(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution, bool hilbert) : 
-		Coder(quantization, algoBits, channelDistribution), m_ForHilbert(hilbert) {}
+	Morton::Morton(uint8_t algoBits, std::vector<uint8_t> channelDistribution, bool hilbert) : 
+		Coder(algoBits, channelDistribution), m_ForHilbert(hilbert) {}
 
 	Color Morton::EncodeValue(uint16_t val)
 	{
@@ -13,13 +13,7 @@ namespace DStream
 		ret[0] = 0; ret[1] = 0; ret[2] = 0;
 
 		uint8_t algoBits;
-		if (m_ForHilbert)
-			algoBits = m_AlgoBits;
-		else
-		{
-			algoBits = 6;
-			val <<= (16 - m_Quantization);
-		}
+		algoBits = m_AlgoBits;
 
 		for (unsigned int i = 0; i <= algoBits; ++i) {
 			uint8_t selector = 1;

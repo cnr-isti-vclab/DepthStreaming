@@ -264,194 +264,37 @@ void SaveError(uint16_t* original, uint16_t* processed, uint8_t* colorBuffer, ui
 }
 
 template <typename Coder>
-void TestCoder(uint32_t q, uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 1)
+void TestCoder(uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 1)
 {
 	float avg = 0;
-	float max = 0;
+	int max = 0;
 	int j = 0;
 
-	Coder c(q, algo, { 8,8,8 });
-	StreamCoder<Coder> sc(q, true, algo, { 8,8,8 }, false);
-
-	uint16_t* table = new uint16_t[256 * 256 * 256];
-	for (uint32_t i = 0; i < 256; i++)
-		for (uint32_t j = 0; j < 256; j++)
-			for (uint32_t k = 0; k < 256; k++)
-			{
-				uint16_t val;
-				Color c = { (uint8_t)i, (uint8_t)j, (uint8_t)k };
-				sc.Decode(&c, &val, 1);
-
-				table[i * 256 * 256 + j * 256 + k] = val;
-			}
-	uint32_t tableSide = 256;
-	uint32_t amount = 8;
-
-	for (uint32_t i = 0; i < 256; i++)
+	StreamCoder<Coder> sc(16, true, algo, { 8,8,8 }, false);
+	for (uint16_t i = 0; i < 65535; i++)
 	{
-		uint8_t* imageData = new uint8_t[256 * 256 * 3];
-		float* data = new float[256 * 256];
-		for (uint32_t j = 0; j < 256; j++)
+		if (i == 62757)
+			std::cout << "here";
+		Color c;
+		sc.Encode(&i, &c, 1);
+
+		uint16_t v;
+		sc.Decode(&c, &v, 1);
+
+		if (v != i)
 		{
-			for (uint32_t k = 0; k < 256; k++)
-			{
-				int right = (i + amount) * tableSide * tableSide + j * tableSide + k;
-				int left = (i - amount) * tableSide * tableSide + j * tableSide + k;
+			int err = std::abs((int)v - (int)i);
+			avg += err;
+			max = std::max<int>(max, err);
 
-				int top = i * tableSide * tableSide + (j + amount) * tableSide + k;
-				int down = i * tableSide * tableSide + (j - amount) * tableSide + k;
-
-				int front = i * tableSide * tableSide + j * tableSide + k + amount;
-				int back = i * tableSide * tableSide + j * tableSide + k - amount;
-
-				int curr = table[i * 256 * 256 + j * 256 + k];
-
-				float maxX = 0, maxY = 0, maxZ = 0;
-
-				if (right < 256) maxX = std::max(maxX, (float)std::abs(curr - table[right]) / amount);
-				if (left >= 0) maxX = std::max(maxX, (float)std::abs(curr - table[left]) / amount);
-
-				if (top < 256) maxY = std::max(maxY, (float)std::abs(curr - table[top]));
-				if (down >= 0) maxY = std::max(maxY, (float)std::abs(curr - table[down]) / amount);
-
-				if (front < 256) maxZ = std::max(maxZ, (float)std::abs(curr - table[front]));
-				if (back >= 0) maxZ = std::max(maxZ, (float)std::abs(curr - table[back]) / amount);
-
-				float maxErr = 0;
-				maxErr = std::max(maxX, maxY);
-				maxErr = std::max(maxErr, maxZ);
-
-				data[j * tableSide + k] = maxErr;
-			}
+			if (err > 19000)
+				std::cout << "rip" << std::endl;
 		}
-
-		for (uint32_t j = 0; j < 256; j++)
-			for (uint32_t k = 0; k < 256; k++)
-				for (uint32_t c = 0; c < 3; c++)
-					imageData[j * 256 * 3 + k * 3 + c] = table[i * 256 * 256 + j * 256 + k];// (std::log2(data[j * 256 + k]) / 16.0f) * 255.0f;
-		std::stringstream ss;
-		ss << "HilbertEnlargedError"/* << i */<< ".png";
-		ImageWriter::WritePNG(ss.str(), imageData, 256, 256);
-		delete[] imageData;
-		delete[] data;
 	}
 
+	avg /= 65535;
+	std::cout << "Max: " << max << "Avg: " << avg << std::endl;
 	exit(0);
-
-	std::vector<uint16_t> problematic;
-	std::vector<float> errs;
-	float problematicErr = 0;
-	
-	for (uint32_t i = 0; i < 65025; i++)
-	{
-		uint16_t depth = i >> (16 - q);
-
-		Color col;
-		sc.Encode(&depth, &col, 1);
-
-		int noiseSize = 8;
-		float noiseErr = 0;
-		int nDivisor = 0;
-
-		for (int n1 = -noiseSize; n1 <= noiseSize; n1+=noiseSize/2)
-		{
-			if (n1 + col.x < 0)
-				continue;
-
-			for (int n2 = -noiseSize; n2 <= noiseSize; n2+= noiseSize/2)
-			{
-				if (n2 + col.y < 0)
-					continue;
-
-				for (int n3 = -noiseSize; n3 <= noiseSize; n3+= noiseSize/2)
-				{
-					if (n3 + col.z < 0)
-						continue;
-					Color dequantized = col;
-					Color noised = { (uint8_t)(col.x + n1), (uint8_t)(col.y + n2), (uint8_t)(col.z + n3) };
-					uint16_t noisedVal;
-					sc.Decode(&noised, &noisedVal, 1);
-
-					int err = std::abs((int)(noisedVal << (16 - q)) - (int)i);
-					noiseErr += err;
-
-					nDivisor++;
-				}
-			}
-		}
-
-		noiseErr /= nDivisor;
-		if (noiseErr > (1 << 14))
-		{
-			problematic.push_back(i);
-			errs.push_back(noiseErr);
-			problematicErr += noiseErr;
-		}
-
-		uint16_t val;
-		sc.Decode(&col, &val, 1);
-
-		int err = std::abs((int)(val << (16 - q)) - (int)i);
-
-		if (err > (1 << (16 - q)) * 2)
-			std::cout << "a";
-		avg += err;
-		j++;
-	}
-
-	problematicErr /= problematic.size();
-	avg /= j;
-
-	std::cout << "Err: " << avg << std::endl;
-	std::cout << "Noise err: " << problematicErr << std::endl;
-
-	/*
-	for (uint32_t i = 0; i <= 10; i+=advance)
-	{
-		uint32_t quantized = (i >> (16 - q));
-
-		Color col = c.EncodeValue(quantized);
-		sc.Enlarge(&col, &col, 1);
-		sc.Shrink(&col, &col, 1);
-		uint16_t v = c.DecodeValue(col);
-
-		quantized <<= 16 - q;
-
-		int err = std::abs((int)v - (int)quantized);
-		avg += err;
-		max = std::max<int>(max, err);
-
-		sc.Enlarge(&col, &col, 1);
-	}
-	avg /= 65536;
-
-	std::cout << "Avg: " << avg << ", max: " << max << std::endl;
-	*/
-}
-
-void QuantizationError(uint16_t* data, uint8_t q, uint32_t nElements)
-{
-	std::vector<uint8_t> channels = { 8,8,8 };
-	StreamCoder<Hilbert> coder(true, true, 2, channels, false);
-	uint8_t* encoded = new uint8_t[nElements * 3];
-	uint16_t* decoded = new uint16_t[nElements];
-
-	std::vector<uint16_t> quantizedVals(65535);
-	std::vector<uint16_t> rangeData((1 << 16)-1);
-	for (uint32_t i = 0; i < (1 << 16) - 1; i++)
-		rangeData[i] = i;
-
-	DepthProcessing::Quantize(quantizedVals.data(), rangeData.data(), q, 65535);
-	coder.Encode(quantizedVals.data(), (Color*)encoded, 65535);
-	coder.Decode((Color*)encoded, decoded, 65535);
-
-	DepthProcessing::Dequantize(quantizedVals.data(), decoded, 10, 65535);
-
-	float err = 0;
-	for (uint32_t i = 0; i < 65535; i++)
-		err += std::abs(quantizedVals[i] - rangeData[i]);
-	err /= 65535.0f;
-	std::cout << "Quantization error: " << err << std::endl;
 }
 
 template <typename T>
@@ -588,7 +431,7 @@ template<typename T>
 void DebugCoder(int quant, int algo, bool interpolate)
 {
 	std::vector<uint8_t> channels = { 8,8,8 };
-	StreamCoder<T> coder(quant, false, true, algo, channels, false);
+	StreamCoder<T> coder(quant, true, true, algo, channels, false);
 
 	std::filesystem::create_directory("CoderDebugSplit");
 	std::filesystem::create_directory("CoderDebugInterpolate");
@@ -665,7 +508,7 @@ int main(int argc, char** argv)
 {
 	//DebugCoder<Hilbert>(10, 2, true);
 
-	//TestCoder<HilbertDebug>(12, 3);
+	TestCoder<Hilbert>(5);
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 	
 	// Parameters to test
@@ -713,7 +556,7 @@ int main(int argc, char** argv)
 		config.QuantizedData = quantizedData;
 		config.Encoded = encodedData;
 		config.Decoded = decodedData;
-		config.Enlarge = true;
+		config.Enlarge = false;
 		config.Interpolate = true;
 		config.OutputFormat = ImageFormat::JPG;
 		config.CoderName = coders[c];
@@ -737,7 +580,7 @@ int main(int argc, char** argv)
 		}
 		else
 		{
-			algoBits = { 2, 3, 4, 5 };
+			algoBits = { 4, 5 };
 			for (uint32_t p = 0; p < algoBits.size(); p++)
 			{
 				if (algoBits.size() > 1)

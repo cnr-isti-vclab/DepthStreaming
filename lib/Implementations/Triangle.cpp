@@ -3,12 +3,11 @@
 
 namespace DStream
 {
-	Triangle::Triangle(uint8_t quantization, uint8_t algoBits, std::vector<uint8_t> channelDistribution) : Coder(quantization, algoBits, channelDistribution) {}
+	Triangle::Triangle(uint8_t algoBits, std::vector<uint8_t> channelDistribution) : Coder(algoBits, channelDistribution) {}
 
 	Color Triangle::EncodeValue(uint16_t val)
 	{
         Color ret;
-        val <<= (16 - m_Quantization);
         uint32_t p = (1 << 9);
 
         uint8_t Ld, Ha, Hb;
@@ -29,7 +28,7 @@ namespace DStream
 	uint16_t Triangle::DecodeValue(Color col)
 	{
         const int w = 1 << 16;
-        const int maxVal = 1 << m_Quantization;
+        const int maxVal = 1 << 16;
         // Function data
         int np = 512;
         float p = (float)np / w;
