@@ -160,7 +160,7 @@ namespace DStream
 					dest[i] = InterpolateColor(startColor, endColor, t);
 				}
 				else
-					dest[i] = m_Implementation.EncodeValue(source[i]);
+					dest[i] = m_Implementation.EncodeValue(source[i] >> (16 - (3 * m_AlgoBits)));
 			}
 
 			if (m_Enlarge)
@@ -194,7 +194,7 @@ namespace DStream
 				if (m_Interpolate)
 					dest[i] = InterpolateHeight(inCols[i]);
 				else
-					dest[i] = m_Implementation.DecodeValue(inCols[i]);
+					dest[i] = m_Implementation.DecodeValue(inCols[i]) << (16 - (3 * m_AlgoBits));
 			}
 		}
 
@@ -213,10 +213,7 @@ namespace DStream
 	template<class CoderImplementation>
 	uint16_t StreamCoder<CoderImplementation>::InterpolateHeight(const Color& col)
 	{
-		Color c1 = { col.x, col.y, col.z};
 		uint32_t gridSide = (1 << m_AlgoBits) - 1;
-		for (uint32_t i = 0; i < 3; i++)
-			c1[i] = std::round(((float)col[i] / 255.0f) * gridSide);
 
 		float Uf, Vf, Wf;
 		float u = modf(((float)col[0] / 255.0f) * gridSide, &Uf);

@@ -8,7 +8,6 @@
 
 #include <Implementations/Hilbert.h>
 #include <Implementations/Hue.h>
-#include <Implementations/Phase.h>
 
 #include <fstream>
 #include <iostream>
@@ -70,7 +69,7 @@ struct BenchmarkConfig
 	std::string CurrentPath;
 };
 
-std::string outputFolder = "HilbertDebugSpacing";
+std::string outputFolder = "HueDebug";
 std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 {
 	std::vector<uint8_t> ret = { 8 };
@@ -272,10 +271,10 @@ void TestCoder(uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 
 	int max = 0;
 	int j = 0;
 
-	StreamCoder<Coder> sc(false, false, algo, { 8,8,8 }, false);
+	StreamCoder<Coder> sc(true, true, algo, { 8,8,8 }, false);
 	for (uint16_t i = 0; i < 65535; i++)
 	{
-		if (i == 62757)
+		if (i == 65495)
 			std::cout << "here";
 		Color c;
 		sc.Encode(&i, &c, 1);
@@ -286,6 +285,11 @@ void TestCoder(uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 
 		if (v != i)
 		{
 			int err = std::abs((int)v - (int)i);
+#define DEBUG
+#ifdef DEBUG
+			if (err > 300)
+				std::cout << "debug" << std::endl;
+#endif
 			avg += err;
 			max = std::max<int>(max, err);
 		}
@@ -507,11 +511,11 @@ int main(int argc, char** argv)
 {
 	//DebugCoder<Hilbert>(10, 2, true);
 
-	TestCoder<Hue>(5);
+	//TestCoder<Hue>(5);
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 	
 	// Parameters to test
-	std::string coders[7] = { "Hilbert", "Split2", "Hue", "Packed2", "Phase", "Triangle" };
+	std::string coders[7] = { "Hue", "Hilbert", "Hue", "Packed2", "Phase", "Triangle" };
 	std::vector<uint8_t> algoBits;
 
 	// Read raw data
@@ -555,7 +559,7 @@ int main(int argc, char** argv)
 		config.QuantizedData = quantizedData;
 		config.Encoded = encodedData;
 		config.Decoded = decodedData;
-		config.Enlarge = false;
+		config.Enlarge = true;
 		config.Interpolate = true;
 		config.OutputFormat = ImageFormat::JPG;
 		config.CoderName = coders[c];
@@ -579,7 +583,7 @@ int main(int argc, char** argv)
 		}
 		else
 		{
-			algoBits = { 4, 5 };
+			algoBits = { 1, 2, 3, 4, 5 };
 			for (uint32_t p = 0; p < algoBits.size(); p++)
 			{
 				if (algoBits.size() > 1)
@@ -589,9 +593,9 @@ int main(int argc, char** argv)
 				config.CurrentPath = GetPathFromComponents(folders);
 
 				if (!coders[c].compare("Hilbert"))BenchmarkCoder<Hilbert>(config);
+				if (!coders[c].compare("Hue")) BenchmarkCoder<Hue>(config);
 				/*
 				if (!coders[c].compare("Morton")) BenchmarkCoder<Morton>(config);
-				if (!coders[c].compare("Hue")) BenchmarkCoder<Hue>(config);
 				if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(config);
 				if (!coders[c].compare("Split2")) BenchmarkCoder<Split2>(config);
 				if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(config);
