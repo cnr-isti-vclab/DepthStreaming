@@ -8,8 +8,8 @@ namespace DStream
 	Color Hue::EncodeValue(uint16_t val)
 	{
         Color ret;
-        uint16_t quantization = 16 - (m_AlgoBits * 3);
-        uint16_t d = std::round(((float)val / ((1 << quantization) - 1)) * 1529.0f);
+        uint16_t div = 1 << (m_AlgoBits * 3);
+        uint16_t d = std::round(((float)val / div) * 1529.0f);
 
         if ((d <= 255) || (1275 < d && d <= 1529))
             ret.x = 255;
@@ -45,6 +45,7 @@ namespace DStream
 	{
         uint8_t r = col.x, g = col.y, b = col.z;
         uint16_t ret = 0;
+        uint16_t mul = 1 << (m_AlgoBits * 3);
 
         if (b + g + r < 255)
             ret = 0;
@@ -60,8 +61,7 @@ namespace DStream
         else if (b >= g && b >= r)
             ret = r - g + 1020;
 
-        uint16_t quantization = 16 - (m_AlgoBits * 3);
-        float q = std::round(((float)ret / 1529.0f) * (1 << quantization));
+        float q = std::round(((float)ret / 1529.0f) * mul);
         return q;
 	}
 }

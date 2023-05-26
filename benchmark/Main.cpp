@@ -7,6 +7,8 @@
 #include <Timer.h>
 
 #include <Implementations/Hilbert.h>
+#include <Implementations/Hue.h>
+#include <Implementations/Phase.h>
 
 #include <fstream>
 #include <iostream>
@@ -270,7 +272,7 @@ void TestCoder(uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 
 	int max = 0;
 	int j = 0;
 
-	StreamCoder<Coder> sc(16, true, algo, { 8,8,8 }, false);
+	StreamCoder<Coder> sc(false, false, algo, { 8,8,8 }, false);
 	for (uint16_t i = 0; i < 65535; i++)
 	{
 		if (i == 62757)
@@ -286,9 +288,6 @@ void TestCoder(uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 
 			int err = std::abs((int)v - (int)i);
 			avg += err;
 			max = std::max<int>(max, err);
-
-			if (err > 19000)
-				std::cout << "rip" << std::endl;
 		}
 	}
 
@@ -508,7 +507,7 @@ int main(int argc, char** argv)
 {
 	//DebugCoder<Hilbert>(10, 2, true);
 
-	TestCoder<Hilbert>(5);
+	TestCoder<Hue>(5);
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 	
 	// Parameters to test

@@ -1,13 +1,13 @@
 #include <StreamCoder.h>
 #include <Implementations/Hilbert.h>
 #include <Implementations/Hue.h>
+#include <Implementations/Phase.h>
 
 /*
 #include <Implementations/Packed2.h>
 #include <Implementations/Packed3.h>
 #include <Implementations/Split2.h>
 #include <Implementations/Split3.h>
-#include <Implementations/Phase.h>
 #include <Implementations/Triangle.h>
 */
 
@@ -29,22 +29,6 @@ static void TransposeAdvanceToRange(std::vector<uint16_t>& vec, uint16_t rangeMa
 		
 	for (uint32_t i = 0; i < vec.size(); i++)
 		vec[i] = std::round(((float)vec[i] / currSum) * rangeMax);
-
-	/*
-	uint32_t newSum = 0, minAdv = rangeMax, minIndex = 0;
-	for (uint32_t i = 0; i < vec.size(); i++)
-	{
-		newSum += vec[i];
-		if (vec[i] < minAdv)
-		{
-			minIndex = i;
-			minAdv = vec[i];
-		}
-	}
-
-	if (newSum != rangeMax)
-	*/
-	
 }
 
 static void NormalizeAdvance(std::vector<uint16_t>& advances, uint32_t range, uint32_t minAdvance)
@@ -143,34 +127,40 @@ namespace DStream
 		}
 		else
 		{
+			
 			Color prev, curr;
 			uint16_t nSegments = (1 << (m_AlgoBits * 3)) - 1;
 			uint16_t maxVal = 0;
 
 			for (uint32_t i = 0; i < nElements; i++)
 			{
-				uint16_t startPoint, endPoint;
-				uint32_t gridSide = (1 << m_AlgoBits) - 1;
-				float currPoint = ((float)source[i] / 65535) * nSegments;
-				float t = currPoint - std::floor(currPoint);
-
-				// Find out where in the curve you are
-				startPoint = std::floor(currPoint);
-				endPoint = std::ceil(currPoint);
-
-				// Encode those values
-				Color startColor = m_Implementation.EncodeValue(startPoint);
-				Color endColor = m_Implementation.EncodeValue(endPoint);
-
-				// Map them between 0,256
-				for (uint32_t j = 0; j < 3; j++)
+				if (m_Interpolate)
 				{
-					startColor[j] = std::round(((float)startColor[j] / gridSide) * 255);
-					endColor[j] = std::round(((float)endColor[j] / gridSide) * 255);
-				}
+					uint16_t startPoint, endPoint;
+					uint32_t gridSide = (1 << m_AlgoBits) - 1;
+					float currPoint = ((float)source[i] / 65535) * nSegments;
+					float t = currPoint - std::floor(currPoint);
 
-				// Interpolate
-				dest[i] = InterpolateColor(startColor, endColor, t);
+					// Find out where in the curve you are
+					startPoint = std::floor(currPoint);
+					endPoint = std::ceil(currPoint);
+
+					// Encode those values
+					Color startColor = m_Implementation.EncodeValue(startPoint);
+					Color endColor = m_Implementation.EncodeValue(endPoint);
+
+					// Map them between 0,256
+					for (uint32_t j = 0; j < 3; j++)
+					{
+						startColor[j] = std::round(((float)startColor[j] / gridSide) * 255);
+						endColor[j] = std::round(((float)endColor[j] / gridSide) * 255);
+					}
+
+					// Interpolate
+					dest[i] = InterpolateColor(startColor, endColor, t);
+				}
+				else
+					dest[i] = m_Implementation.EncodeValue(source[i]);
 			}
 
 			if (m_Enlarge)
