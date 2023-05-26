@@ -11,6 +11,8 @@ namespace DStream
 		Hilbert() = default;
 		Hilbert(uint8_t algoBits, std::vector<uint8_t> channelDistributions);
 
+		inline bool SupportsEnlarge() override { return true; }
+
 		Color EncodeValue(uint16_t value);
 		uint16_t DecodeValue(Color value);
 

@@ -100,6 +100,10 @@ namespace DStream
 		m_Interpolate = interpolate;
 
 		m_Implementation = CoderImplementation(algoBits, channelDistribution);
+		if (!m_Implementation.SupportsInterpolation())
+			m_Interpolate = false;
+		if (!m_Implementation.SupportsEnlarge())
+			m_Enlarge = false;
 		m_AlgoBits = m_Implementation.GetAlgoBits();
 		m_EnlargeBits = 0;
 
@@ -127,7 +131,6 @@ namespace DStream
 		}
 		else
 		{
-			
 			Color prev, curr;
 			uint16_t nSegments = (1 << (m_AlgoBits * 3)) - 1;
 			uint16_t maxVal = 0;

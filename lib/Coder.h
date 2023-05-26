@@ -11,7 +11,8 @@ namespace DStream
 		Coder() = default;
 		Coder(uint8_t algoBits, std::vector<uint8_t> channelDistribution);
 
-		virtual uint16_t DecodeValue(Color value, bool simple) { return 0; };
+		virtual inline bool SupportsInterpolation() { return true; }
+		virtual inline bool SupportsEnlarge() { return false; }
 
 		inline uint8_t GetAlgoBits() { return m_AlgoBits; }
 		inline std::string GetName() { return m_Name; }

@@ -35,26 +35,15 @@ namespace DStream
             ret.z = d;
         else if (765 < d && d <= 1275)
             ret.z = 255;
-        // When ret.z < 255 / ((1 << m_AlgoBits) - 1), ret.z gets rounded to 0. This makes the hue turn to red from blue,
-        // causing huge errors. We can avoid that by ensuring there's a minimum of 1 in ret.z and allowing for a higher error, in
-        // favor of interpolation and enlargement. Normally, the algorithm would work in a [0, 255] range so it wouldn't need neither this
-        // workaround nor the following mapping to [0, (1 << (m_AlgoBits) - 1)]
         else if (1275 < d && d <= 1529)
-            ret.z = std::max<uint8_t>(std::ceil((255.0f / (float)((1 << m_AlgoBits) - 1))/2), 1275 - d);
-
-        for (uint32_t i = 0; i < 3; i++)
-            ret[i] = std::round(((float)ret[i] / 255.0f) * ((1 << m_AlgoBits)-1));
+            ret.z = 1275 - d;
 
         return ret;
     }
 
     uint16_t Hue::DecodeValue(Color col)
     {
-        Color col1 = col;
-        for (uint32_t i = 0; i < 3; i++)
-            col1[i] = std::round(((float)col1[i] / ((1 << m_AlgoBits)-1)) * 255.0f);
-
-        uint8_t r = col1.x, g = col1.y, b = col1.z;
+        uint8_t r = col.x, g = col.y, b = col.z;
         uint16_t ret = 0;
         uint16_t mul = 1 << (m_AlgoBits * 3);
 

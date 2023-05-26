@@ -11,6 +11,8 @@ namespace DStream
 		Morton() = default;
 		Morton(uint8_t algoBits, std::vector<uint8_t> channelDistribution, bool hilbert = false);
 
+		inline virtual bool SupportsEnlarge() override { return true; }
+
 		Color EncodeValue(uint16_t value);
 		uint16_t DecodeValue(Color value);
 
