@@ -7,19 +7,20 @@ namespace DStream
 
 	Color Triangle::EncodeValue(uint16_t val)
 	{
+        val <<= (16 - m_AlgoBits*3);
         Color ret;
-        uint32_t p = (1 << 9);
+        uint32_t p = 512;
 
         uint8_t Ld, Ha, Hb;
         Ld = val >> 8;
 
         float mod = fmod((float)val / (p >> 1), 2.0f);
-        if (mod <= 1) Ha = mod * 256;
-        else Ha = (2 - mod) *256;
+        if (mod <= 1) Ha = mod * 255;
+        else Ha = (2 - mod) * 255;
 
         float mod2 = fmod(((float)((int)val - (p >> 2)) / (p >> 1)), 2.0f);
-        if (mod2 <= 1) Hb = mod2 * 256;
-        else Hb = (2 - mod2) * 256;
+        if (mod2 <= 1) Hb = mod2 * 255;
+        else Hb = (2 - mod2) * 255;
 
         ret[0] = Ld; ret[1] = Ha; ret[2] = Hb;
         return ret;
@@ -28,13 +29,13 @@ namespace DStream
 	uint16_t Triangle::DecodeValue(Color col)
 	{
         const int w = 1 << 16;
-        const int maxVal = 1 << 16;
+        const int maxVal = (1 << (m_AlgoBits*3)) - 1;
         // Function data
         int np = 512;
         float p = (float)np / w;
-        float Ld = col.x / 255.0f;
-        float Ha = col.y / 255.0f;
-        float Hb = col.z / 255.0f;
+        float Ld = (float)col.x / 255.0f;
+        float Ha = (float)col.y / 255.0f;
+        float Hb = (float)col.z / 255.0f;
         int m = (int)std::floor(4.0 * (Ld / p) - (Ld > 0 ? 0.5f : 0.0f)) % 4;
         float L0 = (Ld - (fmod(Ld - p / 8.0f, p)) + (p / 4.0) * m - p / 8.0);
         float delta = 0;
@@ -54,6 +55,6 @@ namespace DStream
             break;
         }
 
-        return (L0 + delta) * maxVal;
+        return std::round((L0 + delta) * maxVal);
 	}
 }

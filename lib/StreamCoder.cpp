@@ -2,13 +2,13 @@
 #include <Implementations/Hilbert.h>
 #include <Implementations/Hue.h>
 #include <Implementations/Phase.h>
+#include <Implementations/Triangle.h>
 
 /*
 #include <Implementations/Packed2.h>
 #include <Implementations/Packed3.h>
 #include <Implementations/Split2.h>
 #include <Implementations/Split3.h>
-#include <Implementations/Triangle.h>
 */
 
 #include <../benchmark/ImageWriter.h>
@@ -81,6 +81,7 @@ namespace DStream
 	template class StreamCoder<Hilbert>;
 	template class StreamCoder<Hue>;
 	template class StreamCoder<Phase>;
+	template class StreamCoder<Triangle>;
 
 	/*
 	template class StreamCoder<Morton>;
@@ -88,7 +89,6 @@ namespace DStream
 	template class StreamCoder<Split3>;
 	template class StreamCoder<Packed2>;
 	template class StreamCoder<Packed3>;
-	template class StreamCoder<Triangle>;
 	*/
 
 	template <typename CoderImplementation>
@@ -240,40 +240,38 @@ namespace DStream
 			| E-|-F
 			A---B
 		*/
-		uint16_t A = m_Implementation.DecodeValue(c000), B = m_Implementation.DecodeValue(c100), C = m_Implementation.DecodeValue(c010),
-			D = m_Implementation.DecodeValue(c110), E = m_Implementation.DecodeValue(c001), F = m_Implementation.DecodeValue(c101),
-			G = m_Implementation.DecodeValue(c011), H = m_Implementation.DecodeValue(c111);
+		uint16_t A = m_Implementation.DecodeValue(c000), E = m_Implementation.DecodeValue(c001), C = m_Implementation.DecodeValue(c010),
+			G = m_Implementation.DecodeValue(c011), B = m_Implementation.DecodeValue(c100), F = m_Implementation.DecodeValue(c101),
+			D = m_Implementation.DecodeValue(c110), H = m_Implementation.DecodeValue(c111);
 
 		// Interpolation values
 		float threshold = 1 << m_AlgoBits;
 
-		int a = A, b = B, c = C, d = D, e = E, f = F, g = G, h = H;
-		int subs[] = { B,A,D,C,F,E,H,G,C,A,D,B,G,E,H,F,E,A,F,B,G,C,H,D };
-		int* less[] = { &b,&d,&f,&h,&c,&d,&g,&h,&e,&f,&g,&h };
-		int* more[] = { &a,&c,&e,&g,&a,&b,&e,&f,&a,&b,&c,&d };
-		float ts[] = { u, v, w };
-		
-		for (uint32_t i = 0; i < 24; i+=2)
-		{
-			float t = ts[i / 8];
-			int diff = std::abs(subs[i] - subs[i + 1]);
-			if (diff > threshold)
-			{
-				if (t >= 0.5) *more[i / 2] = subs[i+1];
-				else *less[i / 2] = subs[i];
-			}
-		}
+		float uAB = std::abs(A - B) > threshold ? std::round(u) : u;
+		float uCD = std::abs(C - D) > threshold ? std::round(u) : u;
+		float uEF = std::abs(E - F) > threshold ? std::round(u) : u;
+		float uGH = std::abs(G - H) > threshold ? std::round(u) : u;
+
+		float vAC = std::abs(A - C) > threshold ? std::round(v) : v;
+		float vBD = std::abs(B - D) > threshold ? std::round(v) : v;
+		float vEG = std::abs(E - G) > threshold ? std::round(v) : v;
+		float vFH = std::abs(F - H) > threshold ? std::round(v) : v;
+
+		float wAE = std::abs(A - E) > threshold ? std::round(w) : w;
+		float wBF = std::abs(B - F) > threshold ? std::round(w) : w;
+		float wCG = std::abs(C - G) > threshold ? std::round(w) : w;
+		float wDH = std::abs(D - H) > threshold ? std::round(w) : w;
 
 		// Interpolate values
-		float val = 
-			a * (1 - u) * (1 - v) * (1 - w) +
-			b * u * (1 - v) * (1 - w) +
-			c * (1 - u) * v * (1 - w) +
-			d * u * v * (1 - w) +
-			e * (1 - u) * (1 - v) * w +
-			f * u * (1 - v) * w +
-			g * (1 - u) * v * w +
-			h * u * v * w;
+		float val = A * (1 - uAB) * (1 - vAC) * (1 - wAE) +
+			B * uAB * (1 - vBD) * (1 - wBF) +
+			C * (1 - uCD) * vAC * (1 - wCG) +
+			D * uCD * vBD * (1 - wDH) +
+
+			E * (1 - uEF) * (1 - vEG) * wAE +
+			F * uEF * (1 - vFH) * wBF +
+			G * (1 - uGH) * vEG * wCG +
+			H * uGH * vFH * wDH;
 
 		return std::round((val / ((1 << (m_AlgoBits * 3)) - 1)) * 65535);
 	}

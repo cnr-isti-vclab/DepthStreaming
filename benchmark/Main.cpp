@@ -9,6 +9,7 @@
 #include <Implementations/Hilbert.h>
 #include <Implementations/Phase.h>
 #include <Implementations/Hue.h>
+#include <Implementations/Triangle.h>
 
 #include <fstream>
 #include <iostream>
@@ -16,12 +17,6 @@
 #include <filesystem>
 #include <map>
 #include <unordered_set>
-
-/* TODO:
-*	- Remove quantization
-*	- Remove segment bits
-
-*/
 
 using namespace DStream;
 
@@ -70,44 +65,32 @@ struct BenchmarkConfig
 	std::string CurrentPath;
 };
 
-std::string outputFolder = "PhaseDebug";
-std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
+std::string outputFolder = "TriangleDebug";
+std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo)
 {
-	std::vector<uint8_t> ret = { 8 };
+	std::vector<uint8_t> ret;
 
 	if (!algo.compare("Morton"))
 		return { 6 };
 	else if (!algo.compare("Hilbert"))
 	{
-		ret.pop_back();
-		for (uint8_t i = 2; i <= 8; i++)
-
-		{
-			uint8_t algoBits = i;
-			uint8_t segmentBits = q - 3 * algoBits;
-
-			if (algoBits * 3 < q && algoBits + segmentBits <= 8)
-				ret.push_back(algoBits);
-		}
+		for (uint32_t i = 0; i < 5; i++)
+			ret.push_back(i + 1);
 
 		return ret;
 	}
 	else if (!algo.compare("Packed") || (!algo.compare("Split")))
 	{
-		uint8_t increase = 1;
-
-		if ((16 - q) >= 4) increase = 2;
-		for (uint32_t i = q - 8; i < 8; i+=increase)
+		for (uint32_t i = 2; i < 8; i+=2)
 			ret.push_back(i);
-
 		return ret;
 	}
 	else if (!algo.compare("Triangle"))
-		return ret;
+		return { 6 };
 	else if (!algo.compare("Phase"))
-		return ret;
+		return { 6 };
 	else
-		return ret;
+		return { 6 };
 }
 
 std::vector<uint8_t> GetMinAlgoBitsToTest(const std::string& algo, uint8_t q)
@@ -275,7 +258,7 @@ void TestCoder(uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 
 	StreamCoder<Coder> sc(false, false, algo, { 8,8,8 }, false);
 	for (uint16_t i = 0; i < 65535; i++)
 	{
-		if (i == 100)
+		if (i == 30000)
 			std::cout << "here";
 		Color c;
 		sc.Encode(&i, &c, 1);
@@ -288,7 +271,7 @@ void TestCoder(uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 
 			int err = std::abs((int)v - (int)i);
 //#define DEBUG
 #ifdef DEBUG
-			if (err > 100)
+			if (err > 30000)
 				std::cout << "debug" << std::endl;
 #endif
 			avg += err;
@@ -512,11 +495,11 @@ int main(int argc, char** argv)
 {
 	//DebugCoder<Hilbert>(10, 2, true);
 
-	//TestCoder<Phase>(3);
+	TestCoder<Phase>(3);
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 	
 	// Parameters to test
-	std::string coders[7] = { "Phase", "Hilbert", "Hue", "Packed2", "Hue", "Triangle" };
+	std::string coders[7] = { "Triangle", "Hilbert", "Hue", "Packed2", "Hue", "Phase" };
 	std::vector<uint8_t> algoBits;
 
 	// Read raw data
@@ -584,7 +567,7 @@ int main(int argc, char** argv)
 		}
 		else
 		{
-			algoBits = { 1, 2, 3, 4, 5 };
+			algoBits = GetAlgoBitsToTest(coders[c]);
 			for (uint32_t p = 0; p < algoBits.size(); p++)
 			{
 				if (algoBits.size() > 1)
@@ -596,9 +579,9 @@ int main(int argc, char** argv)
 				if (!coders[c].compare("Hilbert"))BenchmarkCoder<Hilbert>(config);
 				if (!coders[c].compare("Hue")) BenchmarkCoder<Hue>(config);
 				if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(config);
+				if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(config);
 				/*
 				if (!coders[c].compare("Morton")) BenchmarkCoder<Morton>(config);
-				if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(config);
 				if (!coders[c].compare("Split2")) BenchmarkCoder<Split2>(config);
 				if (!coders[c].compare("Packed2")) BenchmarkCoder<Packed2>(config);
 				*/
