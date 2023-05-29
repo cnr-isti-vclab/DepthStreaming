@@ -10,6 +10,8 @@ namespace DStream
 		Packed2() = default;
 		Packed2(uint8_t algoBits, std::vector<uint8_t> channelDistribution);
 
+		inline bool SupportsInterpolation() override { return false; }
+
 		Color EncodeValue(uint16_t value);
 		uint16_t DecodeValue(Color value);
 	};

@@ -7,7 +7,6 @@ namespace DStream
 
 	Color Triangle::EncodeValue(uint16_t val)
 	{
-        val <<= (16 - m_AlgoBits*3);
         Color ret;
         uint32_t p = 512;
 
@@ -29,7 +28,7 @@ namespace DStream
 	uint16_t Triangle::DecodeValue(Color col)
 	{
         const int w = 1 << 16;
-        const int maxVal = (1 << (m_AlgoBits*3)) - 1;
+        const int maxVal = 65535;
         // Function data
         int np = 512;
         float p = (float)np / w;

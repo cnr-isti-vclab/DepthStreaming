@@ -18,6 +18,7 @@ namespace DStream
 
 	Color Hilbert::EncodeValue(uint16_t val)
 	{
+        val >>= (16 - (3 * m_AlgoBits));
 		Color v = m_Morton.EncodeValue(val);
 		std::swap(v[0], v[2]);
 		TransposeFromHilbertCoords(v);
@@ -30,7 +31,7 @@ namespace DStream
         Color col = col1;
         TransposeToHilbertCoords(col);
         std::swap(col[0], col[2]);
-        return m_Morton.DecodeValue(col);
+        return m_Morton.DecodeValue(col) << (16 - (3 * m_AlgoBits));
     }
 
     void Hilbert::TransposeFromHilbertCoords(Color& col)

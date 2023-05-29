@@ -7,7 +7,8 @@ namespace DStream
 	Color Packed2::EncodeValue(uint16_t val)
 	{
 		Color ret;
-		uint32_t right = 16 - m_AlgoBits;
+		uint32_t right = std::min(16 - m_AlgoBits, 8);
+		val >>= 16 - (right + m_AlgoBits);
 
 		ret.x = (val >> right) << (8 - m_AlgoBits);
 		ret.y = (val & ((1 << right) - 1)) << (8 - right);
@@ -19,7 +20,7 @@ namespace DStream
 	uint16_t Packed2::DecodeValue(Color col)
 	{
 		uint16_t highPart, lowPart;
-		uint32_t right = 16 - m_AlgoBits;
+		uint32_t right = std::min(16 - m_AlgoBits, 8);
 
 		col.x = std::round((float)col.x / (1 << (8 - m_AlgoBits)));
 		col.y = std::round((float)col.y / (1 << (8 - right)));
@@ -27,6 +28,6 @@ namespace DStream
 		highPart = col.x << right;
 		lowPart = col.y;
 
-		return (highPart + lowPart);
+		return (highPart + lowPart) << (16 - (right + m_AlgoBits));
 	}
 }

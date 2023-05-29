@@ -10,7 +10,6 @@ namespace DStream
 
 	Color Phase::EncodeValue(uint16_t val)
 	{
-		val <<= (16 - 3 * m_AlgoBits);
 		Color ret;
 		const float P = 1 << 14;
 		const float w = 1 << 16;
@@ -40,6 +39,6 @@ namespace DStream
 		PHI = phi + 2 * M_PI * K;
 
 		Z = PHI * (P / (M_PI * 2.0f));
-		return std::min(std::max(0, static_cast<int>(Z)), 1 << 16) >> (16-m_AlgoBits*3);
+		return std::min(std::max(0, static_cast<int>(Z)), 1 << 16);
 	}
 }

@@ -10,6 +10,7 @@
 #include <Implementations/Phase.h>
 #include <Implementations/Hue.h>
 #include <Implementations/Triangle.h>
+#include <Implementations/Packed2.h>
 
 #include <fstream>
 #include <iostream>
@@ -81,7 +82,7 @@ std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo)
 	}
 	else if (!algo.compare("Packed") || (!algo.compare("Split")))
 	{
-		for (uint32_t i = 2; i < 8; i+=2)
+		for (uint32_t i = 2; i <= 8; i+=2)
 			ret.push_back(i);
 		return ret;
 	}
@@ -255,7 +256,10 @@ void TestCoder(uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 
 	int max = 0;
 	int j = 0;
 
-	StreamCoder<Coder> sc(false, false, algo, { 8,8,8 }, false);
+	bool interpolate = true;
+	bool enlarge = false;
+
+	StreamCoder<Coder> sc(enlarge, interpolate, algo, { 8,8,8 }, false);
 	for (uint16_t i = 0; i < 65535; i++)
 	{
 		if (i == 30000)
@@ -495,7 +499,7 @@ int main(int argc, char** argv)
 {
 	//DebugCoder<Hilbert>(10, 2, true);
 
-	TestCoder<Phase>(3);
+	TestCoder<Packed2>(8);
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 	
 	// Parameters to test
@@ -503,6 +507,7 @@ int main(int argc, char** argv)
 	std::vector<uint8_t> algoBits;
 
 	// Read raw data
+
 	DepthmapData dmData;
 	DepthmapReader reader("Input/2.tif", DepthmapFormat::TIF, dmData);
 	uint32_t nElements = dmData.Width * dmData.Height;

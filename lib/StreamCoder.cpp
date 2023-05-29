@@ -3,9 +3,9 @@
 #include <Implementations/Hue.h>
 #include <Implementations/Phase.h>
 #include <Implementations/Triangle.h>
+#include <Implementations/Packed2.h>
 
 /*
-#include <Implementations/Packed2.h>
 #include <Implementations/Packed3.h>
 #include <Implementations/Split2.h>
 #include <Implementations/Split3.h>
@@ -82,12 +82,12 @@ namespace DStream
 	template class StreamCoder<Hue>;
 	template class StreamCoder<Phase>;
 	template class StreamCoder<Triangle>;
+	template class StreamCoder<Packed2>;
 
 	/*
 	template class StreamCoder<Morton>;
 	template class StreamCoder<Split2>;
 	template class StreamCoder<Split3>;
-	template class StreamCoder<Packed2>;
 	template class StreamCoder<Packed3>;
 	*/
 
@@ -149,8 +149,8 @@ namespace DStream
 					endPoint = std::ceil(currPoint);
 
 					// Encode those values
-					Color startColor = m_Implementation.EncodeValue(startPoint);
-					Color endColor = m_Implementation.EncodeValue(endPoint);
+					Color startColor = m_Implementation.EncodeValue(startPoint * (1 << (16 - m_AlgoBits*3)));
+					Color endColor = m_Implementation.EncodeValue(endPoint * (1 << (16 - m_AlgoBits * 3)));
 
 					// Map them between 0,256
 					for (uint32_t j = 0; j < 3; j++)
@@ -163,7 +163,7 @@ namespace DStream
 					dest[i] = InterpolateColor(startColor, endColor, t);
 				}
 				else
-					dest[i] = m_Implementation.EncodeValue(source[i] >> (16 - (3 * m_AlgoBits)));
+					dest[i] = m_Implementation.EncodeValue(source[i]);
 			}
 
 			if (m_Enlarge)
@@ -197,7 +197,7 @@ namespace DStream
 				if (m_Interpolate)
 					dest[i] = InterpolateHeight(inCols[i]);
 				else
-					dest[i] = m_Implementation.DecodeValue(inCols[i]) << (16 - (3 * m_AlgoBits));
+					dest[i] = m_Implementation.DecodeValue(inCols[i]);
 			}
 		}
 
@@ -243,6 +243,9 @@ namespace DStream
 		uint16_t A = m_Implementation.DecodeValue(c000), E = m_Implementation.DecodeValue(c001), C = m_Implementation.DecodeValue(c010),
 			G = m_Implementation.DecodeValue(c011), B = m_Implementation.DecodeValue(c100), F = m_Implementation.DecodeValue(c101),
 			D = m_Implementation.DecodeValue(c110), H = m_Implementation.DecodeValue(c111);
+		uint16_t* vals[] = { &A,&B,&C,&D,&E,&F,&G,&H };
+		for (uint32_t i = 0; i < 8; i++)
+			*vals[i] = *vals[i] >> (16 - 3 * m_AlgoBits);
 
 		// Interpolation values
 		float threshold = 1 << m_AlgoBits;
