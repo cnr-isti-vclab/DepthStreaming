@@ -4,10 +4,10 @@
 #include <Implementations/Phase.h>
 #include <Implementations/Triangle.h>
 #include <Implementations/Packed2.h>
+#include <Implementations/Split2.h>
 
 /*
 #include <Implementations/Packed3.h>
-#include <Implementations/Split2.h>
 #include <Implementations/Split3.h>
 */
 
@@ -83,10 +83,9 @@ namespace DStream
 	template class StreamCoder<Phase>;
 	template class StreamCoder<Triangle>;
 	template class StreamCoder<Packed2>;
-
+	template class StreamCoder<Split2>;
 	/*
 	template class StreamCoder<Morton>;
-	template class StreamCoder<Split2>;
 	template class StreamCoder<Split3>;
 	template class StreamCoder<Packed3>;
 	*/

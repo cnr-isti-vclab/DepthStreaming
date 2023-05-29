@@ -10,7 +10,8 @@ namespace DStream
 	Color Split2::EncodeValue(uint16_t val)
 	{
 		Color ret;
-		uint32_t right = 16 - m_AlgoBits;
+		uint32_t right = std::min(16 - m_AlgoBits, 8);
+		val >>= 16 - (right + m_AlgoBits);
 
 		ret.x = val >> right;
 		ret.y = (val & ((1 << right) - 1));
@@ -29,7 +30,7 @@ namespace DStream
 	{
 		std::swap(col.x, col.y);
 		uint16_t highPart, lowPart;
-		uint32_t right = 16 - m_AlgoBits;
+		uint32_t right = std::min(16 - m_AlgoBits, 8);
 
 		col.x = std::round((float)col.x / (1 << (8 - m_AlgoBits)));
 		col.y = std::round((float)col.y / (1 << (8 - right)));
@@ -40,6 +41,6 @@ namespace DStream
 		highPart = col.x << right;
 		lowPart = col.y;
 
-		return (highPart + lowPart);
+		return (highPart + lowPart) << (16 - (m_AlgoBits+right));
 	}
 }

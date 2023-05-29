@@ -11,6 +11,7 @@
 #include <Implementations/Hue.h>
 #include <Implementations/Triangle.h>
 #include <Implementations/Packed2.h>
+#include <Implementations/Split2.h>
 
 #include <fstream>
 #include <iostream>
@@ -499,7 +500,7 @@ int main(int argc, char** argv)
 {
 	//DebugCoder<Hilbert>(10, 2, true);
 
-	TestCoder<Packed2>(8);
+	TestCoder<Split2>(4);
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 	
 	// Parameters to test
