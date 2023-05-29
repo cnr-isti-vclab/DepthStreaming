@@ -11,8 +11,9 @@ namespace DStream
 	Color Phase::EncodeValue(uint16_t val)
 	{
 		Color ret;
-		const float P = 1 << 14;
-		const float w = 1 << 16;
+		uint16_t q = 1 << (m_AlgoBits * 3);
+		const float P = q >> 2;
+		const float w = q;
 
 		ret[0] = 255 * (0.5f + 0.5f * std::cos(M_PI * 2.0f * (val / P)));
 		ret[1] = 255 * (val / w);
@@ -23,7 +24,8 @@ namespace DStream
 
 	uint16_t Phase::DecodeValue(Color col)
 	{
-		const float w = 1 << 16;
+		uint16_t q = 1 << (m_AlgoBits * 3);
+		const float w = q;
 		const float P = w / 4;
 		const float beta = P / 2.0f;
 		float gamma, phi, PHI, K, Z;
@@ -38,7 +40,7 @@ namespace DStream
 		K = std::round((i2 * w) / P);
 		PHI = phi + 2 * M_PI * K;
 
-		Z = PHI * (P / (M_PI * 2.0f));
-		return std::min(std::max(0, static_cast<int>(Z)), 1 << 16);
+		Z = std::round( PHI * (P / (M_PI * 2.0f)));
+		return std::min<int>(std::max(0, static_cast<int>(Z)), q);
 	}
 }

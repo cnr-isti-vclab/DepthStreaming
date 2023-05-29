@@ -80,6 +80,7 @@ namespace DStream
 {
 	template class StreamCoder<Hilbert>;
 	template class StreamCoder<Hue>;
+	template class StreamCoder<Phase>;
 
 	/*
 	template class StreamCoder<Morton>;
@@ -87,7 +88,6 @@ namespace DStream
 	template class StreamCoder<Split3>;
 	template class StreamCoder<Packed2>;
 	template class StreamCoder<Packed3>;
-	template class StreamCoder<Phase>;
 	template class StreamCoder<Triangle>;
 	*/
 

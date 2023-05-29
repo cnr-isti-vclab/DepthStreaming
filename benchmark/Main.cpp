@@ -7,6 +7,7 @@
 #include <Timer.h>
 
 #include <Implementations/Hilbert.h>
+#include <Implementations/Phase.h>
 #include <Implementations/Hue.h>
 
 #include <fstream>
@@ -69,7 +70,7 @@ struct BenchmarkConfig
 	std::string CurrentPath;
 };
 
-std::string outputFolder = "HueDebug";
+std::string outputFolder = "PhaseDebug";
 std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo, uint8_t q)
 {
 	std::vector<uint8_t> ret = { 8 };
@@ -274,7 +275,7 @@ void TestCoder(uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 
 	StreamCoder<Coder> sc(false, false, algo, { 8,8,8 }, false);
 	for (uint16_t i = 0; i < 65535; i++)
 	{
-		if (i == 60001)
+		if (i == 100)
 			std::cout << "here";
 		Color c;
 		sc.Encode(&i, &c, 1);
@@ -287,7 +288,7 @@ void TestCoder(uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 
 			int err = std::abs((int)v - (int)i);
 //#define DEBUG
 #ifdef DEBUG
-			if (err > 60000)
+			if (err > 100)
 				std::cout << "debug" << std::endl;
 #endif
 			avg += err;
@@ -511,11 +512,11 @@ int main(int argc, char** argv)
 {
 	//DebugCoder<Hilbert>(10, 2, true);
 
-	TestCoder<Hue>(5);
+	//TestCoder<Phase>(3);
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 	
 	// Parameters to test
-	std::string coders[7] = { "Hue", "Hilbert", "Hue", "Packed2", "Phase", "Triangle" };
+	std::string coders[7] = { "Phase", "Hilbert", "Hue", "Packed2", "Hue", "Triangle" };
 	std::vector<uint8_t> algoBits;
 
 	// Read raw data
@@ -594,11 +595,11 @@ int main(int argc, char** argv)
 
 				if (!coders[c].compare("Hilbert"))BenchmarkCoder<Hilbert>(config);
 				if (!coders[c].compare("Hue")) BenchmarkCoder<Hue>(config);
+				if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(config);
 				/*
 				if (!coders[c].compare("Morton")) BenchmarkCoder<Morton>(config);
 				if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(config);
 				if (!coders[c].compare("Split2")) BenchmarkCoder<Split2>(config);
-				if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(config);
 				if (!coders[c].compare("Packed2")) BenchmarkCoder<Packed2>(config);
 				*/
 				if (algoBits.size() > 1)
