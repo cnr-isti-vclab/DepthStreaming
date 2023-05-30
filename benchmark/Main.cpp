@@ -259,13 +259,13 @@ void TestCoder(uint32_t algo, std::vector<uint8_t> config = { 8,8,8 })
 	int max = 0;
 	int j = 0;
 
-	bool interpolate = false;
-	bool enlarge = false;
+	bool interpolate = true;
+	bool enlarge = true;
 
 	StreamCoder<Coder> sc(enlarge, interpolate, algo, config, false);
 	for (uint16_t i = 0; i < 65535; i++)
 	{
-		if (i == 30000)
+		if (i == 30001)
 			std::cout << "here";
 		Color c;
 		sc.Encode(&i, &c, 1);
@@ -276,7 +276,7 @@ void TestCoder(uint32_t algo, std::vector<uint8_t> config = { 8,8,8 })
 		if (v != i)
 		{
 			int err = std::abs((int)v - (int)i);
-//#define DEBUG
+#define DEBUG
 #ifdef DEBUG
 			if (err > 30000)
 				std::cout << "debug" << std::endl;
@@ -288,7 +288,7 @@ void TestCoder(uint32_t algo, std::vector<uint8_t> config = { 8,8,8 })
 
 	avg /= 65535;
 	std::cout << "Max: " << max << "Avg: " << avg << std::endl;
-	//exit(0);
+	exit(0);
 }
 
 template <typename T>
@@ -501,16 +501,12 @@ void DebugCoder(int quant, int algo, bool interpolate)
 int main(int argc, char** argv)
 {
 	//DebugCoder<Hilbert>(10, 2, true);
-	std::vector<std::vector<uint8_t>> distributions = {
-		{2,6,8},{2,7,7},{3,5,8},{3,6,7},{4,4,8},{4,5,7},{4,6,6},{5,5,6}
-	};
-	for (uint32_t i=0; i<distributions.size(); i++)
-		TestCoder<Packed3>(8, distributions[i]);
-	exit(0);
+	TestCoder<Hilbert>(5);
+
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 	
 	// Parameters to test
-	std::string coders[7] = { "Packed3", "Triangle", "Hilbert", "Hue", "Packed2", "Hue", "Phase" };
+	std::string coders[7] = { "Hilbert", "Triangle", "Hilbert", "Hue", "Packed2", "Hue", "Phase" };
 	std::vector<uint8_t> algoBits;
 
 	// Read raw data
@@ -526,6 +522,9 @@ int main(int argc, char** argv)
 	uint8_t* colorBuffer = new uint8_t[nElements * 3];
 	uint16_t* decodedData = new uint16_t[nElements];
 	uint16_t* quantizedData = new uint16_t[nElements];
+	std::vector<std::vector<uint8_t>> distributions = {
+		{2,6,8},{2,7,7},{3,5,8},{3,6,7},{4,4,8},{4,5,7},{4,6,6},{5,5,6}
+	};
 
 	// Folder structures
 	std::vector<std::string> folders;
@@ -536,8 +535,6 @@ int main(int argc, char** argv)
 	csv.clear();
 	csv << "Configuration, Max Error, Avg Error, Despeckle Max Error, Despeckle Avg Error, Compressed Size\n";
 	csv.close();
-
-	
 
 	for (uint32_t c = 0; c < 1; c++)
 	{

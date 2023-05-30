@@ -217,6 +217,7 @@ namespace DStream
 		float v = modf(((float)col[1] / 255.0f) * gridSide, &Vf);
 		float w = modf(((float)col[2] / 255.0f) * gridSide, &Wf);
 
+		int uN = std::round(u), vN = std::round(v), wN = std::round(w);
 		uint8_t U = (uint8_t)Uf, V = (uint8_t)Vf, W = (uint8_t)Wf;
 
 		Color c000(U, V, W);
@@ -229,48 +230,50 @@ namespace DStream
 		Color c111(U + 1, V + 1,  W + 1);
 
 		/* Depth values
-			  G---H
-			C---D |
-			| E-|-F
-			A---B
+			  G----H
+			 /|   /|
+			C----D |
+			| E--|-F
+			A----B
 		*/
 		uint16_t A = m_Implementation.DecodeValue(c000), E = m_Implementation.DecodeValue(c001), C = m_Implementation.DecodeValue(c010),
 			G = m_Implementation.DecodeValue(c011), B = m_Implementation.DecodeValue(c100), F = m_Implementation.DecodeValue(c101),
 			D = m_Implementation.DecodeValue(c110), H = m_Implementation.DecodeValue(c111);
-		uint16_t* vals[] = { &A,&B,&C,&D,&E,&F,&G,&H };
-		for (uint32_t i = 0; i < 8; i++)
-			*vals[i] = *vals[i] >> (16 - 3 * m_AlgoBits);
-
-		// Interpolation values
+		uint16_t vals[] = { A,B,C,D,E,F,G,H };
+		float interpVals[] = {
+			(1 - u) * (1 - v) * (1 - w),
+			u * (1 - v) * (1 - w),
+			(1 - u) * v * (1 - w),
+			u * v * (1 - w),
+			(1 - u) * (1 - v) * w,
+			u * (1 - v) * w,
+			(1 - u) * v * w,
+			u * v * w
+		};
+		float tot = 0;
+		float T = vals[uN + vN * 2 + wN * 4];
 		float threshold = 1 << m_AlgoBits;
 
-		float uAB = std::abs(A - B) > threshold ? std::round(u) : u;
-		float uCD = std::abs(C - D) > threshold ? std::round(u) : u;
-		float uEF = std::abs(E - F) > threshold ? std::round(u) : u;
-		float uGH = std::abs(G - H) > threshold ? std::round(u) : u;
+		for (uint32_t i = 0; i < 2; i++)
+		{
+			for (uint32_t j = 0; j < 2; j++)
+			{
+				for (uint32_t k = 0; k < 2; k++)
+				{
+					uint32_t idx = i * 4 + j * 2 + k;
+					if (std::abs((int)vals[idx] - T) > threshold)
+						interpVals[idx] = 0;
+					else
+						tot += interpVals[idx];
+				}
+			}
+		}
 
-		float vAC = std::abs(A - C) > threshold ? std::round(v) : v;
-		float vBD = std::abs(B - D) > threshold ? std::round(v) : v;
-		float vEG = std::abs(E - G) > threshold ? std::round(v) : v;
-		float vFH = std::abs(F - H) > threshold ? std::round(v) : v;
+		float val = 0;
+		for (uint32_t i = 0; i < 8; i++)
+			val += interpVals[i] * vals[i] / tot;
 
-		float wAE = std::abs(A - E) > threshold ? std::round(w) : w;
-		float wBF = std::abs(B - F) > threshold ? std::round(w) : w;
-		float wCG = std::abs(C - G) > threshold ? std::round(w) : w;
-		float wDH = std::abs(D - H) > threshold ? std::round(w) : w;
-
-		// Interpolate values
-		float val = A * (1 - uAB) * (1 - vAC) * (1 - wAE) +
-			B * uAB * (1 - vBD) * (1 - wBF) +
-			C * (1 - uCD) * vAC * (1 - wCG) +
-			D * uCD * vBD * (1 - wDH) +
-
-			E * (1 - uEF) * (1 - vEG) * wAE +
-			F * uEF * (1 - vFH) * wBF +
-			G * (1 - uGH) * vEG * wCG +
-			H * uGH * vFH * wDH;
-
-		return std::round((val / ((1 << (m_AlgoBits * 3)) - 1)) * 65535);
+		return std::round(val);
 	}
 
 	template<class CoderImplementation>
@@ -344,6 +347,7 @@ namespace DStream
 			std::cout << "Error vector: " << std::endl;
 			for (uint32_t i = 0; i < errors.size(); i++)
 				std::cout << errors[i] << ",";
+			std::cout << std::endl;
 			
 			float sum = 0;
 			float errSum = 0;
