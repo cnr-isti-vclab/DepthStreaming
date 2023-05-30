@@ -5,11 +5,8 @@
 #include <Implementations/Triangle.h>
 #include <Implementations/Packed2.h>
 #include <Implementations/Split2.h>
-
-/*
 #include <Implementations/Packed3.h>
 #include <Implementations/Split3.h>
-*/
 
 #include <../benchmark/ImageWriter.h>
 // [TMP]
@@ -79,16 +76,14 @@ static void NormalizeAdvance(std::vector<uint16_t>& advances, uint32_t range, ui
 namespace DStream
 {
 	template class StreamCoder<Hilbert>;
+	template class StreamCoder<Morton>;
 	template class StreamCoder<Hue>;
 	template class StreamCoder<Phase>;
 	template class StreamCoder<Triangle>;
 	template class StreamCoder<Packed2>;
 	template class StreamCoder<Split2>;
-	/*
-	template class StreamCoder<Morton>;
 	template class StreamCoder<Split3>;
 	template class StreamCoder<Packed3>;
-	*/
 
 	template <typename CoderImplementation>
 	StreamCoder<CoderImplementation>::StreamCoder(bool enlarge, bool interpolate, uint8_t algoBits,

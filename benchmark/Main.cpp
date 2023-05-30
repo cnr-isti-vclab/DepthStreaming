@@ -12,6 +12,8 @@
 #include <Implementations/Triangle.h>
 #include <Implementations/Packed2.h>
 #include <Implementations/Split2.h>
+#include <Implementations/Packed3.h>
+#include <Implementations/Split3.h>
 
 #include <fstream>
 #include <iostream>
@@ -251,16 +253,16 @@ void SaveError(uint16_t* original, uint16_t* processed, uint8_t* colorBuffer, ui
 }
 
 template <typename Coder>
-void TestCoder(uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 1)
+void TestCoder(uint32_t algo, std::vector<uint8_t> config = { 8,8,8 })
 {
 	float avg = 0;
 	int max = 0;
 	int j = 0;
 
-	bool interpolate = true;
+	bool interpolate = false;
 	bool enlarge = false;
 
-	StreamCoder<Coder> sc(enlarge, interpolate, algo, { 8,8,8 }, false);
+	StreamCoder<Coder> sc(enlarge, interpolate, algo, config, false);
 	for (uint16_t i = 0; i < 65535; i++)
 	{
 		if (i == 30000)
@@ -286,7 +288,7 @@ void TestCoder(uint32_t algo, int minNoise = 0, int maxNoise = 0, int advance = 
 
 	avg /= 65535;
 	std::cout << "Max: " << max << "Avg: " << avg << std::endl;
-	exit(0);
+	//exit(0);
 }
 
 template <typename T>
@@ -499,12 +501,16 @@ void DebugCoder(int quant, int algo, bool interpolate)
 int main(int argc, char** argv)
 {
 	//DebugCoder<Hilbert>(10, 2, true);
-
-	TestCoder<Split2>(4);
+	std::vector<std::vector<uint8_t>> distributions = {
+		{2,6,8},{2,7,7},{3,5,8},{3,6,7},{4,4,8},{4,5,7},{4,6,6},{5,5,6}
+	};
+	for (uint32_t i=0; i<distributions.size(); i++)
+		TestCoder<Packed3>(8, distributions[i]);
+	exit(0);
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 	
 	// Parameters to test
-	std::string coders[7] = { "Triangle", "Hilbert", "Hue", "Packed2", "Hue", "Phase" };
+	std::string coders[7] = { "Packed3", "Triangle", "Hilbert", "Hue", "Packed2", "Hue", "Phase" };
 	std::vector<uint8_t> algoBits;
 
 	// Read raw data
@@ -531,9 +537,7 @@ int main(int argc, char** argv)
 	csv << "Configuration, Max Error, Avg Error, Despeckle Max Error, Despeckle Avg Error, Compressed Size\n";
 	csv.close();
 
-	std::vector<std::vector<uint8_t>> distributions = {
-		{2,6,8},{2,7,7},{3,5,8},{3,6,7},{4,4,8},{4,5,7},{4,6,6},{5,5,6}
-	};
+	
 
 	for (uint32_t c = 0; c < 1; c++)
 	{
@@ -565,8 +569,8 @@ int main(int argc, char** argv)
 				config.ChannelDistribution = distributions[d];
 				config.CurrentPath = GetPathFromComponents(folders);
 
-				//if (coders[c] == "Packed3")	BenchmarkCoder<Packed3>(config);
-				//if (coders[c] == "Split3")	BenchmarkCoder<Split3>(config);
+				if (coders[c] == "Packed3")	BenchmarkCoder<Packed3>(config);
+				if (coders[c] == "Split3")	BenchmarkCoder<Split3>(config);
 
 				folders.pop_back();
 			}
