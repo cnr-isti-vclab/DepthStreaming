@@ -69,7 +69,7 @@ struct BenchmarkConfig
 	std::string CurrentPath;
 };
 
-std::string outputFolder = "TriangleDebug";
+std::string outputFolder = "FastTest";
 std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo)
 {
 	std::vector<uint8_t> ret;
@@ -83,7 +83,7 @@ std::vector<uint8_t> GetAlgoBitsToTest(const std::string& algo)
 
 		return ret;
 	}
-	else if (!algo.compare("Packed") || (!algo.compare("Split")))
+	else if (!algo.compare("Packed2") || (!algo.compare("Split2")))
 	{
 		for (uint32_t i = 2; i <= 8; i+=2)
 			ret.push_back(i);
@@ -261,8 +261,9 @@ void TestCoder(uint32_t algo, std::vector<uint8_t> config = { 8,8,8 })
 
 	bool interpolate = true;
 	bool enlarge = true;
+	bool tables = true;
 
-	StreamCoder<Coder> sc(enlarge, interpolate, algo, config, false);
+	StreamCoder<Coder> sc(enlarge, interpolate, algo, config, tables);
 	for (uint16_t i = 0; i < 65535; i++)
 	{
 		if (i == 30001)
@@ -501,12 +502,12 @@ void DebugCoder(int quant, int algo, bool interpolate)
 int main(int argc, char** argv)
 {
 	//DebugCoder<Hilbert>(10, 2, true);
-	TestCoder<Hilbert>(5);
+	//TestCoder<Triangle>(5);
 
 	DSTR_PROFILE_BEGIN_SESSION("Runtime", "Profile-Runtime.json");
 	
 	// Parameters to test
-	std::string coders[7] = { "Hilbert", "Triangle", "Hilbert", "Hue", "Packed2", "Hue", "Phase" };
+	std::string coders[7] = { "Triangle", "Hilbert", "Split2", "Hue", "Packed2", "Hue", "Phase" };
 	std::vector<uint8_t> algoBits;
 
 	// Read raw data
@@ -536,7 +537,7 @@ int main(int argc, char** argv)
 	csv << "Configuration, Max Error, Avg Error, Despeckle Max Error, Despeckle Avg Error, Compressed Size\n";
 	csv.close();
 
-	for (uint32_t c = 0; c < 1; c++)
+	for (uint32_t c = 0; c < 7; c++)
 	{
 		std::cout << "CODER: " << coders[c] << std::endl;
 		AddFolderLevel(coders[c], -1, folders);
@@ -550,7 +551,7 @@ int main(int argc, char** argv)
 		config.QuantizedData = quantizedData;
 		config.Encoded = encodedData;
 		config.Decoded = decodedData;
-		config.Enlarge = true;
+		config.Enlarge = false;
 		config.Interpolate = true;
 		config.OutputFormat = ImageFormat::JPG;
 		config.CoderName = coders[c];
@@ -587,11 +588,8 @@ int main(int argc, char** argv)
 				if (!coders[c].compare("Hue")) BenchmarkCoder<Hue>(config);
 				if (!coders[c].compare("Phase")) BenchmarkCoder<Phase>(config);
 				if (!coders[c].compare("Triangle")) BenchmarkCoder<Triangle>(config);
-				/*
-				if (!coders[c].compare("Morton")) BenchmarkCoder<Morton>(config);
 				if (!coders[c].compare("Split2")) BenchmarkCoder<Split2>(config);
 				if (!coders[c].compare("Packed2")) BenchmarkCoder<Packed2>(config);
-				*/
 				if (algoBits.size() > 1)
 					folders.pop_back();
 			}

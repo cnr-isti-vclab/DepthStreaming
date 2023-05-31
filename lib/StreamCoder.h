@@ -62,7 +62,10 @@ namespace DStream
 
 	private:
 		// [TMP]
-		std::vector<uint16_t> GetErrorVector(uint16_t* decodingTable, uint32_t tableSide, uint8_t axis, AxisErrors& ret, uint8_t amount = 1);
+		std::vector<uint16_t> GetErrorVector(uint16_t* decodingTable, uint32_t tableSide, uint8_t axis, uint8_t amount = 1);
+
+		void DecodeWithoutTables(uint16_t* dest, const Color* source, uint32_t nElements);
+		void EncodeWithoutTables(Color* dest, const uint16_t* source, uint32_t nElements);
 
 	private:
 		bool m_UseTables;

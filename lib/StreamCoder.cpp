@@ -124,50 +124,7 @@ namespace DStream
 				dest[i] = m_EncodingTable[source[i]];
 		}
 		else
-		{
-			Color prev, curr;
-			uint16_t nSegments = (1 << (m_AlgoBits * 3)) - 1;
-			uint16_t maxVal = 0;
-
-			for (uint32_t i = 0; i < nElements; i++)
-			{
-				if (m_Interpolate)
-				{
-					uint16_t startPoint, endPoint;
-					uint32_t gridSide = (1 << m_AlgoBits) - 1;
-					float currPoint = ((float)source[i] / 65535) * nSegments;
-					float t = currPoint - std::floor(currPoint);
-
-					// Find out where in the curve you are
-					startPoint = std::floor(currPoint);
-					endPoint = std::ceil(currPoint);
-
-					// Encode those values
-					Color startColor = m_Implementation.EncodeValue(startPoint * (1 << (16 - m_AlgoBits*3)));
-					Color endColor = m_Implementation.EncodeValue(endPoint * (1 << (16 - m_AlgoBits * 3)));
-
-					// Map them between 0,256
-					for (uint32_t j = 0; j < 3; j++)
-					{
-						startColor[j] = std::round(((float)startColor[j] / gridSide) * 255);
-						endColor[j] = std::round(((float)endColor[j] / gridSide) * 255);
-					}
-
-					// Interpolate
-					dest[i] = InterpolateColor(startColor, endColor, t);
-				}
-				else
-					dest[i] = m_Implementation.EncodeValue(source[i]);
-			}
-
-			if (m_Enlarge)
-			{
-				Color* enlarged = new Color[nElements];
-				Enlarge(dest, enlarged, nElements);
-				memcpy(dest, enlarged, nElements * 3);
-				delete[] enlarged;
-			}
-		}
+			EncodeWithoutTables(dest, source, nElements);
 	}
 
 
@@ -175,26 +132,84 @@ namespace DStream
 	template<class CoderImplementation>
 	void StreamCoder<CoderImplementation>::Decode(const Color* source, uint16_t* dest, uint32_t nElements)
 	{
+		if (m_UseTables)
+		{
+			for (uint32_t i = 0; i < nElements; i++)
+				dest[i] = m_DecodingTable[source[i][0]*256*256 + source[i][1]*256 + source[i][2]];
+		}
+		else
+			DecodeWithoutTables(dest, source, nElements);
+	}
+
+	template<class CoderImplementation>
+	void StreamCoder<CoderImplementation>::EncodeWithoutTables(Color* dest, const uint16_t* source, uint32_t nElements)
+	{
+		Color prev, curr;
+		uint16_t nSegments = (1 << (m_AlgoBits * 3)) - 1;
+		uint16_t maxVal = 0;
+
+		for (uint32_t i = 0; i < nElements; i++)
+		{
+			if (m_Interpolate)
+			{
+				uint16_t startPoint, endPoint;
+				uint32_t gridSide = (1 << m_AlgoBits) - 1;
+				float currPoint = ((float)source[i] / 65535) * nSegments;
+				float t = currPoint - std::floor(currPoint);
+
+				// Find out where in the curve you are
+				startPoint = std::floor(currPoint);
+				endPoint = std::ceil(currPoint);
+
+				// Encode those values
+				Color startColor = m_Implementation.EncodeValue(startPoint);
+				Color endColor = m_Implementation.EncodeValue(endPoint);
+
+				// Map them between 0,256
+				for (uint32_t j = 0; j < 3; j++)
+				{
+					startColor[j] = std::round(((float)startColor[j] / gridSide) * 255);
+					endColor[j] = std::round(((float)endColor[j] / gridSide) * 255);
+				}
+
+				// Interpolate
+				dest[i] = InterpolateColor(startColor, endColor, t);
+			}
+			else
+			{
+				if (std::is_same<Hilbert, CoderImplementation>())
+					dest[i] = m_Implementation.EncodeValue(source[i] >> (16 - m_AlgoBits * 3));
+				else
+					dest[i] = m_Implementation.EncodeValue(source[i]);
+			}
+		}
+
+		if (m_Enlarge)
+		{
+			Color* enlarged = new Color[nElements];
+			Enlarge(dest, enlarged, nElements);
+			memcpy(dest, enlarged, nElements * 3);
+			delete[] enlarged;
+		}
+	}
+
+	template<class CoderImplementation>
+	void StreamCoder<CoderImplementation>::DecodeWithoutTables(uint16_t* dest, const Color* source, uint32_t nElements)
+	{
 		Color* inCols = new Color[nElements];
 		memcpy(inCols, source, 3 * nElements);// (Color*)source;
 		if (m_Enlarge)
 			Shrink(source, inCols, nElements);
 
-		if (m_UseTables)
+		for (uint32_t i = 0; i < nElements; i++)
 		{
-			// TODO: tables
+			if (m_Interpolate)
+				dest[i] = InterpolateHeight(inCols[i]);
+			else if (std::is_same<Hilbert, CoderImplementation>())
+				dest[i] = m_Implementation.DecodeValue(inCols[i]) << (16 - m_AlgoBits * 3);
+			else
+				dest[i] = m_Implementation.DecodeValue(inCols[i]);
 		}
-		else
-		{
-			for (uint32_t i = 0; i < nElements; i++)
-			{
-				if (m_Interpolate)
-					dest[i] = InterpolateHeight(inCols[i]);
-				else
-					dest[i] = m_Implementation.DecodeValue(inCols[i]);
-			}
-		}
-
 		delete[] inCols;
 	}
 
@@ -273,36 +288,46 @@ namespace DStream
 		for (uint32_t i = 0; i < 8; i++)
 			val += interpVals[i] * vals[i] / tot;
 
-		return std::round(val);
+		return std::round((val / ((1 << (m_AlgoBits * 3)) - 1)) * 65535);
 	}
 
 	template<class CoderImplementation>
 	void StreamCoder<CoderImplementation>::GenerateCodingTables()
 	{
+		std::cout << "Generating coding tables" << std::endl;
+
 		uint32_t maxQuantizationValue = (1 << 16);
 		uint32_t maxAlgoBitsValue = (1 << 8);
 
 		m_DecodingTable.resize(maxAlgoBitsValue * maxAlgoBitsValue * maxAlgoBitsValue);
 		for (uint32_t i = 0; i < maxAlgoBitsValue; i++)
 		{
+			std::cout << "Curr z: " << i << std::endl;
 			for (uint32_t j = 0; j < maxAlgoBitsValue; j++)
 			{
 				for (uint32_t k = 0; k < maxAlgoBitsValue; k++)
 				{
 					Color c = { (uint8_t)i, (uint8_t)j, (uint8_t)k };
-					m_DecodingTable[i * maxAlgoBitsValue * maxAlgoBitsValue + j * maxAlgoBitsValue + k] = m_Implementation.DecodeValue(c);
+					uint16_t val;
+
+					DecodeWithoutTables(&val, &c, 1);
+					m_DecodingTable[i * maxAlgoBitsValue * maxAlgoBitsValue + j * maxAlgoBitsValue + k] = val;
 				}
 			}
 		}
 
+		std::cout << "Decode generated" << std::endl;
+
 		m_EncodingTable.resize(maxQuantizationValue);
+		Color c;
 		for (uint32_t i = 0; i < maxQuantizationValue; i++)
 		{
-			Color c = m_Implementation.EncodeValue(i);
-			if (m_Enlarge)
-				Enlarge(&c, &c, 1);
+			uint16_t val = i;
+			EncodeWithoutTables(&c, &val, 1);
 			m_EncodingTable[i] = c;
 		}
+
+		std::cout << "Encode generated" << std::endl;
 	}
 
 	template<class CoderImplementation>
@@ -319,7 +344,7 @@ namespace DStream
 			{
 				for (uint16_t k = 0; k < side; k++)
 				{
-					uint16_t val = m_Implementation.DecodeValue(Color((uint8_t)i, (uint8_t)j, (uint8_t)k));
+					uint16_t val = m_Implementation.DecodeValue(Color((uint8_t)i, (uint8_t)j, (uint8_t)k)) / (1 << (16 - m_AlgoBits*3));
 					table[i * side * side + j * side + k] = val;
 				}
 			}
@@ -329,9 +354,8 @@ namespace DStream
 		for (uint32_t e = 0; e < 3; e++)
 		{
 			// Init error vector
-			AxisErrors dummy;
-			std::vector<uint16_t> errors = GetErrorVector(table, side, e, dummy);
-			uint32_t minAdvanceSize = 65536 / ((1 << (m_AlgoBits * 3)) - 1);
+			std::vector<uint16_t> errors = GetErrorVector(table, side, e);
+			uint32_t minAdvanceSize = 65535 / ((1 << (m_AlgoBits * 3)) - 1);
 
 			// Apply multiple times
 			bool normalized = false;
@@ -347,7 +371,7 @@ namespace DStream
 			std::cout << "Error vector: " << std::endl;
 			for (uint32_t i = 0; i < errors.size(); i++)
 				std::cout << errors[i] << ",";
-			std::cout << std::endl;
+			std::cout << std::endl << std::endl;
 			
 			float sum = 0;
 			float errSum = 0;
@@ -356,7 +380,7 @@ namespace DStream
 			uint32_t errIndex = 0;
 
 			m_SpacingTable.Shrink[e].resize(256);
-			for (uint32_t i = 0; i < 255; i++)
+			for (uint32_t i = 0; i < 256; i++)
 			{
 				if (errSum >= errors[errIndex])
 				{
@@ -374,7 +398,6 @@ namespace DStream
 				sum += increase;
 				errSum += increase;
 			}
-			m_SpacingTable.Enlarge[e].push_back((int)std::round(sum));
 
 			// Fill remaining gaps
 			for (uint32_t i = 1; i < 256; i++)
@@ -383,8 +406,20 @@ namespace DStream
 					m_SpacingTable.Shrink[e][i] = m_SpacingTable.Shrink[e][i - 1];
 
 				if (m_SpacingTable.Enlarge[e][i] == 0)
-					m_SpacingTable.Enlarge[e][i] = m_SpacingTable.Enlarge[e][i-1];
+					m_SpacingTable.Enlarge[e][i] = m_SpacingTable.Enlarge[e][i - 1];
 			}
+
+			std::cout << "Enlarge table: " << std::endl;
+			for (uint32_t i = 0; i < m_SpacingTable.Enlarge[e].size(); i++)
+				std::cout << (int)m_SpacingTable.Enlarge[e][i] << ",";
+			std::cout << std::endl << std::endl;
+
+			std::cout << "Shrink table: " << std::endl;
+			for (uint32_t i = 0; i < m_SpacingTable.Shrink[e].size(); i++)
+				std::cout << (int)m_SpacingTable.Shrink[e][i] << ",";
+			std::cout << std::endl;
+
+			std::cout << "E size: " << m_SpacingTable.Enlarge[e].size() << ", S size: " << m_SpacingTable.Shrink[e].size() << std::endl;
 		}
 
 		delete[] table;
@@ -409,7 +444,7 @@ namespace DStream
 	}
 
 	template<class CoderImplementation>
-	std::vector<uint16_t> StreamCoder<CoderImplementation>::GetErrorVector(uint16_t* table, uint32_t tableSide, uint8_t axis, AxisErrors& errs, uint8_t amount)
+	std::vector<uint16_t> StreamCoder<CoderImplementation>::GetErrorVector(uint16_t* table, uint32_t tableSide, uint8_t axis, uint8_t amount)
 	{
 		uint32_t errSize = tableSide - 1;
 		std::vector<uint16_t> ret(tableSide-1, 0);
@@ -446,16 +481,6 @@ namespace DStream
 				}
 			}
 		}
-
-		for (uint32_t i = 0; i < ret.size(); i++)
-		{
-			errs.AvgErr += ret[i];
-			errs.QuadErr += ret[i] * ret[i];
-			errs.MaxErr = std::max<uint32_t>(ret[i], errs.MaxErr);
-		}
-
-		errs.AvgErr /= ret.size();
-		errs.QuadErr /= ret.size();
 
 		return ret;
 	}
