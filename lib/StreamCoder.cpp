@@ -8,16 +8,6 @@
 #include <Implementations/Packed3.h>
 #include <Implementations/Split3.h>
 
-#include <../benchmark/ImageWriter.h>
-// [TMP]
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
-#include <math.h>
-#include <string.h>
-
-
 static void TransposeAdvanceToRange(std::vector<uint16_t>& vec, uint16_t rangeMax)
 {
 	uint32_t currSum = 0;
@@ -101,13 +91,14 @@ namespace DStream
 		m_AlgoBits = m_Implementation.GetAlgoBits();
 		m_EnlargeBits = 0;
 
+		// Check if there's enough space in the RGB cube to enlarge
 		int points = 1 << (m_AlgoBits * 3);
 		int seg = 256 / ((1 << m_AlgoBits) - 1);
 		int tot = points * seg;
-
 		if (tot < 65535)
 			m_Enlarge = false;
 
+		// Generate tables
 		if (m_Enlarge)
 			GenerateSpacingTables();
 		if (m_UseTables)
@@ -185,12 +176,7 @@ namespace DStream
 		}
 
 		if (m_Enlarge)
-		{
-			Color* enlarged = new Color[nElements];
-			Enlarge(dest, enlarged, nElements);
-			memcpy(dest, enlarged, nElements * 3);
-			delete[] enlarged;
-		}
+			Enlarge(dest, dest, nElements);
 	}
 
 	template<class CoderImplementation>
@@ -294,15 +280,12 @@ namespace DStream
 	template<class CoderImplementation>
 	void StreamCoder<CoderImplementation>::GenerateCodingTables()
 	{
-		std::cout << "Generating coding tables" << std::endl;
-
 		uint32_t maxQuantizationValue = (1 << 16);
 		uint32_t maxAlgoBitsValue = (1 << 8);
 
 		m_DecodingTable.resize(maxAlgoBitsValue * maxAlgoBitsValue * maxAlgoBitsValue);
 		for (uint32_t i = 0; i < maxAlgoBitsValue; i++)
 		{
-			std::cout << "Curr z: " << i << std::endl;
 			for (uint32_t j = 0; j < maxAlgoBitsValue; j++)
 			{
 				for (uint32_t k = 0; k < maxAlgoBitsValue; k++)
@@ -316,8 +299,6 @@ namespace DStream
 			}
 		}
 
-		std::cout << "Decode generated" << std::endl;
-
 		m_EncodingTable.resize(maxQuantizationValue);
 		Color c;
 		for (uint32_t i = 0; i < maxQuantizationValue; i++)
@@ -326,8 +307,6 @@ namespace DStream
 			EncodeWithoutTables(&c, &val, 1);
 			m_EncodingTable[i] = c;
 		}
-
-		std::cout << "Encode generated" << std::endl;
 	}
 
 	template<class CoderImplementation>
@@ -357,21 +336,16 @@ namespace DStream
 			std::vector<uint16_t> errors = GetErrorVector(table, side, e);
 			uint32_t minAdvanceSize = 65535 / ((1 << (m_AlgoBits * 3)) - 1);
 
-			// Apply multiple times
+			// Apply multiple times to ensure it's normaliozed
 			bool normalized = false;
 			do
 			{
 				NormalizeAdvance(errors, 256, minAdvanceSize);
 				normalized = true;
-				for (uint32_t i = 0; i < errors.size(); i++)
+				for (uint32_t i = 0; i < errors.size() && normalized; i++)
 					if (errors[i] < minAdvanceSize)
 						normalized = false;
 			} while (!normalized);
-
-			std::cout << "Error vector: " << std::endl;
-			for (uint32_t i = 0; i < errors.size(); i++)
-				std::cout << errors[i] << ",";
-			std::cout << std::endl << std::endl;
 			
 			float sum = 0;
 			float errSum = 0;
@@ -408,18 +382,6 @@ namespace DStream
 				if (m_SpacingTable.Enlarge[e][i] == 0)
 					m_SpacingTable.Enlarge[e][i] = m_SpacingTable.Enlarge[e][i - 1];
 			}
-
-			std::cout << "Enlarge table: " << std::endl;
-			for (uint32_t i = 0; i < m_SpacingTable.Enlarge[e].size(); i++)
-				std::cout << (int)m_SpacingTable.Enlarge[e][i] << ",";
-			std::cout << std::endl << std::endl;
-
-			std::cout << "Shrink table: " << std::endl;
-			for (uint32_t i = 0; i < m_SpacingTable.Shrink[e].size(); i++)
-				std::cout << (int)m_SpacingTable.Shrink[e][i] << ",";
-			std::cout << std::endl;
-
-			std::cout << "E size: " << m_SpacingTable.Enlarge[e].size() << ", S size: " << m_SpacingTable.Shrink[e].size() << std::endl;
 		}
 
 		delete[] table;

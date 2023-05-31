@@ -10,17 +10,7 @@
 
 namespace DStream
 {
-	// [TMP]
-	struct AxisErrors
-	{
-		float AvgErr = 0;
-		float MaxErr = 0;
-		float QuadErr = 0;
-	};
-
-
-	template <	typename CoderImplementation
-				/*,typename std::enable_if<std::is_base_of_v<Coder, CoderImplementation>, bool>::type = true*/>
+	template <typename CoderImplementation>
 	class StreamCoder
 	{
 		static_assert(std::is_base_of_v<Coder, CoderImplementation>, "Template parameter of class StreamCoder must derive from Coder.");
@@ -30,7 +20,6 @@ namespace DStream
 		~StreamCoder() = default;
 
 		void Encode(const uint16_t* source, Color* dest, uint32_t nElements);
-		// Interpolate values from the table if necessary
 		void Decode(const Color* source, uint16_t* dest, uint32_t nElements);
 
 		void GenerateCodingTables();
@@ -61,7 +50,6 @@ namespace DStream
 	CoderImplementation m_Implementation;
 
 	private:
-		// [TMP]
 		std::vector<uint16_t> GetErrorVector(uint16_t* decodingTable, uint32_t tableSide, uint8_t axis, uint8_t amount = 1);
 
 		void DecodeWithoutTables(uint16_t* dest, const Color* source, uint32_t nElements);
