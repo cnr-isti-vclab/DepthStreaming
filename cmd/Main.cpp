@@ -66,7 +66,7 @@ void Usage()
     )use";
 }
 
-int ParseOptions(int argc, char** argv, std::string& inDir, std::string& outDir, std::string& algo, uint8_t& quantization, uint8_t& jpeg, 
+int ParseOptions(int argc, char** argv, std::string& inDir, std::string& outDir, std::string& algo, uint8_t& jpeg, 
     uint8_t& algoBits,  bool& recursive, std::string& mode, std::string& outputFormat, bool& enlarge, bool& quantize, bool& printTexture)
 {
     int c;
@@ -98,21 +98,6 @@ int ParseOptions(int argc, char** argv, std::string& inDir, std::string& outDir,
                 Usage();
                 return -1;
             }
-        }
-        case 'q':
-        {
-            int q = atoi(optarg);
-            if (q >= 10 && q <= 16)
-            {
-                quantization = q;
-                break;
-            }
-            else
-            {
-                std::cerr << "Quantization should be in the range of [10, 16]" << std::endl;
-                return -2;
-            }
-            
         }
         case 'j':
         {
@@ -210,7 +195,7 @@ int ParseOptions(int argc, char** argv, std::string& inDir, std::string& outDir,
     return 0;
 }
 
-int ValidateInput(const std::string& algorithm, uint8_t quantization, uint8_t jpeg, uint8_t algoBits, const std::string& mode, const std::string& format)
+int ValidateInput(const std::string& algorithm, uint8_t jpeg, uint8_t algoBits, const std::string& mode, const std::string& format)
 {
     if (algorithm == "")
     {
@@ -231,9 +216,9 @@ int ValidateInput(const std::string& algorithm, uint8_t quantization, uint8_t jp
 
     if (algorithm == "Hilbert")
     {
-        uint8_t segmentBits = quantization - 3 * algoBits;
+        uint8_t segmentBits = 16 - 3 * algoBits;
 
-        if (!(algoBits * 3 < quantization && algoBits + segmentBits <= 8))
+        if (!(algoBits * 3 < 16 && algoBits + segmentBits <= 8))
         {
             std::cerr << "The specified amount of bits reserved for the Hilbert algorithm is not enough for the given quantization level." << std::endl;
             return -1;
@@ -245,24 +230,24 @@ int ValidateInput(const std::string& algorithm, uint8_t quantization, uint8_t jp
 
 void Encode(uint16_t* input, Color* output, uint32_t nElements, const std::string& coder)
 {
-    if (coder == "PACKED") packedCoder.Encode(input, (Color*)output, nElements);
-    else if (coder == "HUE") hueCoder.Encode(input, (Color*)output, nElements);
-    else if (coder == "HILBERT") hilbertCoder.Encode(input, (Color*)output, nElements);
-    else if (coder == "MORTON") mortonCoder.Encode(input, (Color*)output, nElements);
-    else if (coder == "SPLIT") splitCoder.Encode(input, (Color*)output, nElements);
-    else if (coder == "PHASE") phaseCoder.Encode(input, (Color*)output, nElements);
-    else triangleCoder.Encode(input, (Color*)output, nElements);
+    if (coder == "PACKED") packedCoder.Encode((Color*)output, input, nElements);
+    else if (coder == "HUE") hueCoder.Encode((Color*)output, input, nElements);
+    else if (coder == "HILBERT") hilbertCoder.Encode((Color*)output, input, nElements);
+    else if (coder == "MORTON") mortonCoder.Encode((Color*)output, input, nElements);
+    else if (coder == "SPLIT") splitCoder.Encode((Color*)output, input, nElements);
+    else if (coder == "PHASE") phaseCoder.Encode((Color*)output, input, nElements);
+    else triangleCoder.Encode((Color*)output, input, nElements);
 }
 
 void Decode(uint8_t* input, uint16_t* output, uint32_t nElements, const std::string& coder)
 {
-    if (coder == "PACKED") packedCoder.Decode((Color*)input, output, nElements);
-    else if (coder == "HUE") hueCoder.Decode((Color*)input, output, nElements);
-    else if (coder == "HILBERT") hilbertCoder.Decode((Color*)input, output, nElements);
-    else if (coder == "MORTON") mortonCoder.Decode((Color*)input, output, nElements);
-    else if (coder == "SPLIT") splitCoder.Decode((Color*)input, output, nElements);
-    else if (coder == "PHASE") phaseCoder.Decode((Color*)input, output, nElements);
-    else triangleCoder.Decode((Color*)input, output, nElements);
+    if (coder == "PACKED") packedCoder.Decode(output, (Color*)input, nElements);
+    else if (coder == "HUE") hueCoder.Decode(output, (Color*)input, nElements);
+    else if (coder == "HILBERT") hilbertCoder.Decode(output, (Color*)input, nElements);
+    else if (coder == "MORTON") mortonCoder.Decode(output, (Color*)input, nElements);
+    else if (coder == "SPLIT") splitCoder.Decode(output, (Color*)input, nElements);
+    else if (coder == "PHASE") phaseCoder.Decode(output, (Color*)input, nElements);
+    else triangleCoder.Decode(output, (Color*)input, nElements);
 }
 
 std::vector<std::filesystem::path> GetFiles(const std::filesystem::path& path, bool recursive, const std::string inputPrefix, const std::string outDir, char codingMode)
@@ -325,12 +310,12 @@ int main(int argc, char** argv)
 {
     std::unordered_map<std::string, std::string> inPath2OutPath;
     bool saveDecoded = true, recursive = false, enlarge = true, quantize;
-    uint8_t quantization = 14, jpeg = 100, algoBits = 8;
+    uint8_t jpeg = 100, algoBits = 8;
     std::string inDir, outDir = "", algorithm = "-", mode = "-", outputFormat = "JPG";
 
-    if (ParseOptions(argc, argv, inDir, outDir, algorithm, quantization, jpeg, algoBits, recursive, mode, outputFormat, enlarge, quantize, saveDecoded) != 0)
+    if (ParseOptions(argc, argv, inDir, outDir, algorithm, jpeg, algoBits, recursive, mode, outputFormat, enlarge, quantize, saveDecoded) != 0)
         return -1;
-    if (ValidateInput(algorithm, quantization, jpeg, algoBits, mode, outputFormat) != 0)
+    if (ValidateInput(algorithm, jpeg, algoBits, mode, outputFormat) != 0)
     {
         Usage();
         return -2;
@@ -346,13 +331,13 @@ int main(int argc, char** argv)
     // If encoding, add all files supported by the DepthmapReader. If decoding, add all formats supported by the ImageReader
     std::vector<std::filesystem::path> files = GetFiles(inputDir, recursive, inDir, outDir, mode[0]);
 
-    if (algorithm == "HILBERT") hilbertCoder = StreamCoder<Hilbert>(quantization, enlarge, algoBits, { 8,8,8 },false);
-    if (algorithm == "PACKED") packedCoder = StreamCoder<Packed3>(quantization, enlarge, algoBits, { 8,8,8 }, true);
-    if (algorithm == "SPLIT") splitCoder = StreamCoder<Split3>(quantization, enlarge, algoBits, { 8,8,8 }, true);
-    if (algorithm == "TRIANGLE") triangleCoder = StreamCoder<Triangle>(quantization, enlarge, algoBits, { 8,8,8 }, true);
-    if (algorithm == "PHASE") phaseCoder = StreamCoder<Phase>(quantization, enlarge, algoBits, { 8,8,8 }, true);
-    if (algorithm == "HUE") hueCoder = StreamCoder<Hue>(quantization, enlarge, algoBits, { 8,8,8 }, true);
-    if (algorithm == "MORTON") mortonCoder = StreamCoder<Morton>(quantization, enlarge, algoBits, { 8,8,8 }, true);
+    if (algorithm == "HILBERT") hilbertCoder = StreamCoder<Hilbert>     (enlarge, true, algoBits, { 8,8,8 }, true);
+    if (algorithm == "PACKED") packedCoder = StreamCoder<Packed3>       (enlarge, true, algoBits, { 8,8,8 }, true);
+    if (algorithm == "SPLIT") splitCoder = StreamCoder<Split3>          (enlarge, true, algoBits, { 8,8,8 }, true);
+    if (algorithm == "TRIANGLE") triangleCoder = StreamCoder<Triangle>  (enlarge, true, algoBits, { 8,8,8 }, true);
+    if (algorithm == "PHASE") phaseCoder = StreamCoder<Phase>           (enlarge, true, algoBits, { 8,8,8 }, true);
+    if (algorithm == "HUE") hueCoder = StreamCoder<Hue>                 (enlarge, true, algoBits, { 8,8,8 }, true);
+    if (algorithm == "MORTON") mortonCoder = StreamCoder<Morton>        (enlarge, true, algoBits, { 8,8,8 }, true);
 
     for (auto file : files)
     {
@@ -368,11 +353,11 @@ int main(int argc, char** argv)
 
             float* rawData = reader.GetRawData();
             uint16_t* depthData = new uint16_t[dmData.Width * dmData.Height];
-            DepthProcessing::Quantize(depthData, rawData, quantization, nElements);
+            DepthProcessing::Quantize(depthData, rawData, 16, nElements);
 
             uint8_t* encoded = new uint8_t[nElements * 3];
             if (quantize)
-                DepthProcessing::Quantize(depthData, depthData, quantization, nElements);
+                DepthProcessing::Quantize(depthData, depthData, 16, nElements);
             Encode(depthData, (Color*)encoded, nElements, algorithm);
 
             if (outputFormat == "JPG") 
@@ -401,7 +386,6 @@ int main(int argc, char** argv)
 
             ImageReader::Read(file.string(), encoded, nElements * 3);
             Decode(encoded, decoded, nElements, algorithm);
-            DepthProcessing::Dequantize(decoded, decoded, quantization, nElements);
 
             if (saveDecoded)
                 ImageWriter::WriteDecoded(outPath + "_decoded.png", decoded, width, height);

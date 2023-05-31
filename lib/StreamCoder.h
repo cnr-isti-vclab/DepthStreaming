@@ -19,8 +19,8 @@ namespace DStream
 		StreamCoder() = default;
 		~StreamCoder() = default;
 
-		void Encode(const uint16_t* source, Color* dest, uint32_t nElements);
-		void Decode(const Color* source, uint16_t* dest, uint32_t nElements);
+		void Encode(Color* dest, const uint16_t* source, uint32_t nElements);
+		void Decode(uint16_t* dest, const Color* source, uint32_t nElements);
 
 		void GenerateCodingTables();
 		void GenerateSpacingTables();

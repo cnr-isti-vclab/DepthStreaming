@@ -106,7 +106,7 @@ namespace DStream
 	}
 
 	template<class CoderImplementation>
-	void StreamCoder<CoderImplementation>::Encode(const uint16_t* source, Color* dest, uint32_t nElements)
+	void StreamCoder<CoderImplementation>::Encode(Color* dest, const uint16_t* source, uint32_t nElements)
 	{
 		uint32_t segmentSize = 256 / (1 << m_AlgoBits);
 		if (m_UseTables)
@@ -121,7 +121,7 @@ namespace DStream
 
 	// Interpolate values from the table if necessary
 	template<class CoderImplementation>
-	void StreamCoder<CoderImplementation>::Decode(const Color* source, uint16_t* dest, uint32_t nElements)
+	void StreamCoder<CoderImplementation>::Decode(uint16_t* dest, const Color* source, uint32_t nElements)
 	{
 		if (m_UseTables)
 		{

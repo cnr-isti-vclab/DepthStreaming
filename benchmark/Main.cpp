@@ -125,7 +125,7 @@ void AddBenchmarkResult(std::ofstream& file, std::string algo, int jpegQuality, 
 
 	configName << cleanAlgo << "_Q:" << 16;
 	configName << "_J:" << jpegQuality;
-	if (!cleanAlgo.compare("Hilbert") || !cleanAlgo.compare("Packed") || !cleanAlgo.compare("Split"))
+	if (!cleanAlgo.compare("Hilbert") || !cleanAlgo.compare("Packed2") || !cleanAlgo.compare("Split2"))
 		configName << "_P:" << parameter;
 
 	//"Configuration, Max Error, Avg Error, Despeckle Max Error, Despeckle Avg Error, Compressed Size\n";
@@ -269,8 +269,8 @@ void BenchmarkCoder(BenchmarkConfig& config)
 
 	// Always use tables, they're free
 	StreamCoder<T> coder(config.Enlarge, config.Interpolate, config.AlgoBits, config.ChannelDistribution, true);
-	coder.Encode(config.QuantizedData, (Color*)config.EncodedBuffer, nElements);
-	coder.Decode((Color*)config.EncodedBuffer, config.DecodedData, nElements);
+	coder.Encode((Color*)config.EncodedBuffer, config.QuantizedData, nElements);
+	coder.Decode(config.DecodedData, (Color*)config.EncodedBuffer, nElements);
 	
 	ImageWriter::WriteDecoded(currPath + "_lossless.png", config.DecodedData, width, height);
 
@@ -326,7 +326,7 @@ void BenchmarkCoder(BenchmarkConfig& config)
 		std::cout << "Decode" << std::endl;
 		{
 			DSTR_PROFILE_SCOPE("DStreamDecode");
-			coder.Decode((Color*)config.ColorBuffer, config.DecodedData, nElements);
+			coder.Decode(config.DecodedData, (Color*)config.ColorBuffer, nElements);
 		}
 
 		std::cout << "Write Decoded" << std::endl;
